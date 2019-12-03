@@ -2,10 +2,12 @@ package infrastructure
 
 import (
 	"database/sql"
+	"os"
 
 	"project-symi-backend/app/interfaces/database"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 type SqlHandler struct {
@@ -13,7 +15,9 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() database.SqlHandler {
-	conn, err := sql.Open("mysql", "root:@/symi") // TODO: Fix hard coding
+	err := godotenv.Load()
+	conn, err := sql.Open("mysql", os.Getenv("DB_INFO"))
+	print(err)
 	if err != nil {
 		panic(err.Error)
 	}
