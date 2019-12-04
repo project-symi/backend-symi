@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS departments;
 CREATE TABLE types (
   id INT AUTO_INCREMENT NOT NULL,
   name VARCHAR(20),
+  deleted boolean,
+  deleted_at DATETIME,
   created_at TIMESTAMP,
   modified_at TIMESTAMP,
   PRIMARY KEY (id)
@@ -12,6 +14,8 @@ CREATE TABLE types (
 CREATE TABLE departments (
   id INT AUTO_INCREMENT NOT NULL,
   name VARCHAR(20),
+  deleted boolean,
+  deleted_at DATETIME,
   created_at TIMESTAMP,
   modified_at TIMESTAMP,
   PRIMARY KEY (id)
@@ -23,6 +27,8 @@ CREATE TABLE users (
   birthday DATE,
   department_id INT NOT NULL,
   type_id INT NOT NULL,
+  deleted boolean,
+  deleted_at DATETIME,
   created_at TIMESTAMP,
   modified_at TIMESTAMP,
   FOREIGN KEY (department_id) REFERENCES departments(id),
