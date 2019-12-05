@@ -1,6 +1,7 @@
 START TRANSACTION;
 DELETE FROM users;
 DELETE FROM types;
+DELETE FROM genders;
 DELETE FROM departments;
 INSERT INTO types (
     id,
@@ -13,6 +14,16 @@ VALUES
   (1, 'CEO', false, NOW(), NOW()),
   (2, 'employee', false, NOW(), NOW()),
   (3, 'admin', false, NOW(), NOW());
+INSERT INTO genders (
+    id,
+    gender,
+    deleted,
+    created_at,
+    modified_at
+  )
+VALUES
+  (1, 'male', false, NOW(), NOW()),
+  (2, 'female', false, NOW(), NOW());
 INSERT INTO departments (
     id,
     name,
@@ -39,6 +50,7 @@ INSERT INTO users (
     name,
     mail,
     birthday,
+    gender_id,
     department_id,
     type_id,
     deleted,
@@ -50,6 +62,7 @@ VALUES
     'Mini',
     'samadova.minira@gmail.com',
     '20191205',
+    2,
     1,
     1,
     false,
@@ -60,6 +73,7 @@ VALUES
     'Igor',
     'igor.m.byak@gmail.com',
     '20191205',
+    1,
     7,
     3,
     false,
@@ -70,6 +84,7 @@ VALUES
     'Steffie',
     'steffie.harner@gmail.com',
     '20191205',
+    2,
     10,
     3,
     false,
@@ -80,6 +95,7 @@ VALUES
     'Yukio',
     'triangle.pillow@gmail.com',
     '20191205',
+    1,
     9,
     2,
     false,
