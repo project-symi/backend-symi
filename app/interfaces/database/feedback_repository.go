@@ -7,22 +7,22 @@ type FeedbackRepository struct {
 }
 
 func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error) {
-	rows, err := repo.Query("SELECT id, feedback FROM feedbacks")
+	rows, err := repo.Query("SELECT user_id, feedback_note FROM feedbacks")
 	defer rows.Close()
 	if err != nil {
 		return
 	}
 	for rows.Next() {
-		var id int
+		var userId int
 		var feedback string
-		if err := rows.Scan(&id, &feedback); err != nil {
+		if err := rows.Scan(&userId, &feedback); err != nil {
 			continue
 		}
-		feedbackQuery := domain.Feedback{
-			ID:       id,
-			Feedback: feedback,
+		feedbackData := domain.Feedback{
+			UserId:       userId,
+			FeedbackNote: feedback,
 		}
-		feedbacks = append(feedbacks, feedbackQuery)
+		feedbacks = append(feedbacks, feedbackData)
 	}
 	return
 }
