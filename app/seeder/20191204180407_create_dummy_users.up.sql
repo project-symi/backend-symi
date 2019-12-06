@@ -60,7 +60,7 @@ INSERT INTO users (
   )
 VALUES
   (
-    1,
+    'A000001',
     'Mini',
     'samadova.minira@gmail.com',
     '20191205',
@@ -72,7 +72,7 @@ VALUES
     NOW()
   ),
   (
-    300,
+    'B000300',
     'Igor',
     'igor.m.byak@gmail.com',
     '20191205',
@@ -84,7 +84,7 @@ VALUES
     NOW()
   ),
   (
-    500,
+    'B000500',
     'Steffie',
     'steffie.harner@gmail.com',
     '20191205',
@@ -96,7 +96,7 @@ VALUES
     NOW()
   ),
   (
-    9999,
+    'X009999',
     'Yukio',
     'triangle.pillow@gmail.com',
     '20191205',
