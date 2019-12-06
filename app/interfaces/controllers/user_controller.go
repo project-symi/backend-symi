@@ -37,6 +37,15 @@ func (controller *UserController) UserByEmployeeId(c Context) {
 	c.JSON(200, user)
 }
 
+func (controller *UserController) UsersByEmployeeName(c Context) {
+	users, err := controller.Interactor.UsersByName(c.Query("name"))
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, users)
+}
+
 func (controller *UserController) DeleteByEmployeeId(c Context) {
 	amountOfDeleted, err := controller.Interactor.Delete(c.Param("employeeId"))
 	if err != nil {
