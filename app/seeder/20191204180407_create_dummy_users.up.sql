@@ -47,6 +47,7 @@ VALUES
   (13, 'Materials', false, NOW(), NOW()),
   (14, 'Trading', false, NOW(), NOW());
 INSERT INTO users (
+    employee_id,
     name,
     mail,
     birthday,
@@ -59,6 +60,7 @@ INSERT INTO users (
   )
 VALUES
   (
+    1,
     'Mini',
     'samadova.minira@gmail.com',
     '20191205',
@@ -70,6 +72,7 @@ VALUES
     NOW()
   ),
   (
+    300,
     'Igor',
     'igor.m.byak@gmail.com',
     '20191205',
@@ -81,6 +84,7 @@ VALUES
     NOW()
   ),
   (
+    500,
     'Steffie',
     'steffie.harner@gmail.com',
     '20191205',
@@ -92,6 +96,7 @@ VALUES
     NOW()
   ),
   (
+    9999,
     'Yukio',
     'triangle.pillow@gmail.com',
     '20191205',

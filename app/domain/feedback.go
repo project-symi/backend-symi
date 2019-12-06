@@ -1,11 +1,11 @@
 package domain
 
 type Feedback struct {
-	ID int
-	// UserId    int
+	// Id int
+	UserId int
 	// OpinionId   int
 	// CategoryId  int
-	Feedback string
+	FeedbackNote string
 	// UpdatedAt string
 	// CreatedAt string
 }
