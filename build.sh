@@ -8,4 +8,4 @@ go get "github.com/go-sql-driver/mysql v1.4.1"
 go get "github.com/joho/godotenv v1.3.0"
 
 # create the application binary that eb uses
-GOOS=linux GOARCH=amd64 go build -o bin/application -ldflags="-s -w"
+GOOS=linux GOARCH=amd64 go build -o bin/application application.go -ldflags="-s -w"
