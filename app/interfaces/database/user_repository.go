@@ -118,6 +118,53 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 	return
 }
 
+func (repo *UserRepository) FilterByName(nameArray []string) (users domain.Users, err error) {
+	query := createFilterByNameQuery(nameArray)
+	rows, err := repo.Query(query)
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var (
+			employeeId string
+			name       string
+			department string
+		)
+		if err := rows.Scan(
+			&employeeId,
+			&name,
+			&department,
+		); err != nil {
+			continue
+		}
+		user := domain.User{
+			EmployeeId: employeeId,
+			Name:       name,
+			Department: department,
+		}
+		users = append(users, user)
+	}
+	return
+}
+
+func createFilterByNameQuery(nameArray []string) (query string) {
+	query = `
+		SELECT
+			u.employee_id,
+			u.name,
+			d.name
+		from users u
+		JOIN departments d ON d.id = u.department_id
+		WHERE
+			u.deleted = false
+		`
+	for _, s := range nameArray {
+		query += " AND u.name LIKE '%" + s + "%'"
+	}
+	return
+}
+
 func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, err error) {
 	result, err := repo.Execute(`
 		UPDATE users
