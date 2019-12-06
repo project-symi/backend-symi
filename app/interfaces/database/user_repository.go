@@ -1,6 +1,9 @@
 package database
 
-import "project-symi-backend/app/domain"
+import (
+	"project-symi-backend/app/domain"
+	"time"
+)
 
 type UserRepository struct {
 	SqlHandler
@@ -112,5 +115,24 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		Gender:      gender,
 		Type:        typeName,
 	}
+	return
+}
+
+func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, err error) {
+	result, err := repo.Execute(`
+		UPDATE users
+		SET deleted = true,
+			deleted_at = ?
+		WHERE employee_id = ?
+		AND deleted = false
+		`, time.Now(), id)
+	if err != nil {
+		return
+	}
+	amountOfDeleted64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfDeleted = int(amountOfDeleted64)
 	return
 }
