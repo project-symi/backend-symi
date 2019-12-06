@@ -29,7 +29,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	}
 	for rows.Next() {
 		var (
-			employeeId  int
+			employeeId  string
 			mail        string
 			department  string
 			name        string
@@ -61,7 +61,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	return
 }
 
-func (repo *UserRepository) FindById(id int) (user domain.User, err error) {
+func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			u.employee_id,
@@ -85,7 +85,7 @@ func (repo *UserRepository) FindById(id int) (user domain.User, err error) {
 	}
 	rows.Next()
 	var (
-		employeeId  int
+		employeeId  string
 		mail        string
 		department  string
 		name        string
