@@ -15,3 +15,8 @@ func (interactor *UserInteractor) User(employeeId string) (user domain.User, err
 	user, err = interactor.UserRepository.FindByEmployeeId(employeeId)
 	return
 }
+
+func (interactor *UserInteractor) Delete(employeeId string) (amountOfDeleted int, err error) {
+	amountOfDeleted, err = interactor.UserRepository.DeleteByEmployeeId(employeeId)
+	return
+}
