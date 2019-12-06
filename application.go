@@ -9,10 +9,12 @@ import (
 
 func main() {
 	err := godotenv.Load()
-	print(err)
-	port := ":" + os.Getenv("PORT")
-	if port == ":" {
-		port = ":8080"
+	if err != nil {
+		os.Exit(500)
 	}
-	infrastructure.Router.Run(port)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	infrastructure.Router.Run(":" + port)
 }
