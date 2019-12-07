@@ -7,7 +7,7 @@ type User struct {
 	Department  string `json:"department"`
 	DateOfBirth string `json:"dateOfBirth"`
 	Gender      string `json:"gender"`
-	Type        string `json:"type"`
+	Permission  string `json:"permission"`
 }
 
 type Users []User
