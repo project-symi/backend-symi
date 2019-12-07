@@ -18,9 +18,9 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			u.name,
 			u.birthday,
 			g.gender,
-			t.name
+			p.name
   		from users u
-  		JOIN types t ON t.id = u.type_id
+  		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
   		JOIN genders g ON g.id = u.gender_id
   		WHERE
@@ -38,7 +38,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			name        string
 			dateOfBirth string
 			gender      string
-			typeName    string
+			permission  string
 		)
 		if err := rows.Scan(
 			&employeeId,
@@ -47,7 +47,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			&name,
 			&dateOfBirth,
 			&gender,
-			&typeName); err != nil {
+			&permission); err != nil {
 			continue
 		}
 		user := domain.User{
@@ -57,7 +57,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			Department:  department,
 			DateOfBirth: dateOfBirth,
 			Gender:      gender,
-			Type:        typeName,
+			Permission:  permission,
 		}
 		users = append(users, user)
 	}
@@ -73,9 +73,9 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.name,
 			u.birthday,
 			g.gender,
-			t.name
+			p.name
   		from users u
-  		JOIN types t ON t.id = u.type_id
+  		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
   		JOIN genders g ON g.id = u.gender_id
   		WHERE
@@ -94,7 +94,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		name        string
 		dateOfBirth string
 		gender      string
-		typeName    string
+		permission  string
 	)
 	if err = rows.Scan(
 		&employeeId,
@@ -103,7 +103,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		&name,
 		&dateOfBirth,
 		&gender,
-		&typeName); err != nil {
+		&permission); err != nil {
 		return
 	}
 	user = domain.User{
@@ -113,7 +113,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		Department:  department,
 		DateOfBirth: dateOfBirth,
 		Gender:      gender,
-		Type:        typeName,
+		Permission:  permission,
 	}
 	return
 }

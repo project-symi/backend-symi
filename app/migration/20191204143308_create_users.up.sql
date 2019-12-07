@@ -3,9 +3,9 @@ set
   foreign_key_checks = 0;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS genders;
-DROP TABLE IF EXISTS types;
+DROP TABLE IF EXISTS permissions;
 DROP TABLE IF EXISTS departments;
-CREATE TABLE types (
+CREATE TABLE permissions (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
     name VARCHAR(20) UNIQUE,
     deleted boolean,
@@ -40,14 +40,14 @@ CREATE TABLE users (
     birthday DATE,
     gender_id INT NOT NULL,
     department_id INT NOT NULL,
-    type_id INT NOT NULL,
+    permission_id INT NOT NULL,
     deleted boolean,
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (gender_id) REFERENCES genders(id),
-    FOREIGN KEY (type_id) REFERENCES types(id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(id),
     PRIMARY KEY (id)
   );
 set

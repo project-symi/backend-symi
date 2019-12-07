@@ -1,9 +1,9 @@
 START TRANSACTION;
 DELETE FROM users;
-DELETE FROM types;
+DELETE FROM permissions;
 DELETE FROM genders;
 DELETE FROM departments;
-INSERT INTO types (
+INSERT INTO permissions (
     id,
     name,
     deleted,
@@ -53,7 +53,7 @@ INSERT INTO users (
     birthday,
     gender_id,
     department_id,
-    type_id,
+    permission_id,
     deleted,
     created_at,
     modified_at
