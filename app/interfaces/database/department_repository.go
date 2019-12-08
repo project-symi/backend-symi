@@ -1,18 +1,32 @@
 package database
 
+import "project-symi-backend/app/domain"
+
 type DepartmentRepository struct {
 	SqlHandler
 }
 
-func (repo *DepartmentRepository) DepartmentToId(department string) (id int, err error) {
-	row, err := repo.Query("SELECT id from departments WHERE deleted = false AND name = ?", department)
-	defer row.Close()
+func (repo *DepartmentRepository) FindAll() (departments domain.Departments, err error) {
+	rows, err := repo.Query("SELECT id, name from departments WHERE deleted = false")
+	defer rows.Close()
 	if err != nil {
 		return
 	}
-	row.Next()
-	if err = row.Scan(&id); err != nil {
-		return
+	for rows.Next() {
+		var (
+			id   int
+			name string
+		)
+		if err := rows.Scan(
+			&id,
+			&name); err != nil {
+			continue
+		}
+		department := domain.Department{
+			Id:   id,
+			Name: name,
+		}
+		departments = append(departments, department)
 	}
 	return
 }

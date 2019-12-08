@@ -184,12 +184,12 @@ func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, 
 	return
 }
 
-func (repo *UserRepository) IsEmployee(employee_id string) (isEmployee bool, err error) {
+func (repo *UserRepository) IsUser(employee_id string) (isUser bool, err error) {
 	row, err := repo.Query("SELECT id FROM users WHERE employee_id = ?", employee_id)
 	if err != nil {
 		return
 	}
-	isEmployee = row.Next()
+	isUser = row.Next()
 	return
 }
 

@@ -1,5 +1,7 @@
 package usecase
 
+import "project-symi-backend/app/domain"
+
 type PermissionRepository interface {
-	PermissionToId(permission string) (id int, err error)
+	FindAll() (permissions domain.Permissions, err error)
 }

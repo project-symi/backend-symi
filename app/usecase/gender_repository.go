@@ -1,5 +1,7 @@
 package usecase
 
+import "project-symi-backend/app/domain"
+
 type GenderRepository interface {
-	GenderToId(gender string) (id int, err error)
+	FindAll() (genders domain.Genders, err error)
 }

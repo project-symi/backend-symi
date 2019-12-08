@@ -35,39 +35,54 @@ func (interactor *UserInteractor) Delete(employeeId string) (amountOfDeleted int
 	return
 }
 
-func (interactor *UserInteractor) Store(users domain.Users) (amountOfStored int, err error) {
-	noDuplicateUser, err := interactor.deleteDuplicateUsers(users)
-	if len(noDuplicateUser) == 0 {
-		amountOfStored = 0
+func (interactor *UserInteractor) Store(users domain.Users) (amountOfChanged int, err error) {
+	var (
+		amountOfInserted int = 0
+		amountOfUpdated  int = 0
+		storeQuery       string
+	)
+	registeredUsers, unRegisteredUsers, err := interactor.divideRegisteredAndUnregisteredUsers(users)
+	if len(registeredUsers) == 0 && len(unRegisteredUsers) == 0 {
+		amountOfChanged = 0
 		return
 	}
-	storeQuery, err := interactor.createStoreUsersQuery(noDuplicateUser)
-	amountOfStored, err = interactor.UserRepository.StoreUsers(storeQuery)
+	if len(unRegisteredUsers) != 0 {
+		storeQuery, err = interactor.createStoreUsersQuery(unRegisteredUsers)
+		amountOfInserted, err = interactor.UserRepository.StoreUsers(storeQuery)
+	}
+	// if len(registeredUsers) != 0 {
+	// 	updateQuery, err = interactor.createUpdateUsersQuery(registeredUsers)
+	// 	amountOfUpdated, err = interactor.UserRepository.BulkUpdateUsers(updateQuery)
+	// }
+	amountOfChanged = amountOfInserted + amountOfUpdated
 	return
 }
 
-func (interactor *UserInteractor) deleteDuplicateUsers(users domain.Users) (noDuplicateUsers domain.Users, err error) {
-	isEmployee := false
+func (interactor *UserInteractor) divideRegisteredAndUnregisteredUsers(users domain.Users) (registeredUsers domain.Users, unRegisteredUsers domain.Users, err error) {
+	isUser := false
 	for _, user := range users {
-		isEmployee, err = interactor.UserRepository.IsEmployee(user.EmployeeId)
-		if !isEmployee {
-			noDuplicateUsers = append(noDuplicateUsers, user)
+		isUser, err = interactor.UserRepository.IsUser(user.EmployeeId)
+		if isUser {
+			registeredUsers = append(registeredUsers, user)
+		} else {
+			unRegisteredUsers = append(unRegisteredUsers, user)
 		}
 	}
 	return
 }
 
 func (interactor *UserInteractor) createStoreUsersQuery(users domain.Users) (query string, err error) {
-	var (
-		gender_id     int
-		department_id int
-		permission_id int
-	)
+	genders, err := interactor.GenderRepository.FindAll()
+	departments, err := interactor.DepartmentRepository.FindAll()
+	permissions, err := interactor.PermissionRepository.FindAll()
+	if err != nil {
+		return
+	}
 	query = "INSERT INTO users (employee_id, name, mail, birthday, gender_id, department_id, permission_id, deleted, created_at, modified_at) VALUES "
 	for i, user := range users {
-		gender_id, err = interactor.GenderRepository.GenderToId(user.Gender)
-		department_id, err = interactor.DepartmentRepository.DepartmentToId(user.Department)
-		permission_id, err = interactor.PermissionRepository.PermissionToId(user.Permission)
+		gender_id := genders.GenderToId(user.Gender)
+		department_id := departments.DepartmentToId(user.Department)
+		permission_id := permissions.PermissionToId(user.Permission)
 		query += "( \"" + user.EmployeeId + "\", \"" + user.Name + "\", \"" + user.Mail + "\", \"" + user.DateOfBirth + "\", \"" + strconv.Itoa(gender_id) + "\", \"" + strconv.Itoa(department_id) + "\", \"" + strconv.Itoa(permission_id) + "\", " + "false" + ", \"" + time.Now().Format("2006-01-02 15:04:05") + "\", \"" + time.Now().Format("2006-01-02 15:04:05") + "\")"
 		if i != len(users)-1 {
 			query += ", "

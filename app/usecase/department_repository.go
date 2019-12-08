@@ -1,5 +1,7 @@
 package usecase
 
+import "project-symi-backend/app/domain"
+
 type DepartmentRepository interface {
-	DepartmentToId(department string) (id int, err error)
+	FindAll() (departments domain.Departments, err error)
 }
