@@ -26,7 +26,25 @@ func (interactor *UserInteractor) User(employeeId string) (user domain.User, err
 
 func (interactor *UserInteractor) UsersByName(name string) (users domain.Users, err error) {
 	nameArray := strings.Split(name, " ")
-	users, err = interactor.UserRepository.FilterByName(nameArray)
+	query := createFilterByNameQuery(nameArray)
+	users, err = interactor.UserRepository.FilterByName(query)
+	return
+}
+
+func createFilterByNameQuery(nameArray []string) (query string) {
+	query = `
+		SELECT
+			u.employee_id,
+			u.name,
+			d.name
+		from users u
+		JOIN departments d ON d.id = u.department_id
+		WHERE
+			u.deleted = false
+		`
+	for _, s := range nameArray {
+		query += " AND u.name LIKE '%" + s + "%'"
+	}
 	return
 }
 

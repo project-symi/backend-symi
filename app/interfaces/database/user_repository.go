@@ -118,8 +118,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 	return
 }
 
-func (repo *UserRepository) FilterByName(nameArray []string) (users domain.Users, err error) {
-	query := createFilterByNameQuery(nameArray)
+func (repo *UserRepository) FilterByName(query string) (users domain.Users, err error) {
 	rows, err := repo.Query(query)
 	defer rows.Close()
 	if err != nil {
@@ -144,23 +143,6 @@ func (repo *UserRepository) FilterByName(nameArray []string) (users domain.Users
 			Department: department,
 		}
 		users = append(users, user)
-	}
-	return
-}
-
-func createFilterByNameQuery(nameArray []string) (query string) {
-	query = `
-		SELECT
-			u.employee_id,
-			u.name,
-			d.name
-		from users u
-		JOIN departments d ON d.id = u.department_id
-		WHERE
-			u.deleted = false
-		`
-	for _, s := range nameArray {
-		query += " AND u.name LIKE '%" + s + "%'"
 	}
 	return
 }
