@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase"
 )
@@ -13,6 +14,15 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	return &UserController{
 		Interactor: usecase.UserInteractor{
 			UserRepository: &database.UserRepository{
+				SqlHandler: sqlHandler,
+			},
+			GenderRepository: &database.GenderRepository{
+				SqlHandler: sqlHandler,
+			},
+			DepartmentRepository: &database.DepartmentRepository{
+				SqlHandler: sqlHandler,
+			},
+			PermissionRepository: &database.PermissionRepository{
 				SqlHandler: sqlHandler,
 			},
 		},
@@ -57,4 +67,19 @@ func (controller *UserController) DeleteByEmployeeId(c Context) {
 		return
 	}
 	c.Status(204)
+}
+
+func (controller *UserController) StoreUsers(c Context) {
+	users := domain.Users{}
+	c.BindJSON(&users)
+	amountOfStored, err := controller.Interactor.Store(users)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	if amountOfStored == 0 {
+		c.Status(200)
+		return
+	}
+	c.Status(201)
 }

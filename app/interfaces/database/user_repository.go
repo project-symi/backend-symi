@@ -65,7 +65,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 }
 
 func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
-	rows, err := repo.Query(`
+	row, err := repo.Query(`
 		SELECT
 			u.employee_id,
 			u.mail,
@@ -82,11 +82,11 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.deleted = false
 		AND u.employee_id = ?
 		`, id)
-	defer rows.Close()
+	defer row.Close()
 	if err != nil {
 		return
 	}
-	rows.Next()
+	row.Next()
 	var (
 		employeeId  string
 		mail        string
@@ -96,7 +96,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		gender      string
 		permission  string
 	)
-	if err = rows.Scan(
+	if err = row.Scan(
 		&employeeId,
 		&mail,
 		&department,
@@ -181,5 +181,27 @@ func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, 
 		return
 	}
 	amountOfDeleted = int(amountOfDeleted64)
+	return
+}
+
+func (repo *UserRepository) IsEmployee(employee_id string) (isEmployee bool, err error) {
+	row, err := repo.Query("SELECT id FROM users WHERE employee_id = ?", employee_id)
+	if err != nil {
+		return
+	}
+	isEmployee = row.Next()
+	return
+}
+
+func (repo *UserRepository) StoreUsers(query string) (amountOfStored int, err error) {
+	result, err := repo.Execute(query)
+	if err != nil {
+		return
+	}
+	amountOfStored64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfStored = int(amountOfStored64)
 	return
 }

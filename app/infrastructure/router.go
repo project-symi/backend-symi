@@ -25,6 +25,7 @@ func init() {
 	})
 	router.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
 	router.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
+	router.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 
 	Router = router
 }
