@@ -65,7 +65,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 }
 
 func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
-	rows, err := repo.Query(`
+	row, err := repo.Query(`
 		SELECT
 			u.employee_id,
 			u.mail,
@@ -82,11 +82,11 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.deleted = false
 		AND u.employee_id = ?
 		`, id)
-	defer rows.Close()
+	defer row.Close()
 	if err != nil {
 		return
 	}
-	rows.Next()
+	row.Next()
 	var (
 		employeeId  string
 		mail        string
@@ -96,7 +96,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		gender      string
 		permission  string
 	)
-	if err = rows.Scan(
+	if err = row.Scan(
 		&employeeId,
 		&mail,
 		&department,
@@ -118,8 +118,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 	return
 }
 
-func (repo *UserRepository) FilterByName(nameArray []string) (users domain.Users, err error) {
-	query := createFilterByNameQuery(nameArray)
+func (repo *UserRepository) FilterByName(query string) (users domain.Users, err error) {
 	rows, err := repo.Query(query)
 	defer rows.Close()
 	if err != nil {
@@ -148,23 +147,6 @@ func (repo *UserRepository) FilterByName(nameArray []string) (users domain.Users
 	return
 }
 
-func createFilterByNameQuery(nameArray []string) (query string) {
-	query = `
-		SELECT
-			u.employee_id,
-			u.name,
-			d.name
-		from users u
-		JOIN departments d ON d.id = u.department_id
-		WHERE
-			u.deleted = false
-		`
-	for _, s := range nameArray {
-		query += " AND u.name LIKE '%" + s + "%'"
-	}
-	return
-}
-
 func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, err error) {
 	result, err := repo.Execute(`
 		UPDATE users
@@ -181,5 +163,27 @@ func (repo *UserRepository) DeleteByEmployeeId(id string) (amountOfDeleted int, 
 		return
 	}
 	amountOfDeleted = int(amountOfDeleted64)
+	return
+}
+
+func (repo *UserRepository) IsUser(employee_id string) (isUser bool, err error) {
+	row, err := repo.Query("SELECT id FROM users WHERE employee_id = ?", employee_id)
+	if err != nil {
+		return
+	}
+	isUser = row.Next()
+	return
+}
+
+func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected int, err error) {
+	result, err := repo.Execute(query)
+	if err != nil {
+		return
+	}
+	amountOfStored64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfAffected = int(amountOfStored64)
 	return
 }
