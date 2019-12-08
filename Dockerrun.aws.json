@@ -1,0 +1,9 @@
+{
+ "AWSEBDockerrunVersion": "1",
+ "Image": {
+  "Name": "jolokia/tomcat-8.0"
+ },
+ "Ports": [{
+  "ContainerPort": "8080"
+ }]
+}

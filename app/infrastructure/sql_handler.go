@@ -7,7 +7,6 @@ import (
 	"project-symi-backend/app/interfaces/database"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 type SqlHandler struct {
@@ -15,7 +14,7 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() database.SqlHandler {
-	err := godotenv.Load()
+	// err := godotenv.Load()
 	conn, err := sql.Open("mysql", os.Getenv("DB_INFO"))
 	// fmt.Println("DB INFO:" + os.Getenv("DB_INFO"))
 	print(err)

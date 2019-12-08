@@ -3,12 +3,10 @@ package main
 import (
 	"os"
 	"project-symi-backend/app/infrastructure"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	// err := godotenv.Load()
 	if err != nil {
 		os.Exit(500)
 	}
