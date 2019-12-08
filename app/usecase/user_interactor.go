@@ -39,21 +39,19 @@ func (interactor *UserInteractor) Store(users domain.Users) (amountOfChanged int
 	var (
 		amountOfInserted int = 0
 		amountOfUpdated  int = 0
-		storeQuery       string
 	)
 	registeredUsers, unRegisteredUsers, err := interactor.divideRegisteredAndUnregisteredUsers(users)
 	if len(registeredUsers) == 0 && len(unRegisteredUsers) == 0 {
 		amountOfChanged = 0
 		return
 	}
+	insertQuery, updateQuery, err := interactor.createStoreUsersQuery(registeredUsers, unRegisteredUsers)
 	if len(unRegisteredUsers) != 0 {
-		storeQuery, err = interactor.createStoreUsersQuery(unRegisteredUsers)
-		amountOfInserted, err = interactor.UserRepository.StoreUsers(storeQuery)
+		amountOfInserted, err = interactor.UserRepository.ExecuteUsersQuery(insertQuery)
 	}
-	// if len(registeredUsers) != 0 {
-	// 	updateQuery, err = interactor.createUpdateUsersQuery(registeredUsers)
-	// 	amountOfUpdated, err = interactor.UserRepository.BulkUpdateUsers(updateQuery)
-	// }
+	if len(registeredUsers) != 0 {
+		amountOfUpdated, err = interactor.UserRepository.ExecuteUsersQuery(updateQuery)
+	}
 	amountOfChanged = amountOfInserted + amountOfUpdated
 	return
 }
@@ -71,13 +69,19 @@ func (interactor *UserInteractor) divideRegisteredAndUnregisteredUsers(users dom
 	return
 }
 
-func (interactor *UserInteractor) createStoreUsersQuery(users domain.Users) (query string, err error) {
+func (interactor *UserInteractor) createStoreUsersQuery(registeredUsers domain.Users, unregisteredUsers domain.Users) (insertQuery string, updateQuery string, err error) {
 	genders, err := interactor.GenderRepository.FindAll()
 	departments, err := interactor.DepartmentRepository.FindAll()
 	permissions, err := interactor.PermissionRepository.FindAll()
 	if err != nil {
 		return
 	}
+	insertQuery = createInsertQuery(unregisteredUsers, genders, departments, permissions)
+	updateQuery = createUpdateQuery(registeredUsers, genders, departments, permissions)
+	return
+}
+
+func createInsertQuery(users domain.Users, genders domain.Genders, departments domain.Departments, permissions domain.Permissions) (query string) {
 	query = "INSERT INTO users (employee_id, name, mail, birthday, gender_id, department_id, permission_id, deleted, created_at, modified_at) VALUES "
 	for i, user := range users {
 		gender_id := genders.GenderToId(user.Gender)
@@ -87,9 +91,45 @@ func (interactor *UserInteractor) createStoreUsersQuery(users domain.Users) (que
 		if i != len(users)-1 {
 			query += ", "
 		}
-		if err != nil {
-			return
+	}
+	return
+}
+
+func createUpdateQuery(users domain.Users, genders domain.Genders, departments domain.Departments, permissions domain.Permissions) (query string) {
+	query = "UPDATE users SET "
+	nameQuery := "name = CASE employee_id "
+	mailQuery := "mail = CASE employee_id "
+	birthdayQuery := "birthday = CASE employee_id "
+	genderQuery := "gender_id = CASE employee_id "
+	departmentQuery := "department_id = CASE employee_id "
+	permissionQuery := "permission_id = CASE employee_id "
+	modifiedQuery := "modified_at = CASE employee_id "
+	whereQuery := "WHERE employee_id IN ("
+	for i, user := range users {
+		gender_id := genders.GenderToId(user.Gender)
+		department_id := departments.DepartmentToId(user.Department)
+		permission_id := permissions.PermissionToId(user.Permission)
+		nameQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + user.Name + "\" "
+		mailQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + user.Mail + "\" "
+		birthdayQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + user.DateOfBirth + "\" "
+		genderQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + strconv.Itoa(gender_id) + "\" "
+		departmentQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + strconv.Itoa(department_id) + "\" "
+		permissionQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + strconv.Itoa(permission_id) + "\" "
+		modifiedQuery += "WHEN \"" + user.EmployeeId + "\" THEN \"" + time.Now().Format("2006-01-02 15:04:05") + "\" "
+		if i != len(users)-1 {
+			whereQuery += "\"" + user.EmployeeId + "\", "
+		}
+		if i == len(users)-1 {
+			nameQuery += "END, "
+			mailQuery += "END, "
+			birthdayQuery += "END, "
+			genderQuery += "END, "
+			departmentQuery += "END, "
+			permissionQuery += "END, "
+			modifiedQuery += "END "
+			whereQuery += "\"" + user.EmployeeId + "\")"
 		}
 	}
+	query += nameQuery + mailQuery + birthdayQuery + genderQuery + departmentQuery + permissionQuery + modifiedQuery + whereQuery
 	return
 }

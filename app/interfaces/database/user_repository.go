@@ -193,7 +193,7 @@ func (repo *UserRepository) IsUser(employee_id string) (isUser bool, err error) 
 	return
 }
 
-func (repo *UserRepository) StoreUsers(query string) (amountOfStored int, err error) {
+func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected int, err error) {
 	result, err := repo.Execute(query)
 	if err != nil {
 		return
@@ -202,6 +202,6 @@ func (repo *UserRepository) StoreUsers(query string) (amountOfStored int, err er
 	if err != nil {
 		return
 	}
-	amountOfStored = int(amountOfStored64)
+	amountOfAffected = int(amountOfStored64)
 	return
 }

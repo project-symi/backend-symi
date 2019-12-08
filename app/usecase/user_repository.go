@@ -7,6 +7,6 @@ type UserRepository interface {
 	FindByEmployeeId(employeeId string) (domain.User, error)
 	FilterByName(nameArray []string) (domain.Users, error)
 	DeleteByEmployeeId(employeeId string) (amountOfDeleted int, err error)
-	StoreUsers(query string) (amountOfStored int, err error)
 	IsUser(employeeId string) (isUser bool, err error)
+	ExecuteUsersQuery(query string) (amountOfAffected int, err error)
 }
