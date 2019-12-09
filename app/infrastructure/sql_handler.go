@@ -15,9 +15,8 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() database.SqlHandler {
-	err := godotenv.Load()
+	godotenv.Load()
 	conn, err := sql.Open("mysql", os.Getenv("DB_INFO"))
-	print(err)
 	if err != nil {
 		panic(err.Error)
 	}
