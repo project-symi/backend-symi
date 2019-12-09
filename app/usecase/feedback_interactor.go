@@ -17,6 +17,11 @@ func (interactor *FeedbackInteractor) FindByFeeling(feeling string) (feedback do
 	feedback, err = interactor.FeedbackRepository.FindByFeeling(feeling)
 	return
 }
+func (interactor *FeedbackInteractor) FindByEmployeeId(employeeId string) (feedback domain.Feedbacks, err error) {
+	userId, err := interactor.UserRepository.FindIdByEmployeeId(employeeId)
+	feedback, err = interactor.FeedbackRepository.FindByEmployeeId(userId)
+	return
+}
 func (interactor *FeedbackInteractor) StoreFeedback(feedback domain.Feedback) (success bool, err error) {
 	userId, err := interactor.UserRepository.FindIdByEmployeeId(feedback.EmployeeId)
 	feelingId, err := interactor.FeelingRepository.FindIdByName(feedback.Feeling)

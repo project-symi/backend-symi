@@ -47,6 +47,15 @@ func (controller *FeedbackController) FeedbacksByFeeling(c Context) {
 	c.JSON(200, feedbacks)
 }
 
+func (controller *FeedbackController) FeedbacksByEmployeeId(c Context) {
+	feedbacks, err := controller.Interactor.FindByEmployeeId(c.Param("employeeId"))
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, feedbacks)
+}
+
 func (controller *FeedbackController) PostFeedback(c Context) {
 	feedback := domain.Feedback{}
 	c.BindJSON(&feedback)

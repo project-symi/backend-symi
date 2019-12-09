@@ -118,6 +118,60 @@ func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks do
 	return
 }
 
+func (repo *FeedbackRepository) FindByEmployeeId(userId int) (feedbacks domain.Feedbacks, err error) {
+	rows, err := repo.Query(`
+		SELECT
+			feed.id,
+			feel.name,
+			feed.seen,
+			c.name,
+			COALESCE(u.name, ''),
+			feed.feedback_note,
+			feed.created_at
+  		FROM feedbacks feed
+  		JOIN feelings feel on feel.id = feed.feeling_id
+  		JOIN categories c on c.id = feed.category_id
+  		LEFT JOIN users u on u.id = feed.recipient_id
+		WHERE feed.user_id = ?
+	  `, userId)
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var (
+			id            int
+			feeling       string
+			seen          bool
+			category      string
+			recipientName string
+			feedbackNote  string
+			createdAt     string
+		)
+		if err := rows.Scan(
+			&id,
+			&feeling,
+			&seen,
+			&category,
+			&recipientName,
+			&feedbackNote,
+			&createdAt); err != nil {
+			continue
+		}
+		feedback := domain.Feedback{
+			Id:            id,
+			Feeling:       feeling,
+			Seen:          seen,
+			Category:      category,
+			RecipientName: recipientName,
+			FeedbackNote:  feedbackNote,
+			CreatedAT:     createdAt,
+		}
+		feedbacks = append(feedbacks, feedback)
+	}
+	return
+}
+
 func (repo *FeedbackRepository) InsertFeedback(userId int, feelingId int, categoryId int, recipientId int, newsId int, feedbackNote string) (success bool, err error) {
 	result, err := repo.Execute(`
 		INSERT INTO feedbacks (user_id, feeling_id, category_id, recipient_id, news_id, feedback_note, created_at, modified_at)
