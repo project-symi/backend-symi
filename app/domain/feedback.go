@@ -1,6 +1,7 @@
 package domain
 
 type Feedback struct {
+	EmployeeId          string `json:"employeeId"`
 	Feeling             string `json:"feeling"`
 	Seen                bool   `json:"status"`
 	Category            string `json:"category"`

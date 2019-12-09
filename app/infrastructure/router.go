@@ -22,6 +22,7 @@ func init() {
 			feedbackController.AllFeedbacks(c)
 		}
 	})
+	router.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
 		if name != "" {
