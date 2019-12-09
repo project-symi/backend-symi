@@ -187,3 +187,31 @@ func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected in
 	amountOfAffected = int(amountOfStored64)
 	return
 }
+
+//IMPLEMENTING THE AUTHENTIFICATION FEATURES!
+
+func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId string, err error) {
+	return "newCoolToken", nil
+}
+
+func (repo *UserRepository) ValidateToken(tokenId string) (isValid bool) {
+	return
+}
+
+func (repo *UserRepository) RevokeToken(tokenId string) (amountOfDeleted int, err error) {
+	result, err := repo.Execute(`
+		UPDATE users
+		SET current_token = null,
+		WHERE current_token = ?
+		AND deleted = false
+		`, tokenId)
+	if err != nil {
+		return
+	}
+	amountOfDeleted64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfDeleted = int(amountOfDeleted64)
+	return
+}

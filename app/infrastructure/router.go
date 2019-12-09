@@ -14,6 +14,14 @@ func init() {
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
 
+	//SETUP LOGIN-LOGOUT POINT
+	router.POST("/login", func(c *gin.Context) { userController.LoginUser(c) })
+	router.GET("/logout", func(c *gin.Context) { userController.LogoutUser(c) })
+
+	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
+
+	//SETUP THE OTHER ENPOINTS
+	router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
 	router.GET("/feedbacks", func(c *gin.Context) { feedbackController.Index(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")

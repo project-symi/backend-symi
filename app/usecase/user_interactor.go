@@ -14,6 +14,21 @@ type UserInteractor struct {
 	PermissionRepository PermissionRepository
 }
 
+func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (tokenId string, err error) {
+	tokenId, err = interactor.UserRepository.IssueToken(employeeId, employeePass)
+	return
+}
+
+func (interactor *UserInteractor) CheckSessionValidity(tokenId string) (isValid bool) {
+	isValid = interactor.UserRepository.ValidateToken(tokenId)
+	return
+}
+
+func (interactor *UserInteractor) EndUserSession(tokenId string) (amountOfAffected int, err error) {
+	amountOfAffected, err = interactor.UserRepository.RevokeToken(tokenId)
+	return
+}
+
 func (interactor *UserInteractor) Users() (user domain.Users, err error) {
 	user, err = interactor.UserRepository.FindAll()
 	return

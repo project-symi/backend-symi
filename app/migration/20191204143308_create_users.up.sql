@@ -46,7 +46,7 @@ CREATE TABLE users (
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
-    currentToken VARCHAR(36),
+    current_token VARCHAR(36),
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (gender_id) REFERENCES genders(id),
     FOREIGN KEY (permission_id) REFERENCES permissions(id),

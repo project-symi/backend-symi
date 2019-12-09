@@ -29,6 +29,18 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
+func (controller *UserController) LoginUser(c Context) {
+	c.Status(200)
+}
+
+func (controller *UserController) LogoutUser(c Context) {
+	c.Status(200)
+}
+
+func (controller *UserController) Authenticate(c Context) {
+	c.Status(200)
+}
+
 func (controller *UserController) AllUsers(c Context) {
 	users, err := controller.Interactor.Users()
 	if err != nil {

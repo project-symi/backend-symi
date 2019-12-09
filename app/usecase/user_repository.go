@@ -9,4 +9,7 @@ type UserRepository interface {
 	DeleteByEmployeeId(employeeId string) (amountOfDeleted int, err error)
 	IsUser(employeeId string) (isUser bool, err error)
 	ExecuteUsersQuery(query string) (amountOfAffected int, err error)
+	IssueToken(employeeId string, employeePass string) (tokenId string, err error)
+	ValidateToken(tokenId string) (isValid bool)
+	RevokeToken(tokenId string) (amountOfAffected int, err error)
 }
