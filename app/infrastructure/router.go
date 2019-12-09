@@ -14,7 +14,14 @@ func init() {
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
 
-	router.GET("/feedbacks", func(c *gin.Context) { feedbackController.Index(c) })
+	router.GET("/feedbacks", func(c *gin.Context) {
+		feeling := c.Query("feeling")
+		if feeling != "" {
+			feedbackController.FeedbacksByFeeling(c)
+		} else {
+			feedbackController.AllFeedbacks(c)
+		}
+	})
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
 		if name != "" {
