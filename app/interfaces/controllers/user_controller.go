@@ -30,15 +30,39 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) LoginUser(c Context) {
-	c.Status(200)
+	type UserCredentials struct {
+		EmployeeId string `json:"userId"`
+		Pass       string `json:"password"`
+	}
+	var user UserCredentials
+	if err := c.BindJSON(&user); err != nil {
+		panic(err)
+	}
+
+	token, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
+	if err != nil {
+		c.JSON(403, NewError(err))
+	}
+	c.JSON(200, token)
 }
 
 func (controller *UserController) LogoutUser(c Context) {
-	c.Status(200)
+	token := c.GetHeader("token")
+	amountOfAffected, err := controller.Interactor.EndUserSession(token)
+	if err != nil {
+		c.JSON(500, NewError(err))
+	}
+	c.JSON(200, amountOfAffected)
 }
 
 func (controller *UserController) Authenticate(c Context) {
-	c.Status(200)
+	token := c.GetHeader("token")
+	bool := controller.Interactor.CheckSessionValidity(token)
+	if bool {
+		c.JSON(200, "ACCESS GRANTED")
+	} else {
+		c.JSON(401, "ACCESS DENIED")
+	}
 }
 
 func (controller *UserController) AllUsers(c Context) {

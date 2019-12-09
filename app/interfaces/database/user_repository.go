@@ -1,9 +1,14 @@
 package database
 
 import (
+	"errors"
 	"project-symi-backend/app/domain"
 	"time"
+
+	uuid "github.com/google/uuid"
 )
+
+// uuid "github.com/satori/go.uuid"
 
 type UserRepository struct {
 	SqlHandler
@@ -188,20 +193,98 @@ func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected in
 	return
 }
 
-//IMPLEMENTING THE AUTHENTIFICATION FEATURES!
+//*****************************************************//
+//*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
+//*****************************************************//
 
-func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId string, err error) {
-	return "newCoolToken", nil
-}
+func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId uuid.UUID, err error) {
+	//GENERATE TOKEN
+	tokenId, err = uuid.NewRandom()
 
-func (repo *UserRepository) ValidateToken(tokenId string) (isValid bool) {
+	//CHECK LOGIN INFO
+	row, err := repo.Query(`
+	SELECT
+	u.password
+	from users u
+	WHERE
+	u.employee_id = ?
+	`, employeeId)
+	defer row.Close()
+
+	if err != nil {
+		return
+	}
+
+	row.Next()
+	var (
+		pass string
+	)
+	if err = row.Scan(
+		&pass); err != nil {
+		err = errors.New("Username Not Found")
+		return
+	}
+
+	if pass != employeePass {
+		err = errors.New("Password Not Found")
+		return
+	}
 	return
 }
 
-func (repo *UserRepository) RevokeToken(tokenId string) (amountOfDeleted int, err error) {
+func (repo *UserRepository) RegisterToken(employeeId string, tokenId uuid.UUID) (amountOfAffected int, err error) {
 	result, err := repo.Execute(`
 		UPDATE users
-		SET current_token = null,
+		SET current_token = ?
+		WHERE employee_id = ?
+		`, tokenId, employeeId)
+	if err != nil {
+		return
+	}
+	amountOfUpdated64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfAffected = int(amountOfUpdated64)
+	return
+}
+
+func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool) {
+	//CHECK TOKEN ID INFO
+	row, err := repo.Query(`
+	SELECT
+	u.current_token
+	from users u
+	WHERE
+	u.current_token = ?
+	`, tokenId)
+	defer row.Close()
+
+	if err != nil {
+		return false
+	}
+
+	row.Next()
+	var (
+		tokenString string
+	)
+	if err = row.Scan(
+		&tokenString); err != nil {
+		err = errors.New("Error in DB")
+		return false
+	}
+
+	if tokenString != tokenId.String() {
+		err = errors.New("Invalid Session ID or Permission Level")
+		return false
+	}
+	return true
+}
+
+func (repo *UserRepository) RevokeToken(tokenId uuid.UUID) (amountOfDeleted int, err error) {
+	result, err := repo.Execute(`
+		UPDATE users
+		SET current_token = null
 		WHERE current_token = ?
 		AND deleted = false
 		`, tokenId)

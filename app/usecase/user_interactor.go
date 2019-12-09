@@ -1,10 +1,14 @@
 package usecase
 
 import (
+	"errors"
+	"fmt"
 	"project-symi-backend/app/domain"
 	"strconv"
 	"strings"
 	"time"
+
+	uuid "github.com/google/uuid"
 )
 
 type UserInteractor struct {
@@ -14,17 +18,49 @@ type UserInteractor struct {
 	PermissionRepository PermissionRepository
 }
 
-func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (tokenId string, err error) {
-	tokenId, err = interactor.UserRepository.IssueToken(employeeId, employeePass)
+func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (token string, err error) {
+	//GENERATE TOCKEN IF EMPLOYEE INFO IS VALID
+	tokenId, err := interactor.UserRepository.IssueToken(employeeId, employeePass)
+	if err != nil {
+		return "", err
+	}
+	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
+	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
+	if err != nil {
+		return
+	}
+
+	if amountOfAffected != 1 {
+		return "", errors.New("Error registering Token")
+	}
+	//CREATE THE JWT TOKEN
+	token = tokenId.String()
+
 	return
 }
 
-func (interactor *UserInteractor) CheckSessionValidity(tokenId string) (isValid bool) {
+func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bool) {
+	//PARSE JWT TO GET THE TOKEN ID
+
+	tokenId, err := uuid.Parse(token)
+	if err != nil {
+		return false
+	}
+	//CHECK IF RECEIVED ID IS VALID
+	fmt.Println("CHECKING SESSION. ", tokenId)
 	isValid = interactor.UserRepository.ValidateToken(tokenId)
 	return
 }
 
-func (interactor *UserInteractor) EndUserSession(tokenId string) (amountOfAffected int, err error) {
+func (interactor *UserInteractor) EndUserSession(token string) (amountOfAffected int, err error) {
+	//PARSE JWT TO GET THE TOCKEN ID
+
+	tokenId, err := uuid.Parse(token)
+	if err != nil {
+		return
+	}
+
+	fmt.Println("TERMINATING SESSION. ", tokenId)
 	amountOfAffected, err = interactor.UserRepository.RevokeToken(tokenId)
 	return
 }

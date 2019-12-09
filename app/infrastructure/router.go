@@ -21,7 +21,8 @@ func init() {
 	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
 
 	//SETUP THE OTHER ENPOINTS
-	router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
+	// router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
+	router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c) })
 	router.GET("/feedbacks", func(c *gin.Context) { feedbackController.Index(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
