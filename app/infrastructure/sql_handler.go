@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 
 	"project-symi-backend/app/interfaces/database"
@@ -16,10 +15,7 @@ type SqlHandler struct {
 }
 
 func NewSqlHandler() database.SqlHandler {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("No .env file available")
-	}
+	godotenv.Load()
 	conn, err := sql.Open("mysql", os.Getenv("DB_INFO"))
 	if err != nil {
 		panic(err.Error)
