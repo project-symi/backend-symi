@@ -27,8 +27,8 @@ CREATE TABLE feedbacks (
     user_id INT NOT NULL,
     feeling_id INT NOT NULL,
     category_id INT NOT NULL,
-    recipient_id INT,
-    news_id INT,
+    recipient_id INT default 0,
+    news_id INT default 0,
     feedback_note VARCHAR(5000),
     seen boolean default false,
     deleted boolean default false,
@@ -36,7 +36,6 @@ CREATE TABLE feedbacks (
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (recipient_id) REFERENCES users(id),
     FOREIGN KEY (feeling_id) REFERENCES feelings(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),
     PRIMARY KEY (id)

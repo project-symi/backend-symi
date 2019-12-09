@@ -16,3 +16,5 @@
 .DS_Store
 .env
 .gitignore
+
+delete_schema.sql
