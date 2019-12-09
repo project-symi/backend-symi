@@ -7,3 +7,4 @@ WORKDIR /src
 RUN go build -o application application.go
 
 CMD ["/src/application"]
+EXPOSE 5000

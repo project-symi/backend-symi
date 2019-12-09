@@ -21,7 +21,6 @@ func NewSqlHandler() database.SqlHandler {
 		fmt.Println("No .env file available")
 	}
 	conn, err := sql.Open("mysql", os.Getenv("DB_INFO"))
-	fmt.Println("DB INFO:" + os.Getenv("DB_INFO"))
 	if err != nil {
 		panic(err.Error)
 	}
