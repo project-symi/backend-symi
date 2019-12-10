@@ -56,7 +56,7 @@ func (controller *UserController) LogoutUser(c Context) {
 		c.JSON(500, NewError(err))
 		return
 	}
-	if amountOfDeleted == 0 {
+	if amountOfAffected == 0 {
 		c.JSON(400, NewError(err)) //TODO: create another error
 		return
 	}
