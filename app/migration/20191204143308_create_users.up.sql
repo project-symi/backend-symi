@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS departments;
 CREATE TABLE permissions (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
     name VARCHAR(20) UNIQUE,
-    deleted boolean,
+    deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
@@ -17,7 +17,7 @@ CREATE TABLE permissions (
 CREATE TABLE genders (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
     gender VARCHAR(20) UNIQUE,
-    deleted boolean,
+    deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
@@ -26,7 +26,7 @@ CREATE TABLE genders (
 CREATE TABLE departments (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
     name VARCHAR(20) UNIQUE,
-    deleted boolean,
+    deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
@@ -42,7 +42,7 @@ CREATE TABLE users (
     gender_id INT NOT NULL,
     department_id INT NOT NULL,
     permission_id INT NOT NULL,
-    deleted boolean,
+    deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,

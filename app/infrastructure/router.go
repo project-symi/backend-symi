@@ -23,7 +23,16 @@ func init() {
 	//SETUP THE OTHER ENPOINTS
 	// router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
 	router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c) })
-	router.GET("/feedbacks", func(c *gin.Context) { feedbackController.Index(c) })
+	router.GET("/feedbacks", func(c *gin.Context) {
+		feeling := c.Query("feeling")
+		if feeling != "" {
+			feedbackController.FeedbacksByFeeling(c)
+		} else {
+			feedbackController.AllFeedbacks(c)
+		}
+	})
+	router.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
+	router.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
 		if name != "" {

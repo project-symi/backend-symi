@@ -14,6 +14,19 @@ type UserRepository struct {
 	SqlHandler
 }
 
+func (repo *UserRepository) FindKeyIdByEmployeeId(employeeId string) (id int, err error) {
+	row, err := repo.Query(`SELECT id FROM users WHERE employee_id = ?`, employeeId)
+	defer row.Close()
+	if err != nil {
+		return
+	}
+	row.Next()
+	if err = row.Scan(&id); err != nil {
+		return
+	}
+	return
+}
+
 func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	rows, err := repo.Query(`
 		SELECT
