@@ -188,3 +188,16 @@ func (repo *FeedbackRepository) InsertFeedback(userId int, feelingId int, catego
 	success = false
 	return
 }
+
+func (repo *FeedbackRepository) UpdateSeen(ids string) (amountOfAffected int, err error) {
+	result, err := repo.Execute(`UPDATE feedbacks SET seen = true, modified_at = ? WHERE id IN `+ids, time.Now())
+	if err != nil {
+		return
+	}
+	amountOfAffected64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	amountOfAffected = int(amountOfAffected64)
+	return
+}

@@ -42,6 +42,7 @@ func (controller *UserController) LoginUser(c Context) {
 	token, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
 	if err != nil {
 		c.JSON(403, NewError(err))
+		return
 	}
 	c.JSON(200, token)
 }
@@ -51,6 +52,7 @@ func (controller *UserController) LogoutUser(c Context) {
 	amountOfAffected, err := controller.Interactor.EndUserSession(token)
 	if err != nil {
 		c.JSON(500, NewError(err))
+		return
 	}
 	c.JSON(200, amountOfAffected)
 }
@@ -60,8 +62,11 @@ func (controller *UserController) Authenticate(c Context) {
 	bool := controller.Interactor.CheckSessionValidity(token)
 	if bool {
 		c.JSON(200, "ACCESS GRANTED")
+		return
 	} else {
-		c.JSON(401, "ACCESS DENIED")
+		// c.JSON(401, "ACCESS DENIED")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"Message": "Unauthorized"})
+		return
 	}
 }
 
