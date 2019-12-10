@@ -3,6 +3,7 @@ package usecase
 import "project-symi-backend/app/domain"
 
 type UserRepository interface {
+	FindKeyIdByEmployeeId(employeeId string) (id int, err error)
 	FindAll() (domain.Users, error)
 	FindByEmployeeId(employeeId string) (domain.User, error)
 	FilterByName(query string) (domain.Users, error)
