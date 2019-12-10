@@ -30,3 +30,20 @@ func (interactor *FeedbackInteractor) StoreFeedback(feedback domain.Feedback) (s
 	success, err = interactor.FeedbackRepository.InsertFeedback(userId, feelingId, categoryId, recipientId, feedback.NewsId, feedback.FeedbackNote)
 	return
 }
+func (interactor *FeedbackInteractor) ChangeToSeen(ids []string) (numberOfChanged int, err error) {
+	query := createIdsQuery(ids)
+	numberOfChanged, err = interactor.FeedbackRepository.UpdateSeen(query)
+	return
+}
+
+func createIdsQuery(ids []string) (query string) {
+	query = "("
+	for i, id := range ids {
+		if i != len(ids)-1 {
+			query += id + ", "
+		} else {
+			query += id + ")"
+		}
+	}
+	return
+}
