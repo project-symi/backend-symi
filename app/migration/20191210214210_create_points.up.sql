@@ -20,7 +20,7 @@ CREATE TABLE point_logs (
     point_category_id INT NOT NULL,
     feedback_id INT NOT NULL,
     expired boolean default false,
-    expired_date DATETIME,
+    expire_date DATE,
     created_at TIMESTAMP,
     modified_at TIMESTAMP,
     PRIMARY KEY(id),
