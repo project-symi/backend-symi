@@ -49,6 +49,7 @@ VALUES
 INSERT INTO users (
     employee_id,
     name,
+    password,
     mail,
     birthday,
     gender_id,
@@ -62,6 +63,7 @@ VALUES
   (
     'A000001',
     'Mini',
+    'abc123',
     'samadova.minira@gmail.com',
     '20191205',
     2,
@@ -74,6 +76,7 @@ VALUES
   (
     'B000300',
     'Igor',
+    'password1',
     'igor.m.byak@gmail.com',
     '20191205',
     1,
@@ -86,6 +89,7 @@ VALUES
   (
     'B000500',
     'Steffie',
+    'nopassword',
     'steffie.harner@gmail.com',
     '20191205',
     2,
@@ -98,6 +102,7 @@ VALUES
   (
     'X009999',
     'Yukio',
+    'nabe-monster',
     'triangle.pillow@gmail.com',
     '20191205',
     1,

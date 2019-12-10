@@ -7,7 +7,7 @@ type PermissionRepository struct {
 }
 
 func (repo *PermissionRepository) FindAll() (permissions domain.Permissions, err error) {
-	rows, err := repo.Query("SELECT id, name from permissions WHERE deleted = false")
+	rows, err := repo.Query("SELECT id, name FROM permissions WHERE deleted = false")
 	defer rows.Close()
 	if err != nil {
 		return

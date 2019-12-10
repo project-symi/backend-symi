@@ -7,7 +7,7 @@ type GenderRepository struct {
 }
 
 func (repo *GenderRepository) FindAll() (genders domain.Genders, err error) {
-	rows, err := repo.Query("SELECT id, gender from genders WHERE deleted = false")
+	rows, err := repo.Query("SELECT id, gender FROM genders WHERE deleted = false")
 	defer rows.Close()
 	if err != nil {
 		return
