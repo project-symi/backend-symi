@@ -9,5 +9,6 @@ type UserRepository interface {
 	FilterByName(string) (domain.Users, error)
 	DeleteByEmployeeId(string) (int, error)
 	IsUser(string) (bool, error)
+	AddUser(string, string, string, string, int, int, int) (bool, error)
 	ExecuteUsersQuery(string) (int, error)
 }

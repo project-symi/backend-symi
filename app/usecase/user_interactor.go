@@ -53,7 +53,18 @@ func (interactor *UserInteractor) Delete(employeeId string) (amountOfDeleted int
 	return
 }
 
-func (interactor *UserInteractor) Store(users domain.Users) (amountOfChanged int, err error) {
+func (interactor *UserInteractor) StoreUser(user domain.User) (success bool, err error) {
+	genders, err := interactor.GenderRepository.FindAll()
+	departments, err := interactor.DepartmentRepository.FindAll()
+	permissions, err := interactor.PermissionRepository.FindAll()
+	if err != nil {
+		return
+	}
+	success, err = interactor.UserRepository.AddUser(user.EmployeeId, user.Name, user.Mail, user.DateOfBirth, genders.GenderToId(user.Gender), departments.DepartmentToId(user.Department), permissions.PermissionToId(user.Permission))
+	return
+}
+
+func (interactor *UserInteractor) StoreUsers(users domain.Users) (amountOfChanged int, err error) {
 	var (
 		amountOfInserted int = 0
 		amountOfUpdated  int = 0
