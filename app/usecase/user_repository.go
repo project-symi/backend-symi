@@ -18,6 +18,6 @@ type UserRepository interface {
 	IssueToken(string, string) (uuid.UUID, error)
 	RegisterToken(string, uuid.UUID) (int, error)
 	GetPermissionName(string) (string, error)
-	ValidateToken(uuid.UUID) bool
+	ValidateToken(uuid.UUID) (bool, error)
 	RevokeToken(uuid.UUID) (int, error)
 }

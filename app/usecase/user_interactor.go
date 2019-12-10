@@ -48,7 +48,7 @@ func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bo
 		return
 	}
 	//CHECK IF RECEIVED ID IS VALID
-	isValid = interactor.UserRepository.ValidateToken(tokenId)
+	isValid, err = interactor.UserRepository.ValidateToken(tokenId)
 	return
 }
 
@@ -86,7 +86,7 @@ func createFilterByNameQuery(nameArray []string) (query string) {
 			u.employee_id,
 			u.name,
 			d.name
-		from users u
+		FROM users u
 		JOIN departments d ON d.id = u.department_id
 		WHERE
 			u.deleted = false

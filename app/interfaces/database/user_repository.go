@@ -1,5 +1,6 @@
 package database
 
+//TODO: Add custom errors in way that wouldnt require importing "errors" module here (used on lines: 253, 257, 326, 322 )
 import (
 	"errors"
 	"project-symi-backend/app/domain"
@@ -7,8 +8,6 @@ import (
 
 	uuid "github.com/google/uuid"
 )
-
-// uuid "github.com/satori/go.uuid"
 
 type UserRepository struct {
 	SqlHandler
@@ -37,7 +36,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			u.birthday,
 			g.gender,
 			p.name
-  		from users u
+  		FROM users u
   		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
   		JOIN genders g ON g.id = u.gender_id
@@ -92,7 +91,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.birthday,
 			g.gender,
 			p.name
-  		from users u
+  		FROM users u
   		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
   		JOIN genders g ON g.id = u.gender_id
@@ -249,9 +248,7 @@ func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (
 	}
 
 	row.Next()
-	var (
-		pass string
-	)
+	var pass string
 	if err = row.Scan(&pass); err != nil {
 		err = errors.New("Username Not Found")
 		return
@@ -298,9 +295,7 @@ func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLeve
 	}
 
 	row.Next()
-	var (
-		permission string
-	)
+	var permission string
 	if err = row.Scan(&permission); err != nil {
 		return
 	}
@@ -309,36 +304,35 @@ func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLeve
 
 }
 
-func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool) {
+func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool, err error) {
 	//CHECK TOKEN ID INFO
 	row, err := repo.Query(`
 	SELECT
 	u.current_token
-	from users u
+	FROM users u
 	WHERE
 	u.current_token = ?
 	`, tokenId)
 	defer row.Close()
 
 	if err != nil {
-		return false
+		return
 	}
 
 	row.Next()
-	var (
-		tokenString string
-	)
+	var tokenString string
 	if err = row.Scan(
 		&tokenString); err != nil {
 		err = errors.New("Error in DB")
-		return false
+		return
 	}
 
-	if tokenString != tokenId.String() {
+	isValid = tokenString == tokenId.String()
+	if !isValid {
 		err = errors.New("Invalid Session ID or Permission Level")
-		return false
+		return
 	}
-	return true
+	return
 }
 
 func (repo *UserRepository) RevokeToken(tokenId uuid.UUID) (amountOfDeleted int, err error) {

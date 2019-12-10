@@ -7,7 +7,7 @@ type DepartmentRepository struct {
 }
 
 func (repo *DepartmentRepository) FindAll() (departments domain.Departments, err error) {
-	rows, err := repo.Query("SELECT id, name from departments WHERE deleted = false")
+	rows, err := repo.Query("SELECT id, name FROM departments WHERE deleted = false")
 	defer rows.Close()
 	if err != nil {
 		return
