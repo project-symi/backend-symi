@@ -21,29 +21,31 @@ func init() {
 	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
 
 	//SETUP THE OTHER ENPOINTS
-	// router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
-	router.GET("/auth", func(c *gin.Context) { userController.Authenticate(c) })
-	router.GET("/feedbacks", func(c *gin.Context) {
-		feeling := c.Query("feeling")
-		if feeling != "" {
-			feedbackController.FeedbacksByFeeling(c)
-		} else {
-			feedbackController.AllFeedbacks(c)
-		}
-	})
-	router.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
-	router.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
-	router.GET("/users", func(c *gin.Context) {
-		name := c.Query("name")
-		if name != "" {
-			userController.UsersByEmployeeName(c)
-		} else {
-			userController.AllUsers(c)
-		}
-	})
-	router.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
-	router.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
-	router.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+	authorized := router.Group("/auth")
+	authorized.Use(func(c *gin.Context) { userController.Authenticate(c) }) // OR FULL VERSION?? { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
+	{
+		authorized.GET("/feedbacks", func(c *gin.Context) {
+			feeling := c.Query("feeling")
+			if feeling != "" {
+				feedbackController.FeedbacksByFeeling(c)
+			} else {
+				feedbackController.AllFeedbacks(c)
+			}
+		})
+		authorized.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
+		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
+		authorized.GET("/users", func(c *gin.Context) {
+			name := c.Query("name")
+			if name != "" {
+				userController.UsersByEmployeeName(c)
+			} else {
+				userController.AllUsers(c)
+			}
+		})
+		authorized.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
+		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
+		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+	}
 
 	Router = router
 }
