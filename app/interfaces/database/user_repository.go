@@ -207,6 +207,28 @@ func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected in
 	return
 }
 
+func (repo *UserRepository) AddUser(employee_id string, name string, mail string, birthday string, gender_id int, department_id int, permission_id int) (success bool, err error) {
+	result, err := repo.Execute(`
+	INSERT INTO
+		users
+	(employee_id, name, mail, birthday, gender_id, department_id, permission_id, created_at, modified_at)
+	VALUES
+	(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		employee_id, name, mail, birthday, gender_id, department_id, permission_id, time.Now(), time.Now())
+	if err != nil {
+		return
+	}
+	amountOfStored64, err := result.RowsAffected()
+	if err != nil {
+		return
+	}
+	if amountOfStored64 == 1 {
+		success = true
+		return
+	}
+	return
+}
+
 //*****************************************************//
 //*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
 //*****************************************************//
@@ -284,7 +306,6 @@ func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLeve
 	if err = row.Scan(&permission); err != nil {
 		return
 	}
-	fmt.Println(permission)
 	permissionLevel = permission
 	return
 
@@ -337,5 +358,6 @@ func (repo *UserRepository) RevokeToken(tokenId uuid.UUID) (amountOfDeleted int,
 		return
 	}
 	amountOfDeleted = int(amountOfDeleted64)
+
 	return
 }

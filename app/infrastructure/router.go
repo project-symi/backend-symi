@@ -50,6 +50,7 @@ func init() {
 		})
 		authorized.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
 		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
+		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 	}
 

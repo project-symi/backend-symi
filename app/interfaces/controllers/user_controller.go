@@ -62,14 +62,11 @@ func (controller *UserController) LogoutUser(c Context) {
 func (controller *UserController) Authenticate(c Context) {
 	token := c.GetHeader("token")
 	bool := controller.Interactor.CheckSessionValidity(token)
-	if bool {
-		c.JSON(200, "ACCESS GRANTED")
-		return
-	} else {
-		// c.JSON(401, "ACCESS DENIED")
+	if !bool {
 		c.AbortWithStatusJSON(401, gin.H{"Message": "Unauthorized"})
 		return
 	}
+	return
 }
 
 func (controller *UserController) AllUsers(c Context) {
@@ -112,10 +109,25 @@ func (controller *UserController) DeleteByEmployeeId(c Context) {
 	c.Status(204)
 }
 
+func (controller *UserController) StoreUser(c Context) {
+	user := domain.User{}
+	c.BindJSON(&user)
+	success, err := controller.Interactor.StoreUser(user)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	if success == false {
+		c.Status(400)
+		return
+	}
+	c.Status(201)
+}
+
 func (controller *UserController) StoreUsers(c Context) {
 	users := domain.Users{}
 	c.BindJSON(&users)
-	amountOfStored, err := controller.Interactor.Store(users)
+	amountOfStored, err := controller.Interactor.StoreUsers(users)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

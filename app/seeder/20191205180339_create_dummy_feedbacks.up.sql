@@ -10,9 +10,9 @@ INSERT INTO feelings (
     modified_at
   )
 VALUES
-  (1, 'Good', false, NOW(), NOW()),
-  (2, 'OK', false, NOW(), NOW()),
-  (3, 'Bad', false, NOW(), NOW());
+  (1, 'good', false, NOW(), NOW()),
+  (2, 'meh', false, NOW(), NOW()),
+  (3, 'sad', false, NOW(), NOW());
 INSERT INTO categories (
     id,
     name,
