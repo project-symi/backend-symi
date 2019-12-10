@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"project-symi-backend/app/domain"
 	"strconv"
 	"strings"
@@ -54,16 +53,14 @@ func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bo
 	return
 }
 
-func (interactor *UserInteractor) EndUserSession(token string) (amountOfAffected int, err error) {
+func (interactor *UserInteractor) EndUserSession(token string) (amountOfDeleted int, err error) {
 	//PARSE JWT TO GET THE TOCKEN ID
 
 	tokenId, err := uuid.Parse(token)
 	if err != nil {
 		return
 	}
-
-	fmt.Println("TERMINATING SESSION. ", tokenId)
-	amountOfAffected, err = interactor.UserRepository.RevokeToken(tokenId)
+	amountOfDeleted, err = interactor.UserRepository.RevokeToken(tokenId)
 	return
 }
 

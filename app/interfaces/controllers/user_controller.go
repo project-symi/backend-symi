@@ -51,16 +51,16 @@ func (controller *UserController) LoginUser(c Context) {
 
 func (controller *UserController) LogoutUser(c Context) {
 	token := c.GetHeader("token")
-	amountOfAffected, err := controller.Interactor.EndUserSession(token)
+	amountOfDeleted, err := controller.Interactor.EndUserSession(token)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
 	}
-	if amountOfAffected == 0 {
+	if amountOfDeleted == 0 {
 		c.JSON(400, NewError(err)) //TODO: create another error
 		return
 	}
-	c.JSON(200, amountOfAffected)
+	c.JSON(200, amountOfDeleted)
 }
 
 func (controller *UserController) Authenticate(c Context) {
