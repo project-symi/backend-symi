@@ -80,8 +80,8 @@ func (controller *FeedbackController) PatchSeen(c Context) {
 		return
 	}
 	if numberOfChanged == 0 {
-		c.Status(200)
+		c.Status(400)
 		return
 	}
-	c.Status(201)
+	c.Status(200)
 }
