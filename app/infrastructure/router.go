@@ -24,6 +24,7 @@ func init() {
 	})
 	router.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
 	router.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
+	router.PATCH("/feedbacks/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
 		if name != "" {
