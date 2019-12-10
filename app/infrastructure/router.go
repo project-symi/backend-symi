@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"project-symi-backend/app/interfaces/controllers"
 
+	"github.com/gin-contrib/cors"
 	gin "github.com/gin-gonic/gin"
 )
 
@@ -11,10 +12,23 @@ var Router *gin.Engine
 func init() {
 	router := gin.Default()
 
+	//allow all origin for CORS
+	router.Use(cors.Default())
+	//TODO ADD PROPER CONDITIONS FOR CORS LATER: router.Use(cors.Default())
+
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
 
-	router.GET("/feedbacks", func(c *gin.Context) { feedbackController.Index(c) })
+	router.GET("/feedbacks", func(c *gin.Context) {
+		feeling := c.Query("feeling")
+		if feeling != "" {
+			feedbackController.FeedbacksByFeeling(c)
+		} else {
+			feedbackController.AllFeedbacks(c)
+		}
+	})
+	router.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
+	router.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
 	router.GET("/users", func(c *gin.Context) {
 		name := c.Query("name")
 		if name != "" {
