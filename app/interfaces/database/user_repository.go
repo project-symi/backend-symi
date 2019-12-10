@@ -2,7 +2,6 @@ package database
 
 import (
 	"errors"
-	"fmt"
 	"project-symi-backend/app/domain"
 	"time"
 
@@ -234,14 +233,12 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 //*****************************************************//
 
 func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId uuid.UUID, err error) {
-	//GENERATE TOKEN
-	tokenId, err = uuid.NewRandom()
 
 	//CHECK LOGIN INFO
 	row, err := repo.Query(`
 	SELECT
 	u.password
-	from users u
+	FROM users u
 	WHERE
 	u.employee_id = ?
 	`, employeeId)
@@ -259,11 +256,12 @@ func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (
 		err = errors.New("Username Not Found")
 		return
 	}
-	fmt.Println(pass)
 	if pass != employeePass {
 		err = errors.New("Incorrect Password")
 		return
 	}
+	//GENERATE TOKEN
+	tokenId, err = uuid.NewRandom()
 	return tokenId, nil
 }
 
@@ -288,7 +286,7 @@ func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLeve
 	row, err := repo.Query(`
 	SELECT
 	p.name
-	from permissions p
+	FROM permissions p
 	JOIN users u ON p.id = u.permission_id
 	WHERE
 	u.employee_id = ?

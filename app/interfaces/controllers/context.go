@@ -8,5 +8,5 @@ type Context interface {
 	GetHeader(key string) string
 	Status(int)
 	JSON(int, interface{})
-	AbortWithStatusJSON(int, interface{})
+	AbortWithStatus(int)
 }

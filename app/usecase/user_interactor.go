@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"project-symi-backend/app/domain"
 	"strconv"
 	"strings"
@@ -21,19 +20,19 @@ func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass 
 	//GENERATE TOCKEN IF EMPLOYEE INFO IS VALID
 	tokenId, err := interactor.UserRepository.IssueToken(employeeId, employeePass)
 	if err != nil {
-		return "", "", err
+		return
 	}
 	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
 	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
-	if err != nil {
-		return "", "", err
+	if err != nil && amountOfAffected != 1 {
+		return
 	}
 
-	if amountOfAffected != 1 {
-		return "", "", errors.New("Error registering Token")
-	}
 	//GET THE PERMISSION LEVEL
 	permissionLevel, err = interactor.UserRepository.GetPermissionName(employeeId)
+	if err != nil {
+		return
+	}
 
 	//TODO: CREATE THE JWT TOKEN
 	token = tokenId.String()
@@ -41,12 +40,12 @@ func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass 
 	return
 }
 
-func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bool) {
+func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bool, err error) {
 	//PARSE JWT TO GET THE TOKEN ID
 
 	tokenId, err := uuid.Parse(token)
 	if err != nil {
-		return false
+		return
 	}
 	//CHECK IF RECEIVED ID IS VALID
 	isValid = interactor.UserRepository.ValidateToken(tokenId)

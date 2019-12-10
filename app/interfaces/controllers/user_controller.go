@@ -4,8 +4,6 @@ import (
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase"
-
-	gin "github.com/gin-gonic/gin"
 )
 
 type UserController struct {
@@ -43,10 +41,18 @@ func (controller *UserController) LoginUser(c Context) {
 
 	token, permissionLevel, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
 	if err != nil {
-		c.JSON(403, NewError(err))
+		c.JSON(401, NewError(err))
 		return
 	}
-	c.JSON(200, gin.H{"token": token, "permission": permissionLevel})
+
+	type TokenResponse struct {
+		Token           string `json:"token"`
+		PermissionLevel string `json:"permission"`
+	}
+
+	response := TokenResponse{Token: token, PermissionLevel: permissionLevel}
+
+	c.JSON(200, response)
 }
 
 func (controller *UserController) LogoutUser(c Context) {
@@ -65,9 +71,9 @@ func (controller *UserController) LogoutUser(c Context) {
 
 func (controller *UserController) Authenticate(c Context) {
 	token := c.GetHeader("token")
-	bool := controller.Interactor.CheckSessionValidity(token)
-	if !bool {
-		c.AbortWithStatusJSON(401, gin.H{"Message": "Unauthorized"})
+	tokenValid, err := controller.Interactor.CheckSessionValidity(token)
+	if !tokenValid || err != nil {
+		c.AbortWithStatus(401)
 		return
 	}
 	return
