@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"project-symi-backend/app/domain"
 	"time"
 
@@ -232,17 +233,16 @@ func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (
 	var (
 		pass string
 	)
-	if err = row.Scan(
-		&pass); err != nil {
+	if err = row.Scan(&pass); err != nil {
 		err = errors.New("Username Not Found")
 		return
 	}
-
+	fmt.Println(pass)
 	if pass != employeePass {
-		err = errors.New("Password Not Found")
+		err = errors.New("Incorrect Password")
 		return
 	}
-	return
+	return tokenId, nil
 }
 
 func (repo *UserRepository) RegisterToken(employeeId string, tokenId uuid.UUID) (amountOfAffected int, err error) {
@@ -260,6 +260,34 @@ func (repo *UserRepository) RegisterToken(employeeId string, tokenId uuid.UUID) 
 	}
 	amountOfAffected = int(amountOfUpdated64)
 	return
+}
+
+func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLevel string, err error) {
+	row, err := repo.Query(`
+	SELECT
+	p.name
+	from permissions p
+	JOIN users u ON p.id = u.permission_id
+	WHERE
+	u.employee_id = ?
+	`, employeeId)
+	defer row.Close()
+
+	if err != nil {
+		return
+	}
+
+	row.Next()
+	var (
+		permission string
+	)
+	if err = row.Scan(&permission); err != nil {
+		return
+	}
+	fmt.Println(permission)
+	permissionLevel = permission
+	return
+
 }
 
 func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool) {

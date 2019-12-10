@@ -14,8 +14,9 @@ type UserRepository interface {
 	DeleteByEmployeeId(string) (int, error)
 	IsUser(string) (bool, error)
 	ExecuteUsersQuery(string) (int, error)
-	IssueToken(employeeId string, employeePass string) (tokenId uuid.UUID, err error)
-	RegisterToken(employeeId string, tokenId uuid.UUID) (amountOfAffected int, err error)
-	ValidateToken(tokenId uuid.UUID) (isValid bool)
-	RevokeToken(tokenId uuid.UUID) (amountOfAffected int, err error)
+	IssueToken(string, string) (uuid.UUID, error)
+	RegisterToken(string, uuid.UUID) (int, error)
+	GetPermissionName(string) (string, error)
+	ValidateToken(uuid.UUID) bool
+	RevokeToken(uuid.UUID) (int, error)
 }

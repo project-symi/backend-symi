@@ -18,22 +18,25 @@ type UserInteractor struct {
 	PermissionRepository PermissionRepository
 }
 
-func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (token string, err error) {
+func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (token string, permissionLevel string, err error) {
 	//GENERATE TOCKEN IF EMPLOYEE INFO IS VALID
 	tokenId, err := interactor.UserRepository.IssueToken(employeeId, employeePass)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
 	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
 	if err != nil {
-		return
+		return "", "", err
 	}
 
 	if amountOfAffected != 1 {
-		return "", errors.New("Error registering Token")
+		return "", "", errors.New("Error registering Token")
 	}
-	//CREATE THE JWT TOKEN
+	//GET THE PERMISSION LEVEL
+	permissionLevel, err = interactor.UserRepository.GetPermissionName(employeeId)
+
+	//TODO: CREATE THE JWT TOKEN
 	token = tokenId.String()
 
 	return
@@ -47,7 +50,6 @@ func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bo
 		return false
 	}
 	//CHECK IF RECEIVED ID IS VALID
-	fmt.Println("CHECKING SESSION. ", tokenId)
 	isValid = interactor.UserRepository.ValidateToken(tokenId)
 	return
 }
