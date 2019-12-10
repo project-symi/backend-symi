@@ -3,11 +3,11 @@ package usecase
 import "project-symi-backend/app/domain"
 
 type UserRepository interface {
-	FindKeyIdByEmployeeId(employeeId string) (id int, err error)
+	FindKeyIdByEmployeeId(string) (int, error)
 	FindAll() (domain.Users, error)
-	FindByEmployeeId(employeeId string) (domain.User, error)
-	FilterByName(query string) (domain.Users, error)
-	DeleteByEmployeeId(employeeId string) (amountOfDeleted int, err error)
-	IsUser(employeeId string) (isUser bool, err error)
-	ExecuteUsersQuery(query string) (amountOfAffected int, err error)
+	FindByEmployeeId(string) (domain.User, error)
+	FilterByName(string) (domain.Users, error)
+	DeleteByEmployeeId(string) (int, error)
+	IsUser(string) (bool, error)
+	ExecuteUsersQuery(string) (int, error)
 }

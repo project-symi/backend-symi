@@ -70,3 +70,18 @@ func (controller *FeedbackController) PostFeedback(c Context) {
 	}
 	c.Status(201)
 }
+
+func (controller *FeedbackController) PatchSeen(c Context) {
+	var ids []string
+	c.BindJSON(&ids)
+	numberOfChanged, err := controller.Interactor.ChangeToSeen(ids)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	if numberOfChanged == 0 {
+		c.Status(400)
+		return
+	}
+	c.Status(200)
+}
