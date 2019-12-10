@@ -27,7 +27,7 @@ VALUES
   (4, 'Job Satisfaction', false, NOW(), NOW()),
   (5, 'Company Policy', false, NOW(), NOW()),
   (6, 'News', false, NOW(), NOW()),
-  (7, 'Awesome', false, NOW(), NOW()),
+  (7, 'Employee', false, NOW(), NOW()),
   (8, 'Other', false, NOW(), NOW());
 INSERT INTO feedbacks (
     user_id,
