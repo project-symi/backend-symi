@@ -9,7 +9,7 @@ type UserRepository struct {
 	SqlHandler
 }
 
-func (repo *UserRepository) FindIdByEmployeeId(employeeId string) (id int, err error) {
+func (repo *UserRepository) FindKeyIdByEmployeeId(employeeId string) (id int, err error) {
 	row, err := repo.Query(`SELECT id FROM users WHERE employee_id = ?`, employeeId)
 	defer row.Close()
 	if err != nil {
