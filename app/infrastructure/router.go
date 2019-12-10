@@ -25,7 +25,7 @@ func init() {
 
 	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
 
-	//SETUP THE OTHER ENPOINTS
+	//SETUP THE OTHER ENDPOINTS
 	authorized := router.Group("/auth")
 	authorized.Use(func(c *gin.Context) { userController.Authenticate(c) }) // OR FULL VERSION?? { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
 	{
