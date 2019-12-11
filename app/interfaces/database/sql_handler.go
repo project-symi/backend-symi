@@ -3,6 +3,13 @@ package database
 type SqlHandler interface {
 	Execute(string, ...interface{}) (Result, error)
 	Query(string, ...interface{}) (Row, error)
+	Begin() (Tx, error)
+}
+
+type Tx interface {
+	Exec(string, ...interface{}) (Result, error)
+	Rollback() error
+	Commit() error
 }
 
 type Result interface {
