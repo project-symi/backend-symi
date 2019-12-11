@@ -52,6 +52,7 @@ func init() {
 		authorized.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
 		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
 		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
+		authorized.GET("/point", func(c *gin.Context) { userController.TopPointUsers(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 
 		authorized.GET("/users/:employeeId/point", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })

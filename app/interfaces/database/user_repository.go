@@ -81,6 +81,54 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	return
 }
 
+func (repo *UserRepository) FindTopPointUsers(limit int) (users domain.UsersWithPoint, err error) {
+	rows, err := repo.Query(`
+		SELECT
+			u.id,
+			u.name,
+			u.total_points,
+			d.name,
+			g.gender
+  		FROM users u
+  		JOIN departments d ON d.id = u.department_id
+  		JOIN genders g ON g.id = u.gender_id
+  		WHERE
+			u.deleted = false
+		ORDER BY u.total_points DESC
+		LIMIT ?
+		`, limit)
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var (
+			id         int
+			name       string
+			point      int
+			department string
+			gender     string
+		)
+		if err := rows.Scan(
+			&id,
+			&name,
+			&point,
+			&department,
+			&gender); err != nil {
+			continue
+		}
+		user := domain.UserWithPoint{
+			Id:         id,
+			Name:       name,
+			Point:      point,
+			Department: department,
+			Gender:     gender,
+		}
+		users = append(users, user)
+	}
+	return
+}
+
 func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
 	row, err := repo.Query(`
 		SELECT
