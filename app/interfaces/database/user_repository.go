@@ -1,12 +1,8 @@
 package database
 
-//TODO: Add custom errors in way that wouldnt require importing "errors" module here (used on lines: 253, 257, 326, 322 )
 import (
-	"errors"
 	"project-symi-backend/app/domain"
 	"time"
-
-	uuid "github.com/google/uuid"
 )
 
 type UserRepository struct {
@@ -224,136 +220,5 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 		success = true
 		return
 	}
-	return
-}
-
-//*****************************************************//
-//*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
-//*****************************************************//
-
-func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenIdStr string, err error) {
-
-	//CHECK LOGIN INFO
-	row, err := repo.Query(`
-	SELECT
-	u.password
-	FROM users u
-	WHERE
-	u.employee_id = ?
-	`, employeeId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var pass string
-	if err = row.Scan(&pass); err != nil {
-		err = errors.New("Username Not Found")
-		return
-	}
-	if pass != employeePass {
-		err = errors.New("Incorrect Password")
-		return
-	}
-	//GENERATE TOKEN
-	tokenUUID, err := uuid.NewRandom()
-	if err != nil {
-		return
-	}
-	tokenIdStr = tokenUUID.String()
-	return tokenIdStr, nil
-}
-
-func (repo *UserRepository) RegisterToken(employeeId string, tokenId string) (amountOfAffected int, err error) {
-	result, err := repo.Execute(`
-		UPDATE users
-		SET current_token = ?
-		WHERE employee_id = ?
-		`, tokenId, employeeId)
-	if err != nil {
-		return
-	}
-	amountOfUpdated64, err := result.RowsAffected()
-	if err != nil {
-		return
-	}
-	amountOfAffected = int(amountOfUpdated64)
-	return
-}
-
-func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLevel string, err error) {
-	row, err := repo.Query(`
-	SELECT
-	p.name
-	FROM permissions p
-	JOIN users u ON p.id = u.permission_id
-	WHERE
-	u.employee_id = ?
-	`, employeeId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var permission string
-	if err = row.Scan(&permission); err != nil {
-		return
-	}
-	permissionLevel = permission
-	return
-
-}
-
-func (repo *UserRepository) ValidateToken(tokenId string) (isValid bool, err error) {
-	//CHECK TOKEN ID INFO
-	row, err := repo.Query(`
-	SELECT
-	u.current_token
-	FROM users u
-	WHERE
-	u.current_token = ?
-	`, tokenId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var tokenString string
-	if err = row.Scan(
-		&tokenString); err != nil {
-		err = errors.New("Error in DB")
-		return
-	}
-
-	isValid = tokenString == tokenId
-	if !isValid {
-		err = errors.New("Invalid Session ID or Permission Level")
-		return
-	}
-	return
-}
-
-func (repo *UserRepository) RevokeToken(tokenId string) (amountOfDeleted int, err error) {
-	result, err := repo.Execute(`
-		UPDATE users
-		SET current_token = null
-		WHERE current_token = ?
-		AND deleted = false
-		`, tokenId)
-	if err != nil {
-		return
-	}
-	amountOfDeleted64, err := result.RowsAffected()
-	if err != nil {
-		return
-	}
-	amountOfDeleted = int(amountOfDeleted64)
-
 	return
 }

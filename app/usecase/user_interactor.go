@@ -14,39 +14,6 @@ type UserInteractor struct {
 	PermissionRepository PermissionRepository
 }
 
-func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (tokenId string, permissionLevel string, err error) {
-	//GET THE PERMISSION LEVEL
-	permissionLevel, err = interactor.UserRepository.GetPermissionName(employeeId)
-	if err != nil {
-		return
-	}
-
-	//GENERATE TOCKEN ID IF EMPLOYEE INFO IS VALID
-	tokenId, err = interactor.UserRepository.IssueToken(employeeId, employeePass)
-	if err != nil {
-		return
-	}
-
-	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
-	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
-	if err != nil && amountOfAffected != 1 {
-		return
-	}
-
-	return
-}
-
-func (interactor *UserInteractor) CheckSessionValidity(tokenId string) (isValid bool, err error) {
-	//CHECK IF RECEIVED ID IS VALID
-	isValid, err = interactor.UserRepository.ValidateToken(tokenId)
-	return
-}
-
-func (interactor *UserInteractor) EndUserSession(tokenId string) (amountOfDeleted int, err error) {
-	amountOfDeleted, err = interactor.UserRepository.RevokeToken(tokenId)
-	return
-}
-
 func (interactor *UserInteractor) Users() (user domain.Users, err error) {
 	user, err = interactor.UserRepository.FindAll()
 	return

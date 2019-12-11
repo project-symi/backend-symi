@@ -13,9 +13,4 @@ type UserRepository interface {
 	IsUser(string) (bool, error)
 	AddUser(string, string, string, string, int, int, int) (bool, error)
 	ExecuteUsersQuery(string) (int, error)
-	IssueToken(string, string) (string, error)
-	RegisterToken(string, string) (int, error)
-	GetPermissionName(string) (string, error)
-	ValidateToken(string) (bool, error)
-	RevokeToken(string) (int, error)
 }

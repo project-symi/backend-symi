@@ -27,16 +27,17 @@ func init() {
 
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
+	userAuthController := controllers.NewUserAuthController(NewSqlHandler())
 
 	//SETUP LOGIN-LOGOUT POINT
-	router.POST("/login", func(c *gin.Context) { userController.LoginUser(c) })
-	router.GET("/logout", func(c *gin.Context) { userController.LogoutUser(c) })
+	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
+	router.GET("/logout", func(c *gin.Context) { userAuthController.LogoutUser(c) })
 
 	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
 
 	//SETUP THE OTHER ENPOINTS
 	authorized := router.Group("/auth")
-	authorized.Use(func(c *gin.Context) { userController.Authenticate(c) }) // OR FULL VERSION?? { userController.Authenticate(c, c.GetHeader("Token"), "Admin") })
+	authorized.Use(func(c *gin.Context) { userAuthController.Authenticate(c) })
 	{
 		authorized.GET("/feedbacks", func(c *gin.Context) {
 			feeling := c.Query("feeling")
