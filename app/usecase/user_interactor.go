@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	uuid "github.com/google/uuid"
 )
 
 type UserInteractor struct {
@@ -16,49 +14,35 @@ type UserInteractor struct {
 	PermissionRepository PermissionRepository
 }
 
-func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (token string, permissionLevel string, err error) {
-	//GENERATE TOCKEN IF EMPLOYEE INFO IS VALID
-	tokenId, err := interactor.UserRepository.IssueToken(employeeId, employeePass)
-	if err != nil {
-		return
-	}
-	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
-	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
-	if err != nil && amountOfAffected != 1 {
-		return
-	}
-
+func (interactor *UserInteractor) CheckUserPass(employeeId string, employeePass string) (tokenId string, permissionLevel string, err error) {
 	//GET THE PERMISSION LEVEL
 	permissionLevel, err = interactor.UserRepository.GetPermissionName(employeeId)
 	if err != nil {
 		return
 	}
 
-	//TODO: CREATE THE JWT TOKEN
-	token = tokenId.String()
+	//GENERATE TOCKEN ID IF EMPLOYEE INFO IS VALID
+	tokenId, err = interactor.UserRepository.IssueToken(employeeId, employeePass)
+	if err != nil {
+		return
+	}
+
+	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
+	amountOfAffected, err := interactor.UserRepository.RegisterToken(employeeId, tokenId)
+	if err != nil && amountOfAffected != 1 {
+		return
+	}
 
 	return
 }
 
-func (interactor *UserInteractor) CheckSessionValidity(token string) (isValid bool, err error) {
-	//PARSE JWT TO GET THE TOKEN ID
-
-	tokenId, err := uuid.Parse(token)
-	if err != nil {
-		return
-	}
+func (interactor *UserInteractor) CheckSessionValidity(tokenId string) (isValid bool, err error) {
 	//CHECK IF RECEIVED ID IS VALID
 	isValid, err = interactor.UserRepository.ValidateToken(tokenId)
 	return
 }
 
-func (interactor *UserInteractor) EndUserSession(token string) (amountOfDeleted int, err error) {
-	//PARSE JWT TO GET THE TOCKEN ID
-
-	tokenId, err := uuid.Parse(token)
-	if err != nil {
-		return
-	}
+func (interactor *UserInteractor) EndUserSession(tokenId string) (amountOfDeleted int, err error) {
 	amountOfDeleted, err = interactor.UserRepository.RevokeToken(tokenId)
 	return
 }

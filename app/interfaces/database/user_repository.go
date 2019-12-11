@@ -231,7 +231,7 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 //*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
 //*****************************************************//
 
-func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId uuid.UUID, err error) {
+func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenIdStr string, err error) {
 
 	//CHECK LOGIN INFO
 	row, err := repo.Query(`
@@ -258,11 +258,15 @@ func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (
 		return
 	}
 	//GENERATE TOKEN
-	tokenId, err = uuid.NewRandom()
-	return tokenId, nil
+	tokenUUID, err := uuid.NewRandom()
+	if err != nil {
+		return
+	}
+	tokenIdStr = tokenUUID.String()
+	return tokenIdStr, nil
 }
 
-func (repo *UserRepository) RegisterToken(employeeId string, tokenId uuid.UUID) (amountOfAffected int, err error) {
+func (repo *UserRepository) RegisterToken(employeeId string, tokenId string) (amountOfAffected int, err error) {
 	result, err := repo.Execute(`
 		UPDATE users
 		SET current_token = ?
@@ -304,7 +308,7 @@ func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLeve
 
 }
 
-func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool, err error) {
+func (repo *UserRepository) ValidateToken(tokenId string) (isValid bool, err error) {
 	//CHECK TOKEN ID INFO
 	row, err := repo.Query(`
 	SELECT
@@ -327,7 +331,7 @@ func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool, err 
 		return
 	}
 
-	isValid = tokenString == tokenId.String()
+	isValid = tokenString == tokenId
 	if !isValid {
 		err = errors.New("Invalid Session ID or Permission Level")
 		return
@@ -335,7 +339,7 @@ func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool, err 
 	return
 }
 
-func (repo *UserRepository) RevokeToken(tokenId uuid.UUID) (amountOfDeleted int, err error) {
+func (repo *UserRepository) RevokeToken(tokenId string) (amountOfDeleted int, err error) {
 	result, err := repo.Execute(`
 		UPDATE users
 		SET current_token = null

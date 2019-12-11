@@ -2,8 +2,6 @@ package usecase
 
 import (
 	"project-symi-backend/app/domain"
-
-	uuid "github.com/google/uuid"
 )
 
 type UserRepository interface {
@@ -15,9 +13,9 @@ type UserRepository interface {
 	IsUser(string) (bool, error)
 	AddUser(string, string, string, string, int, int, int) (bool, error)
 	ExecuteUsersQuery(string) (int, error)
-	IssueToken(string, string) (uuid.UUID, error)
-	RegisterToken(string, uuid.UUID) (int, error)
+	IssueToken(string, string) (string, error)
+	RegisterToken(string, string) (int, error)
 	GetPermissionName(string) (string, error)
-	ValidateToken(uuid.UUID) (bool, error)
-	RevokeToken(uuid.UUID) (int, error)
+	ValidateToken(string) (bool, error)
+	RevokeToken(string) (int, error)
 }
