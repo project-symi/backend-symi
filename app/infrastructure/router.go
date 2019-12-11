@@ -18,6 +18,7 @@ func init() {
 
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
+	pointController := controllers.NewPointController(NewSqlHandler())
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userController.LoginUser(c) })
@@ -52,6 +53,8 @@ func init() {
 		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
 		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+
+		authorized.GET("/users/:employeeId/point", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })
 	}
 
 	Router = router

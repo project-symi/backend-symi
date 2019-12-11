@@ -7,6 +7,7 @@ type User struct {
 	Mail         string `json:"email"`
 	Department   string `json:"department"`
 	DateOfBirth  string `json:"dateOfBirth"`
+	Point        string `json:"point"`
 	Gender       string `json:"gender"`
 	Permission   string `json:"permission"`
 	CurrentToken string

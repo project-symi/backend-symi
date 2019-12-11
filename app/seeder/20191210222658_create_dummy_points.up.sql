@@ -9,9 +9,16 @@ INSERT INTO point_categories (
     modified_at
   )
 VALUES
-  (1, 'Polled', 10, 3, NOW(), NOW()),
-  (2, 'Gave good feedback', 25, 3, NOW(), NOW()),
-  (3, 'Given good feedback', 50, 3, NOW(), NOW());
+  (1, 'Poll', 10, 3, NOW(), NOW()),
+  (2, 'Submitted Feedback', 25, 3, NOW(), NOW()),
+  (
+    3,
+    'Recieved positive feedback',
+    50,
+    3,
+    NOW(),
+    NOW()
+  );
 INSERT INTO point_logs(
     user_id,
     point_category_id,

@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS point_logs;
 DROP TABLE IF EXISTS point_categories;
 CREATE TABLE point_categories (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
-    name VARCHAR(20) UNIQUE,
+    name VARCHAR(50) UNIQUE,
     point INT NOT NULL,
     life_time_month INT NOT NULL,
     deleted boolean default false,
