@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase"
 
@@ -27,11 +28,7 @@ func NewUserAuthController(sqlHandler database.SqlHandler) *UserAuthController {
 
 func (controller *UserAuthController) LoginUser(c Context) {
 	//READ HEADER INTO A CREDENTIALS STRUCT
-	type UserCredentials struct {
-		EmployeeId string `json:"userId"`
-		Pass       string `json:"password"`
-	}
-	var user UserCredentials
+	var user domain.UserCredentials
 	if err := c.BindJSON(&user); err != nil {
 		panic(err)
 	}
@@ -43,27 +40,13 @@ func (controller *UserAuthController) LoginUser(c Context) {
 		return
 	}
 
-	//GET SECRET SIGNING PASSWORD
-	signingKey := []byte(os.Getenv("SIGNING_KEY"))
-
-	//GENERATE JWT FROM TOKEN ID
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	claims := token.Claims.(jwt.MapClaims)
-	claims["jti"] = tokenId
-	claims["permissionLevel"] = permissionLevel
-	claims["tokenValid"] = true
-	claims["exp"] = time.Now().Add(time.Hour * 5).Unix()
-
-	tokenString, err := token.SignedString(signingKey)
-
-	//CREATE A RESPONSE OBJ TO BE SENT AS JSON
-	type TokenResponse struct {
-		Token           string `json:"token"`
-		PermissionLevel string `json:"permission"`
+	tokenString, err := createJWT(tokenId, permissionLevel)
+	if err != nil {
+		c.JSON(401, NewError(err))
+		return
 	}
 
-	response := TokenResponse{Token: tokenString, PermissionLevel: permissionLevel}
+	response := domain.TokenResponse{Token: tokenString, PermissionLevel: permissionLevel}
 
 	c.JSON(200, response)
 }
@@ -131,6 +114,21 @@ func getTokenId(tokenString string) (tokenId string, err error) {
 	if !ok || !token.Valid {
 		return
 	}
-	fmt.Println(claims["jti"], claims["permissionLevel"])
 	return claims["jti"].(string), nil
+}
+
+func createJWT(tokenId string, permissionLevel string) (tokenString string, err error) {
+	//GET SECRET SIGNING PASSWORD
+	signingKey := []byte(os.Getenv("SIGNING_KEY"))
+
+	//GENERATE JWT FROM TOKEN ID
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims["jti"] = tokenId
+	claims["permissionLevel"] = permissionLevel
+	claims["exp"] = time.Now().Add(time.Hour * 5).Unix()
+
+	tokenString, err = token.SignedString(signingKey)
+	return
 }
