@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	uuid "github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //*****************************************************//
@@ -15,7 +16,7 @@ type UserAuthRepository struct {
 	SqlHandler
 }
 
-func (repo *UserAuthRepository) IssueToken(employeeId string, employeePass string) (tokenIdStr string, err error) {
+func (repo *UserAuthRepository) IssueToken(employeeId string, password string) (tokenIdStr string, err error) {
 
 	//CHECK LOGIN INFO
 	row, err := repo.Query(`
@@ -32,12 +33,16 @@ func (repo *UserAuthRepository) IssueToken(employeeId string, employeePass strin
 	}
 
 	row.Next()
-	var pass string
+	var pass []byte
 	if err = row.Scan(&pass); err != nil {
 		err = errors.New("Username Not Found")
 		return
 	}
-	if pass != employeePass {
+
+	//check the password hash
+	err = bcrypt.CompareHashAndPassword(pass, []byte(password))
+
+	if err != nil {
 		err = errors.New("Incorrect Password")
 		return
 	}

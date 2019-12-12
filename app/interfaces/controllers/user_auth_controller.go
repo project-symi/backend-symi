@@ -32,7 +32,6 @@ func (controller *UserAuthController) LoginUser(c Context) {
 	if err := c.BindJSON(&user); err != nil {
 		panic(err)
 	}
-
 	//CHECK IF PASSED CREDENTIALS MATCH
 	tokenId, permissionLevel, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
 	if err != nil {
@@ -40,6 +39,7 @@ func (controller *UserAuthController) LoginUser(c Context) {
 		return
 	}
 
+	//GENERATE JWT
 	tokenString, err := createJWT(tokenId, permissionLevel)
 	if err != nil {
 		c.JSON(401, NewError(err))
@@ -97,6 +97,7 @@ func (controller *UserAuthController) Authenticate(c Context) {
 //****** HELPER FUNCS ******
 //**************************
 //TODO: Create a separate handler for the JWT parsing and creating
+
 func getTokenId(tokenString string) (tokenId string, err error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Validate that the signing methids is the same

@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserInteractor struct {
@@ -60,7 +62,7 @@ func (interactor *UserInteractor) StoreUser(user domain.User) (success bool, err
 	if err != nil {
 		return
 	}
-	success, err = interactor.UserRepository.AddUser(user.EmployeeId, user.Name, user.Mail, user.DateOfBirth, genders.GenderToId(user.Gender), departments.DepartmentToId(user.Department), permissions.PermissionToId(user.Permission))
+	success, err = interactor.UserRepository.AddUser(user.EmployeeId, user.Name, user.Mail, user.DateOfBirth, genders.GenderToId(user.Gender), departments.DepartmentToId(user.Department), permissions.PermissionToId(user.Permission), passwordHash(user.DateOfBirth))
 	return
 }
 
@@ -111,12 +113,12 @@ func (interactor *UserInteractor) createStoreUsersQuery(registeredUsers domain.U
 }
 
 func createInsertQuery(users domain.Users, genders domain.Genders, departments domain.Departments, permissions domain.Permissions) (query string) {
-	query = "INSERT INTO users (employee_id, name, mail, birthday, gender_id, department_id, permission_id, deleted, created_at, modified_at) VALUES "
+	query = "INSERT INTO users (employee_id, name, mail, birthday, gender_id, department_id, permission_id, deleted, created_at, modified_at, password) VALUES "
 	for i, user := range users {
 		gender_id := genders.GenderToId(user.Gender)
 		department_id := departments.DepartmentToId(user.Department)
 		permission_id := permissions.PermissionToId(user.Permission)
-		query += "( \"" + user.EmployeeId + "\", \"" + user.Name + "\", \"" + user.Mail + "\", \"" + user.DateOfBirth + "\", \"" + strconv.Itoa(gender_id) + "\", \"" + strconv.Itoa(department_id) + "\", \"" + strconv.Itoa(permission_id) + "\", " + "false" + ", \"" + time.Now().Format("2006-01-02 15:04:05") + "\", \"" + time.Now().Format("2006-01-02 15:04:05") + "\")"
+		query += "( \"" + user.EmployeeId + "\", \"" + user.Name + "\", \"" + user.Mail + "\", \"" + user.DateOfBirth + "\", \"" + strconv.Itoa(gender_id) + "\", \"" + strconv.Itoa(department_id) + "\", \"" + strconv.Itoa(permission_id) + "\", " + "false" + ", \"" + time.Now().Format("2006-01-02 15:04:05") + "\", \"" + time.Now().Format("2006-01-02 15:04:05") + "\", \"" + passwordHash(user.DateOfBirth) + "\")"
 		if i != len(users)-1 {
 			query += ", "
 		}
@@ -160,5 +162,19 @@ func createUpdateQuery(users domain.Users, genders domain.Genders, departments d
 		}
 	}
 	query += nameQuery + mailQuery + birthdayQuery + genderQuery + departmentQuery + permissionQuery + modifiedQuery + whereQuery
+	return
+}
+
+//UTIL FUNCTIONS//
+
+func passwordHash(pass string) (hashedPassword string) {
+	passwordToHash := []byte(pass)
+
+	// Hashing the password with the default cost of 10
+	hash, err := bcrypt.GenerateFromPassword(passwordToHash, bcrypt.DefaultCost)
+	if err != nil {
+		return
+	}
+	hashedPassword = string(hash)
 	return
 }

@@ -201,14 +201,14 @@ func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected in
 	return
 }
 
-func (repo *UserRepository) AddUser(employee_id string, name string, mail string, birthday string, gender_id int, department_id int, permission_id int) (success bool, err error) {
+func (repo *UserRepository) AddUser(employee_id string, name string, mail string, birthday string, gender_id int, department_id int, permission_id int, passwordHash string) (success bool, err error) {
 	result, err := repo.Execute(`
 	INSERT INTO
 		users
-	(employee_id, name, mail, birthday, gender_id, department_id, permission_id, created_at, modified_at)
+	(employee_id, name, mail, birthday, gender_id, department_id, permission_id, created_at, modified_at, password)
 	VALUES
-	(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		employee_id, name, mail, birthday, gender_id, department_id, permission_id, time.Now(), time.Now())
+	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		employee_id, name, mail, birthday, gender_id, department_id, permission_id, time.Now(), time.Now(), passwordHash)
 	if err != nil {
 		return
 	}

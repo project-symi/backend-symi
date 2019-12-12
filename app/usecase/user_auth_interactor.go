@@ -18,10 +18,7 @@ func (interactor *UserAuthInteractor) CheckUserPass(employeeId string, employeeP
 	}
 
 	//ADD THE GENERATED TOKEN ID TO THE USER TABLE
-	amountOfAffected, err := interactor.UserAuthRepository.RegisterToken(employeeId, tokenId)
-	if err != nil && amountOfAffected != 1 {
-		return
-	}
+	_, err = interactor.UserAuthRepository.RegisterToken(employeeId, tokenId)
 
 	return
 }

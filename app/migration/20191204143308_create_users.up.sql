@@ -36,7 +36,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT NOT NULL UNIQUE,
     employee_id VARCHAR(20) NOT NULL UNIQUE,
     name VARCHAR(20),
-    password VARCHAR(40),
+    password VARCHAR(60),
     mail VARCHAR(256) UNIQUE,
     birthday DATE,
     gender_id INT NOT NULL,
