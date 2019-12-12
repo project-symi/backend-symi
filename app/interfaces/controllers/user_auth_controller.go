@@ -96,6 +96,7 @@ func (controller *UserAuthController) Authenticate(c Context) {
 //**************************
 //****** HELPER FUNCS ******
 //**************************
+//TODO: Create a separate handler for the JWT parsing and creating
 func getTokenId(tokenString string) (tokenId string, err error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Validate that the signing methids is the same
