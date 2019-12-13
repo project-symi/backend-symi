@@ -1,7 +1,7 @@
 package domain
 
 type NewsItem struct {
-	NewsItemId  int    `json:"newsid`
+	NewsItemId  int    `json:"newsId`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	PhotoLink   string `json:"photo"`

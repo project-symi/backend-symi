@@ -5,7 +5,7 @@ import (
 )
 
 type NewsRepository interface {
-	AddNewsItem(string, string, string) (bool, error)
 	GetAll() (domain.News, error)
 	DeleteByNewsId(string) (int, error)
+	AddNewsItem(string, string, string) (bool, error)
 }

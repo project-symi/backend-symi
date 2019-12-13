@@ -9,18 +9,18 @@ type NewsRepository struct {
 	SqlHandler
 }
 
-func (repo *NewsRepository) GetAllNews() (news domain.News, err error) {
+func (repo *NewsRepository) GetAll() (news domain.News, err error) {
 	rows, err := repo.Query(`
 		SELECT
-			n.id,
-			n.title,
-			n.description,
-			n.photo_link,
-			n.created_at,
-			g.modified_at,
-  		FROM news n
+			id,
+			title,
+			description,
+			photo_link,
+			created_at,
+			modified_at
+  		FROM news
   		WHERE
-			u.deleted = false
+			deleted = false
 		`)
 	defer rows.Close()
 	if err != nil {
@@ -31,7 +31,7 @@ func (repo *NewsRepository) GetAllNews() (news domain.News, err error) {
 			newsId      int
 			title       string
 			description string
-			photo_link  string
+			photoLink   string
 			createdAt   string
 			modifiedAt  string
 		)
@@ -39,7 +39,7 @@ func (repo *NewsRepository) GetAllNews() (news domain.News, err error) {
 			&newsId,
 			&title,
 			&description,
-			&photo_link,
+			&photoLink,
 			&createdAt,
 			&modifiedAt); err != nil {
 			continue
@@ -48,7 +48,7 @@ func (repo *NewsRepository) GetAllNews() (news domain.News, err error) {
 			NewsItemId:  newsId,
 			Title:       title,
 			Description: description,
-			PhotoLink:   photo_link,
+			PhotoLink:   photoLink,
 			CreatedAt:   createdAt,
 			ModifiedAt:  modifiedAt,
 		}
