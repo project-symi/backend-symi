@@ -8,5 +8,4 @@ type FeedbackRepository interface {
 	FindByEmployeeId(int) (domain.Feedbacks, error)
 	UpdateSeen(string) (int, error)
 	StoreFeedback(domain.StoredFeedback) error
-	StoreFeedbackAndUpdatePoints(domain.StoredFeedback, string) (int, error)
 }

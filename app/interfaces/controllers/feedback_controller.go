@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase"
 )
@@ -16,16 +15,7 @@ func NewFeedbackController(sqlHandler database.SqlHandler) *FeedbackController {
 			FeedbackRepository: &database.FeedbackRepository{
 				SqlHandler: sqlHandler,
 			},
-			FeelingRepository: &database.FeelingRepository{
-				SqlHandler: sqlHandler,
-			},
-			CategoryRepository: &database.CategoryRepository{
-				SqlHandler: sqlHandler,
-			},
 			UserRepository: &database.UserRepository{
-				SqlHandler: sqlHandler,
-			},
-			PointRepository: &database.PointRepository{
 				SqlHandler: sqlHandler,
 			},
 		},
@@ -57,17 +47,6 @@ func (controller *FeedbackController) FeedbacksByEmployeeId(c Context) {
 		return
 	}
 	c.JSON(200, feedbacks)
-}
-
-func (controller *FeedbackController) PostFeedback(c Context) {
-	feedback := domain.Feedback{}
-	c.BindJSON(&feedback)
-	pointAndEmployeeId, err := controller.Interactor.StoreFeedback(feedback)
-	if err != nil {
-		c.JSON(500, NewError(err))
-		return
-	}
-	c.JSON(201, pointAndEmployeeId)
 }
 
 func (controller *FeedbackController) PatchSeen(c Context) {

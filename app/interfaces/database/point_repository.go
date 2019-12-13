@@ -16,8 +16,8 @@ func (repo *PointRepository) FindPointsByUserId(userId int) (points domain.Point
 			f.feedback_note,
 			p.created_at
 		FROM point_logs p
-		JOIN point_categories pc ON pc.id = p.point_category_id
 		JOIN feedbacks f ON f.id = p.feedback_id
+		JOIN point_categories pc ON pc.id = p.point_category_id
 		WHERE p.user_id = ?`, userId)
 	defer rows.Close()
 	if err != nil {

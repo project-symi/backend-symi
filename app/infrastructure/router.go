@@ -19,6 +19,7 @@ func init() {
 	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
 	userController := controllers.NewUserController(NewSqlHandler())
 	pointController := controllers.NewPointController(NewSqlHandler())
+	feedbackPointsController := controllers.NewFeedbackPointsController(NewSqlHandler())
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userController.LoginUser(c) })
@@ -39,7 +40,7 @@ func init() {
 			}
 		})
 		authorized.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
-		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
+		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackPointsController.PostFeedback(c) })
 		authorized.PATCH("/feedbacks/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
 		authorized.GET("/users", func(c *gin.Context) {
 			name := c.Query("name")
@@ -55,7 +56,7 @@ func init() {
 		authorized.GET("/point", func(c *gin.Context) { userController.TopPointUsers(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 
-		authorized.GET("/users/:employeeId/point", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })
+		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })
 	}
 
 	Router = router
