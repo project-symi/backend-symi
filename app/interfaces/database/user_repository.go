@@ -83,6 +83,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			u.id,
 			u.name,
 			u.total_points,
+			u.birthday,
 			d.name,
 			g.gender
   		FROM users u
@@ -102,6 +103,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			id         int
 			name       string
 			points     int
+			birthday   string
 			department string
 			gender     string
 		)
@@ -109,16 +111,18 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			&id,
 			&name,
 			&points,
+			&birthday,
 			&department,
 			&gender); err != nil {
 			continue
 		}
 		user := domain.UserWithPoints{
-			Id:         id,
-			Name:       name,
-			Points:     points,
-			Department: department,
-			Gender:     gender,
+			Id:          id,
+			Name:        name,
+			Points:      points,
+			DateOfBirth: birthday,
+			Department:  department,
+			Gender:      gender,
 		}
 		users = append(users, user)
 	}
