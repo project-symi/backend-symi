@@ -7,7 +7,7 @@ type User struct {
 	Mail         string `json:"email"`
 	Department   string `json:"department"`
 	DateOfBirth  string `json:"dateOfBirth"`
-	TotalPoints  string `json:"totalPoints"`
+	TotalPoints  int    `json:"totalPoints"`
 	Gender       string `json:"gender"`
 	Permission   string `json:"permission"`
 	CurrentToken string

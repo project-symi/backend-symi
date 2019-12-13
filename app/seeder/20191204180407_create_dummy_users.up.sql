@@ -52,6 +52,7 @@ INSERT INTO users (
     gender_id,
     department_id,
     permission_id,
+    total_points,
     created_at,
     modified_at
   )
@@ -65,6 +66,7 @@ VALUES
     2,
     1,
     1,
+    0,
     NOW(),
     NOW()
   ),
@@ -77,6 +79,7 @@ VALUES
     1,
     7,
     3,
+    50,
     NOW(),
     NOW()
   ),
@@ -89,6 +92,7 @@ VALUES
     2,
     10,
     3,
+    0,
     NOW(),
     NOW()
   ),
@@ -101,6 +105,7 @@ VALUES
     1,
     9,
     2,
+    35,
     NOW(),
     NOW()
   );

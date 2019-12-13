@@ -134,7 +134,8 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.name,
 			u.birthday,
 			g.gender,
-			p.name
+			p.name,
+			u.total_points
   		FROM users u
   		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
@@ -156,6 +157,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		dateOfBirth string
 		gender      string
 		permission  string
+		points      int
 	)
 	if err = row.Scan(
 		&employeeId,
@@ -164,7 +166,8 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		&name,
 		&dateOfBirth,
 		&gender,
-		&permission); err != nil {
+		&permission,
+		&points); err != nil {
 		return
 	}
 	user = domain.User{
@@ -175,6 +178,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		DateOfBirth: dateOfBirth,
 		Gender:      gender,
 		Permission:  permission,
+		TotalPoints: points,
 	}
 	return
 }
