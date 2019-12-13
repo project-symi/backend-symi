@@ -1,12 +1,8 @@
 package database
 
-//TODO: Add custom errors in way that wouldnt require importing "errors" module here (used on lines: 253, 257, 326, 322 )
 import (
-	"errors"
 	"project-symi-backend/app/domain"
 	"time"
-
-	uuid "github.com/google/uuid"
 )
 
 type UserRepository struct {
@@ -205,14 +201,14 @@ func (repo *UserRepository) ExecuteUsersQuery(query string) (amountOfAffected in
 	return
 }
 
-func (repo *UserRepository) AddUser(employee_id string, name string, mail string, birthday string, gender_id int, department_id int, permission_id int) (success bool, err error) {
+func (repo *UserRepository) AddUser(employee_id string, name string, mail string, birthday string, gender_id int, department_id int, permission_id int, passwordHash string) (success bool, err error) {
 	result, err := repo.Execute(`
 	INSERT INTO
 		users
-	(employee_id, name, mail, birthday, gender_id, department_id, permission_id, created_at, modified_at)
+	(employee_id, name, mail, birthday, gender_id, department_id, permission_id, created_at, modified_at, password)
 	VALUES
-	(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		employee_id, name, mail, birthday, gender_id, department_id, permission_id, time.Now(), time.Now())
+	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		employee_id, name, mail, birthday, gender_id, department_id, permission_id, time.Now(), time.Now(), passwordHash)
 	if err != nil {
 		return
 	}
@@ -224,132 +220,5 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 		success = true
 		return
 	}
-	return
-}
-
-//*****************************************************//
-//*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
-//*****************************************************//
-
-func (repo *UserRepository) IssueToken(employeeId string, employeePass string) (tokenId uuid.UUID, err error) {
-
-	//CHECK LOGIN INFO
-	row, err := repo.Query(`
-	SELECT
-	u.password
-	FROM users u
-	WHERE
-	u.employee_id = ?
-	`, employeeId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var pass string
-	if err = row.Scan(&pass); err != nil {
-		err = errors.New("Username Not Found")
-		return
-	}
-	if pass != employeePass {
-		err = errors.New("Incorrect Password")
-		return
-	}
-	//GENERATE TOKEN
-	tokenId, err = uuid.NewRandom()
-	return tokenId, nil
-}
-
-func (repo *UserRepository) RegisterToken(employeeId string, tokenId uuid.UUID) (amountOfAffected int, err error) {
-	result, err := repo.Execute(`
-		UPDATE users
-		SET current_token = ?
-		WHERE employee_id = ?
-		`, tokenId, employeeId)
-	if err != nil {
-		return
-	}
-	amountOfUpdated64, err := result.RowsAffected()
-	if err != nil {
-		return
-	}
-	amountOfAffected = int(amountOfUpdated64)
-	return
-}
-
-func (repo *UserRepository) GetPermissionName(employeeId string) (permissionLevel string, err error) {
-	row, err := repo.Query(`
-	SELECT
-	p.name
-	FROM permissions p
-	JOIN users u ON p.id = u.permission_id
-	WHERE
-	u.employee_id = ?
-	`, employeeId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var permission string
-	if err = row.Scan(&permission); err != nil {
-		return
-	}
-	permissionLevel = permission
-	return
-
-}
-
-func (repo *UserRepository) ValidateToken(tokenId uuid.UUID) (isValid bool, err error) {
-	//CHECK TOKEN ID INFO
-	row, err := repo.Query(`
-	SELECT
-	u.current_token
-	FROM users u
-	WHERE
-	u.current_token = ?
-	`, tokenId)
-	defer row.Close()
-
-	if err != nil {
-		return
-	}
-
-	row.Next()
-	var tokenString string
-	if err = row.Scan(
-		&tokenString); err != nil {
-		err = errors.New("Error in DB")
-		return
-	}
-
-	isValid = tokenString == tokenId.String()
-	if !isValid {
-		err = errors.New("Invalid Session ID or Permission Level")
-		return
-	}
-	return
-}
-
-func (repo *UserRepository) RevokeToken(tokenId uuid.UUID) (amountOfDeleted int, err error) {
-	result, err := repo.Execute(`
-		UPDATE users
-		SET current_token = null
-		WHERE current_token = ?
-		AND deleted = false
-		`, tokenId)
-	if err != nil {
-		return
-	}
-	amountOfDeleted64, err := result.RowsAffected()
-	if err != nil {
-		return
-	}
-	amountOfDeleted = int(amountOfDeleted64)
-
 	return
 }

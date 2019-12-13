@@ -29,56 +29,6 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
-func (controller *UserController) LoginUser(c Context) {
-	type UserCredentials struct {
-		EmployeeId string `json:"userId"`
-		Pass       string `json:"password"`
-	}
-	var user UserCredentials
-	if err := c.BindJSON(&user); err != nil {
-		panic(err)
-	}
-
-	token, permissionLevel, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
-	if err != nil {
-		c.JSON(401, NewError(err))
-		return
-	}
-
-	type TokenResponse struct {
-		Token           string `json:"token"`
-		PermissionLevel string `json:"permission"`
-	}
-
-	response := TokenResponse{Token: token, PermissionLevel: permissionLevel}
-
-	c.JSON(200, response)
-}
-
-func (controller *UserController) LogoutUser(c Context) {
-	token := c.GetHeader("token")
-	amountOfDeleted, err := controller.Interactor.EndUserSession(token)
-	if err != nil {
-		c.JSON(500, NewError(err))
-		return
-	}
-	if amountOfDeleted == 0 {
-		c.JSON(400, NewError(err)) //TODO: create another error
-		return
-	}
-	c.JSON(200, amountOfDeleted)
-}
-
-func (controller *UserController) Authenticate(c Context) {
-	token := c.GetHeader("token")
-	tokenValid, err := controller.Interactor.CheckSessionValidity(token)
-	if !tokenValid || err != nil {
-		c.AbortWithStatus(401)
-		return
-	}
-	return
-}
-
 func (controller *UserController) AllUsers(c Context) {
 	users, err := controller.Interactor.Users()
 	if err != nil {
