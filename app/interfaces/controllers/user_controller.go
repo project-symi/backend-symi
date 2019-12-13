@@ -38,9 +38,9 @@ func (controller *UserController) AllUsers(c Context) {
 	c.JSON(200, users)
 }
 
-func (controller *UserController) TopPointUsers(c Context) {
+func (controller *UserController) TopPointsUsers(c Context) {
 	const NumOfRank = 7
-	users, err := controller.Interactor.FindTopPointUsers(NumOfRank)
+	users, err := controller.Interactor.FindTopPointsUsers(NumOfRank)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

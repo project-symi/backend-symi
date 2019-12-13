@@ -7,7 +7,7 @@ import (
 type UserRepository interface {
 	FindKeyIdByEmployeeId(string) (int, error)
 	FindAll() (domain.Users, error)
-	FindTopPointUsers(int) (domain.UsersWithPoint, error)
+	FindTopPointsUsers(int) (domain.UsersWithPoints, error)
 	FindByEmployeeId(string) (domain.User, error)
 	FilterByName(string) (domain.Users, error)
 	DeleteByEmployeeId(string) (int, error)

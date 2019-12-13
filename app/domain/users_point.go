@@ -1,12 +1,12 @@
 package domain
 
-type UserWithPoint struct {
+type UserWithPoints struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
-	Point       int    `json:"point"`
+	Points      int    `json:"points"`
 	DateOfBirth string `json:"dateOfBirth"`
 	Department  string `json:"department"`
 	Gender      string `json:"gender"`
 }
 
-type UsersWithPoint []UserWithPoint
+type UsersWithPoints []UserWithPoints

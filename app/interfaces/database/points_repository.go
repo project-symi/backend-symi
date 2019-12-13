@@ -4,11 +4,11 @@ import (
 	"project-symi-backend/app/domain"
 )
 
-type PointRepository struct {
+type PointsRepository struct {
 	SqlHandler
 }
 
-func (repo *PointRepository) FindPointsByUserId(userId int) (points domain.Points, err error) {
+func (repo *PointsRepository) FindPointsByUserId(userId int) (points domain.Points, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			pc.name,

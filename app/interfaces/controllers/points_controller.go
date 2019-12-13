@@ -5,14 +5,14 @@ import (
 	"project-symi-backend/app/usecase"
 )
 
-type PointController struct {
-	Interactor usecase.PointInteractor
+type PointsController struct {
+	Interactor usecase.PointsInteractor
 }
 
-func NewPointController(sqlHandler database.SqlHandler) *PointController {
-	return &PointController{
-		Interactor: usecase.PointInteractor{
-			PointRepository: &database.PointRepository{
+func NewPointsController(sqlHandler database.SqlHandler) *PointsController {
+	return &PointsController{
+		Interactor: usecase.PointsInteractor{
+			PointsRepository: &database.PointsRepository{
 				SqlHandler: sqlHandler,
 			},
 			UserRepository: &database.UserRepository{
@@ -22,7 +22,7 @@ func NewPointController(sqlHandler database.SqlHandler) *PointController {
 	}
 }
 
-func (controller *PointController) PointsByEmployeeId(c Context) {
+func (controller *PointsController) PointsByEmployeeId(c Context) {
 	points, err := controller.Interactor.FindPointsByEmployeeId(c.Param("employeeId"))
 	if err != nil {
 		c.JSON(500, NewError(err))

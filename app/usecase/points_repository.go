@@ -2,6 +2,6 @@ package usecase
 
 import "project-symi-backend/app/domain"
 
-type PointRepository interface {
+type PointsRepository interface {
 	FindPointsByUserId(int) (domain.Points, error)
 }

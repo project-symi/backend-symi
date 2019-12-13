@@ -77,7 +77,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	return
 }
 
-func (repo *UserRepository) FindTopPointUsers(limit int) (users domain.UsersWithPoint, err error) {
+func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWithPoints, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			u.id,
@@ -101,22 +101,22 @@ func (repo *UserRepository) FindTopPointUsers(limit int) (users domain.UsersWith
 		var (
 			id         int
 			name       string
-			point      int
+			points     int
 			department string
 			gender     string
 		)
 		if err := rows.Scan(
 			&id,
 			&name,
-			&point,
+			&points,
 			&department,
 			&gender); err != nil {
 			continue
 		}
-		user := domain.UserWithPoint{
+		user := domain.UserWithPoints{
 			Id:         id,
 			Name:       name,
-			Point:      point,
+			Points:     points,
 			Department: department,
 			Gender:     gender,
 		}

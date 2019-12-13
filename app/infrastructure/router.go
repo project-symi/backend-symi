@@ -29,7 +29,7 @@ func init() {
 	userController := controllers.NewUserController(sqlHandler)
 	userAuthController := controllers.NewUserAuthController(sqlHandler)
 	newsController := controllers.NewNewsController(sqlHandler)
-	pointController := controllers.NewPointController(sqlHandler)
+	pointsController := controllers.NewPointsController(sqlHandler)
 	feedbackController := controllers.NewFeedbackController(sqlHandler)
 	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
 
@@ -71,8 +71,8 @@ func init() {
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 
 		//Point endpoints
-		authorized.GET("/point", func(c *gin.Context) { userController.TopPointUsers(c) })
-		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })
+		authorized.GET("/points", func(c *gin.Context) { userController.TopPointsUsers(c) })
+		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
 
 		//news endpoints
 		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })
