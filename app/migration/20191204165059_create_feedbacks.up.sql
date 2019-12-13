@@ -29,7 +29,7 @@ CREATE TABLE feedbacks (
     category_id INT NOT NULL,
     recipient_id INT default 0,
     news_id INT default 0,
-    feedback_note VARCHAR(5000),
+    feedback_note TEXT,
     seen boolean default false,
     deleted boolean default false,
     deleted_at DATETIME,

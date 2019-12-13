@@ -59,9 +59,9 @@ type SqlTx struct {
 	Tx *sql.Tx
 }
 
-func (tx *SqlTx) Exec(statement string, args ...interface{}) (database.Result, error) {
+func (tx *SqlTx) Execute(statement string, args ...interface{}) (database.Result, error) {
 	res := SqlResult{}
-	result, err := tx.Exec(statement, args...)
+	result, err := tx.Tx.Exec(statement, args...)
 	if err != nil {
 		return res, err
 	}
@@ -69,13 +69,23 @@ func (tx *SqlTx) Exec(statement string, args ...interface{}) (database.Result, e
 	return res, nil
 }
 
+func (tx *SqlTx) Query(statement string, args ...interface{}) (database.Row, error) {
+	rows, err := tx.Tx.Query(statement, args...)
+	if err != nil {
+		return new(SqlRow), err
+	}
+	row := new(SqlRow)
+	row.Rows = rows
+	return row, nil
+}
+
 func (tx *SqlTx) Rollback() (err error) {
-	err = tx.Rollback()
+	err = tx.Tx.Rollback()
 	return
 }
 
 func (tx *SqlTx) Commit() (err error) {
-	err = tx.Commit()
+	err = tx.Tx.Commit()
 	return
 }
 

@@ -25,8 +25,7 @@ CREATE TABLE point_logs (
     modified_at TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (point_category_id) REFERENCES point_categories(id),
-    FOREIGN KEY (feedback_id) REFERENCES feedbacks(id)
+    FOREIGN KEY (point_category_id) REFERENCES point_categories(id)
   );
 ALTER TABLE users
 ADD

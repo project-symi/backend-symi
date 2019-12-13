@@ -6,6 +6,7 @@ type FeedbackRepository interface {
 	FindAll() (domain.Feedbacks, error)
 	FindByFeeling(string) (domain.Feedbacks, error)
 	FindByEmployeeId(int) (domain.Feedbacks, error)
-	InsertFeedback(int, int, int, int, int, string) (bool, error)
 	UpdateSeen(string) (int, error)
+	StoreFeedback(domain.StoredFeedback) error
+	StoreFeedbackAndUpdatePoints(domain.StoredFeedback, string) (int, error)
 }

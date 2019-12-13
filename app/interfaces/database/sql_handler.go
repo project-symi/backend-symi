@@ -7,7 +7,8 @@ type SqlHandler interface {
 }
 
 type Tx interface {
-	Exec(string, ...interface{}) (Result, error)
+	Execute(string, ...interface{}) (Result, error)
+	Query(string, ...interface{}) (Row, error)
 	Rollback() error
 	Commit() error
 }
