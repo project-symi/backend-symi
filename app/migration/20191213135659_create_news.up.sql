@@ -7,7 +7,7 @@ CREATE TABLE news (
     title VARCHAR(150) UNIQUE NOT NULL,
     description TEXT NOT NULL,
     photo_link VARCHAR(150) NOT NULL,
-    seen boolean default false,
+    hidden boolean default false,
     deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP,
