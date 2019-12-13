@@ -59,7 +59,7 @@ VALUES
   (
     'A000001',
     'Mini',
-    'abc123',
+    '$2a$10$1bPVBUofakXGPsU9phR2q.CNbcAoXjv0pOzhYwgM3qX3moc/2kK4i',
     'samadova.minira@gmail.com',
     '20191205',
     2,
@@ -71,7 +71,7 @@ VALUES
   (
     'B000300',
     'Igor',
-    'password1',
+    '$2a$10$B0nZWE.h6V.PyGCr/8RUkuwRMRGMM3gPEVlt6NNVBjRdZWAfZ2a.G',
     'igor.m.byak@gmail.com',
     '20191205',
     1,
@@ -83,7 +83,7 @@ VALUES
   (
     'B000500',
     'Steffie',
-    'nopassword',
+    '$2a$10$xlVenMv3ssNZBWX1M3VVzev8T6oyvrGomZVrwZ2i1kh4e/5cQUvWa',
     'steffie.harner@gmail.com',
     '20191205',
     2,
@@ -95,7 +95,7 @@ VALUES
   (
     'X009999',
     'Yukio',
-    'nabe-monster',
+    '$2a$10$PRZEjcqzQbxmfnFw/QcRXuNc/R/ez.icPgm5nxjXf07iuCzWvRSxy',
     'triangle.pillow@gmail.com',
     '20191205',
     1,

@@ -25,11 +25,13 @@ func init() {
 	}))
 	//TODO ADD PROPER CONDITIONS FOR CORS LATER: router.Use(cors.Default())
 
-	feedbackController := controllers.NewFeedbackController(NewSqlHandler())
-	userController := controllers.NewUserController(NewSqlHandler())
-	pointController := controllers.NewPointController(NewSqlHandler())
-	feedbackPointsController := controllers.NewFeedbackPointsController(NewSqlHandler())
-	userAuthController := controllers.NewUserAuthController(NewSqlHandler())
+	sqlHandler := NewSqlHandler()
+	userController := controllers.NewUserController(sqlHandler)
+	userAuthController := controllers.NewUserAuthController(sqlHandler)
+	newsController := controllers.NewNewsController(sqlHandler)
+	pointController := controllers.NewPointController(sqlHandler)
+	feedbackController := controllers.NewFeedbackController(sqlHandler)
+	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
@@ -41,6 +43,7 @@ func init() {
 	authorized := router.Group("/auth")
 	authorized.Use(func(c *gin.Context) { userAuthController.Authenticate(c) })
 	{
+		//Feedback endpoints
 		authorized.GET("/feedbacks", func(c *gin.Context) {
 			feeling := c.Query("feeling")
 			if feeling != "" {
@@ -52,6 +55,8 @@ func init() {
 		authorized.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
 		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackPointsController.PostFeedback(c) })
 		authorized.PATCH("/feedbacks/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
+
+		//Users endpoints
 		authorized.GET("/users", func(c *gin.Context) {
 			name := c.Query("name")
 			if name != "" {
@@ -63,10 +68,16 @@ func init() {
 		authorized.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
 		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
 		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
-		authorized.GET("/point", func(c *gin.Context) { userController.TopPointUsers(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 
+		//Point endpoints
+		authorized.GET("/point", func(c *gin.Context) { userController.TopPointUsers(c) })
 		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointController.PointsByEmployeeId(c) })
+
+		//news endpoints
+		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })
+		authorized.POST("/news", func(c *gin.Context) { newsController.AddNewsItem(c) })
+		authorized.DELETE("/news/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
 	}
 
 	Router = router
