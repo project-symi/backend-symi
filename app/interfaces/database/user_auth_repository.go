@@ -88,11 +88,7 @@ func (repo *UserAuthRepository) GetPermissionName(employeeId string) (permission
 	}
 
 	row.Next()
-	var permission string
-	if err = row.Scan(&permission); err != nil {
-		return
-	}
-	permissionLevel = permission
+	err = row.Scan(&permissionLevel)
 	return
 
 }
