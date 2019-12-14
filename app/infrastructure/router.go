@@ -24,11 +24,14 @@ func init() {
 		MaxAge:           12 * time.Hour,
 	}))
 	//TODO ADD PROPER CONDITIONS FOR CORS LATER: router.Use(cors.Default())
+
 	sqlHandler := NewSqlHandler()
-	feedbackController := controllers.NewFeedbackController(sqlHandler)
 	userController := controllers.NewUserController(sqlHandler)
 	userAuthController := controllers.NewUserAuthController(sqlHandler)
 	newsController := controllers.NewNewsController(sqlHandler)
+	pointsController := controllers.NewPointsController(sqlHandler)
+	feedbackController := controllers.NewFeedbackController(sqlHandler)
+	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
@@ -36,7 +39,7 @@ func init() {
 
 	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
 
-	//SETUP THE OTHER ENPOINTS
+	//SETUP THE OTHER ENDPOINTS
 	authorized := router.Group("/auth")
 	authorized.Use(func(c *gin.Context) { userAuthController.Authenticate(c) })
 	{
@@ -50,7 +53,7 @@ func init() {
 			}
 		})
 		authorized.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
-		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackController.PostFeedback(c) })
+		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackPointsController.PostFeedback(c) })
 		authorized.PATCH("/feedbacks/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
 
 		//Users endpoints
@@ -66,6 +69,10 @@ func init() {
 		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
 		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
 		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+
+		//Point endpoints
+		authorized.GET("/points", func(c *gin.Context) { userController.TopPointsUsers(c) })
+		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
 
 		//news endpoints
 		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })

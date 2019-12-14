@@ -172,23 +172,6 @@ func (repo *FeedbackRepository) FindByEmployeeId(userId int) (feedbacks domain.F
 	return
 }
 
-func (repo *FeedbackRepository) InsertFeedback(userId int, feelingId int, categoryId int, recipientId int, newsId int, feedbackNote string) (success bool, err error) {
-	result, err := repo.Execute(`
-		INSERT INTO feedbacks (user_id, feeling_id, category_id, recipient_id, news_id, feedback_note, created_at, modified_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-	  `, userId, feelingId, categoryId, recipientId, newsId, feedbackNote, time.Now(), time.Now())
-	insertedId64, err := result.LastInsertId()
-	if err != nil {
-		return
-	}
-	if insertedId64 != 0 {
-		success = true
-		return
-	}
-	success = false
-	return
-}
-
 func (repo *FeedbackRepository) UpdateSeen(ids string) (amountOfAffected int, err error) {
 	result, err := repo.Execute(`UPDATE feedbacks SET seen = true, modified_at = ? WHERE id IN `+ids, time.Now())
 	if err != nil {
@@ -199,5 +182,26 @@ func (repo *FeedbackRepository) UpdateSeen(ids string) (amountOfAffected int, er
 		return
 	}
 	amountOfAffected = int(amountOfAffected64)
+	return
+}
+
+func (repo *FeedbackRepository) StoreFeedback(feedback domain.StoredFeedback) (err error) {
+	_, err = repo.Execute(`
+	INSERT INTO feedbacks (user_id, feeling_id, category_id, recipient_id, news_id, feedback_note, created_at, modified_at)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `, feedback.UserId, feedback.FeelingId, feedback.CategoryId, feedback.RecipientId, feedback.NewsId, feedback.FeedbackNote, time.Now(), time.Now())
+	return
+}
+
+func addTxFeedback(tx Tx, feedback domain.StoredFeedback) (insertedId int, err error) {
+	result, err := tx.Execute(`
+		INSERT INTO feedbacks (user_id, feeling_id, category_id, recipient_id, news_id, feedback_note, created_at, modified_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	  `, feedback.UserId, feedback.FeelingId, feedback.CategoryId, feedback.RecipientId, feedback.NewsId, feedback.FeedbackNote, time.Now(), time.Now())
+	insertedId64, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insertedId = int(insertedId64)
 	return
 }

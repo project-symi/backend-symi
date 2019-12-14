@@ -45,6 +45,50 @@ func (handler *SqlHandler) Query(statement string, args ...interface{}) (databas
 	return row, nil
 }
 
+func (handler *SqlHandler) Begin() (database.Tx, error) {
+	beginTx, err := handler.Conn.Begin()
+	if err != nil {
+		panic(err)
+	}
+	tx := new(SqlTx)
+	tx.Tx = beginTx
+	return tx, nil
+}
+
+type SqlTx struct {
+	Tx *sql.Tx
+}
+
+func (tx *SqlTx) Execute(statement string, args ...interface{}) (database.Result, error) {
+	res := SqlResult{}
+	result, err := tx.Tx.Exec(statement, args...)
+	if err != nil {
+		return res, err
+	}
+	res.Result = result
+	return res, nil
+}
+
+func (tx *SqlTx) Query(statement string, args ...interface{}) (database.Row, error) {
+	rows, err := tx.Tx.Query(statement, args...)
+	if err != nil {
+		return new(SqlRow), err
+	}
+	row := new(SqlRow)
+	row.Rows = rows
+	return row, nil
+}
+
+func (tx *SqlTx) Rollback() (err error) {
+	err = tx.Tx.Rollback()
+	return
+}
+
+func (tx *SqlTx) Commit() (err error) {
+	err = tx.Tx.Commit()
+	return
+}
+
 type SqlResult struct {
 	Result sql.Result
 }

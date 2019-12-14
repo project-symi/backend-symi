@@ -5,30 +5,28 @@ DELETE FROM feedbacks;
 INSERT INTO feelings (
     id,
     name,
-    deleted,
     created_at,
     modified_at
   )
 VALUES
-  (1, 'good', false, NOW(), NOW()),
-  (2, 'meh', false, NOW(), NOW()),
-  (3, 'sad', false, NOW(), NOW());
+  (1, 'good', NOW(), NOW()),
+  (2, 'meh', NOW(), NOW()),
+  (3, 'sad', NOW(), NOW());
 INSERT INTO categories (
     id,
     name,
-    deleted,
     created_at,
     modified_at
   )
 VALUES
-  (1, 'Work/Life Balance', false, NOW(), NOW()),
-  (2, 'Benefits', false, NOW(), NOW()),
-  (3, 'Holidays', false, NOW(), NOW()),
-  (4, 'Job Satisfaction', false, NOW(), NOW()),
-  (5, 'Company Policy', false, NOW(), NOW()),
-  (6, 'News', false, NOW(), NOW()),
-  (7, 'Employee', false, NOW(), NOW()),
-  (8, 'Other', false, NOW(), NOW());
+  (1, 'Work/Life Balance', NOW(), NOW()),
+  (2, 'Benefits', NOW(), NOW()),
+  (3, 'Holidays', NOW(), NOW()),
+  (4, 'Job Satisfaction', NOW(), NOW()),
+  (5, 'Company Policy', NOW(), NOW()),
+  (6, 'News', NOW(), NOW()),
+  (7, 'Employee', NOW(), NOW()),
+  (8, 'Other', NOW(), NOW());
 INSERT INTO feedbacks (
     user_id,
     feeling_id,
@@ -36,7 +34,6 @@ INSERT INTO feedbacks (
     recipient_id,
     news_id,
     feedback_note,
-    deleted,
     created_at,
     modified_at
   )
@@ -48,7 +45,6 @@ VALUES
     0,
     0,
     'I want to work more.',
-    false,
     NOW(),
     NOW()
   ),
@@ -59,7 +55,6 @@ VALUES
     0,
     0,
     'I need money.',
-    false,
     NOW(),
     NOW()
   ),
@@ -70,7 +65,6 @@ VALUES
     0,
     0,
     'I don\'t want to work',
-    false,
     NOW(),
     NOW()
   ),
@@ -81,7 +75,6 @@ VALUES
     0,
     0,
     'I want to work more',
-    false,
     NOW(),
     NOW()
   ),
@@ -92,7 +85,6 @@ VALUES
     0,
     0,
     'I want more holiday',
-    false,
     NOW(),
     NOW()
   ),
@@ -103,7 +95,6 @@ VALUES
     2,
     0,
     'Awesome Igor',
-    false,
     NOW(),
     NOW()
   ),
@@ -114,7 +105,6 @@ VALUES
     0,
     1,
     'Awesome news',
-    false,
     NOW(),
     NOW()
   ),
@@ -125,7 +115,6 @@ VALUES
     0,
     0,
     'I\'m beautiful model',
-    false,
     NOW(),
     NOW()
   );

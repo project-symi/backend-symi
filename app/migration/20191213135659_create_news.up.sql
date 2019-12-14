@@ -14,10 +14,6 @@ CREATE TABLE news (
     modified_at TIMESTAMP,
     PRIMARY KEY (id)
   );
-
-ALTER TABLE feedbacks
-  ADD FOREIGN KEY (news_id) REFERENCES news(id);
-
 set
   foreign_key_checks = 1;
 COMMIT;

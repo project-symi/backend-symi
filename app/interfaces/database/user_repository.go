@@ -77,6 +77,58 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	return
 }
 
+func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWithPoints, err error) {
+	rows, err := repo.Query(`
+		SELECT
+			u.id,
+			u.name,
+			u.total_points,
+			u.birthday,
+			d.name,
+			g.gender
+  		FROM users u
+  		JOIN departments d ON d.id = u.department_id
+  		JOIN genders g ON g.id = u.gender_id
+  		WHERE
+			u.deleted = false
+		ORDER BY u.total_points DESC
+		LIMIT ?
+		`, limit)
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var (
+			id         int
+			name       string
+			points     int
+			birthday   string
+			department string
+			gender     string
+		)
+		if err := rows.Scan(
+			&id,
+			&name,
+			&points,
+			&birthday,
+			&department,
+			&gender); err != nil {
+			continue
+		}
+		user := domain.UserWithPoints{
+			Id:          id,
+			Name:        name,
+			Points:      points,
+			DateOfBirth: birthday,
+			Department:  department,
+			Gender:      gender,
+		}
+		users = append(users, user)
+	}
+	return
+}
+
 func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
 	row, err := repo.Query(`
 		SELECT
@@ -86,7 +138,8 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 			u.name,
 			u.birthday,
 			g.gender,
-			p.name
+			p.name,
+			u.total_points
   		FROM users u
   		JOIN permissions p ON p.id = u.permission_id
   		JOIN departments d ON d.id = u.department_id
@@ -108,6 +161,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		dateOfBirth string
 		gender      string
 		permission  string
+		points      int
 	)
 	if err = row.Scan(
 		&employeeId,
@@ -116,7 +170,8 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		&name,
 		&dateOfBirth,
 		&gender,
-		&permission); err != nil {
+		&permission,
+		&points); err != nil {
 		return
 	}
 	user = domain.User{
@@ -127,6 +182,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		DateOfBirth: dateOfBirth,
 		Gender:      gender,
 		Permission:  permission,
+		TotalPoints: points,
 	}
 	return
 }
@@ -218,6 +274,25 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 	}
 	if amountOfStored64 == 1 {
 		success = true
+		return
+	}
+	return
+}
+
+func updateTxUserTotalPoint(tx Tx, userId int, point int, feedbackId int) (err error) {
+	_, err = tx.Execute(`
+	UPDATE users u
+	JOIN point_logs p ON p.user_id = u.id
+	JOIN point_categories pc ON p.point_category_id = pc.id
+	SET
+	  u.total_points = u.total_points + pc.point,
+	  u.modified_at = ?
+	WHERE
+	  u.id = ?
+	AND
+	  p.feedback_id = ?
+		`, time.Now(), userId, feedbackId)
+	if err != nil {
 		return
 	}
 	return

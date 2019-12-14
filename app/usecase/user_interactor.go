@@ -21,6 +21,11 @@ func (interactor *UserInteractor) Users() (user domain.Users, err error) {
 	return
 }
 
+func (interactor *UserInteractor) FindTopPointsUsers(numOfRank int) (users domain.UsersWithPoints, err error) {
+	users, err = interactor.UserRepository.FindTopPointsUsers(numOfRank)
+	return
+}
+
 func (interactor *UserInteractor) User(employeeId string) (user domain.User, err error) {
 	user, err = interactor.UserRepository.FindByEmployeeId(employeeId)
 	return
