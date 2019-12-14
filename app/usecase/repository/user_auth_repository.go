@@ -1,4 +1,4 @@
-package usecase
+package repository
 
 type UserAuthRepository interface {
 	IssueToken(string, string) (string, error)

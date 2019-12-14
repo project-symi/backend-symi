@@ -1,4 +1,4 @@
-package usecase
+package repository
 
 import "project-symi-backend/app/domain"
 

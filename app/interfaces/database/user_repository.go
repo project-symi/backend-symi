@@ -80,7 +80,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWithPoints, err error) {
 	rows, err := repo.Query(`
 		SELECT
-			u.id,
+			u.employee_id,
 			u.name,
 			u.total_points,
 			u.birthday,
@@ -100,7 +100,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 	}
 	for rows.Next() {
 		var (
-			id         int
+			employeeId string
 			name       string
 			points     int
 			birthday   string
@@ -108,7 +108,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			gender     string
 		)
 		if err := rows.Scan(
-			&id,
+			&employeeId,
 			&name,
 			&points,
 			&birthday,
@@ -117,7 +117,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			continue
 		}
 		user := domain.UserWithPoints{
-			Id:          id,
+			EmployeeId:  employeeId,
 			Name:        name,
 			Points:      points,
 			DateOfBirth: birthday,
@@ -129,7 +129,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 	return
 }
 
-func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err error) {
+func (repo *UserRepository) FindByEmployeeId(id string) (user domain.UserInfoWithPoints, err error) {
 	row, err := repo.Query(`
 		SELECT
 			u.employee_id,
@@ -174,7 +174,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 		&points); err != nil {
 		return
 	}
-	user = domain.User{
+	user = domain.UserInfoWithPoints{
 		EmployeeId:  employeeId,
 		Name:        name,
 		Mail:        mail,
@@ -187,7 +187,7 @@ func (repo *UserRepository) FindByEmployeeId(id string) (user domain.User, err e
 	return
 }
 
-func (repo *UserRepository) FilterByName(query string) (users domain.Users, err error) {
+func (repo *UserRepository) FilterByName(query string) (users domain.UsersByName, err error) {
 	rows, err := repo.Query(query)
 	defer rows.Close()
 	if err != nil {
@@ -206,7 +206,7 @@ func (repo *UserRepository) FilterByName(query string) (users domain.Users, err 
 		); err != nil {
 			continue
 		}
-		user := domain.User{
+		user := domain.UserByName{
 			EmployeeId: employeeId,
 			Name:       name,
 			Department: department,

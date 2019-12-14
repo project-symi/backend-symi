@@ -3,16 +3,16 @@ package controllers
 import (
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
-	"project-symi-backend/app/usecase"
+	"project-symi-backend/app/usecase/interactor"
 )
 
 type NewsController struct {
-	Interactor usecase.NewsInteractor
+	Interactor interactor.NewsInteractor
 }
 
 func NewNewsController(sqlHandler database.SqlHandler) *NewsController {
 	return &NewsController{
-		Interactor: usecase.NewsInteractor{
+		Interactor: interactor.NewsInteractor{
 			NewsRepository: &database.NewsRepository{
 				SqlHandler: sqlHandler,
 			},
@@ -36,14 +36,14 @@ func (controller *NewsController) DeleteByNewsId(c Context) {
 		return
 	}
 	if amountOfDeleted == 0 {
-		c.JSON(400, NewError(err)) //TODO: create another error
+		c.Status(400) //TODO: create another error
 		return
 	}
 	c.Status(204)
 }
 
 func (controller *NewsController) AddNewsItem(c Context) {
-	newsItem := domain.NewsItem{}
+	newsItem := domain.NewsPost{}
 	c.BindJSON(&newsItem)
 	success, err := controller.Interactor.AddNewNews(newsItem)
 	if err != nil {

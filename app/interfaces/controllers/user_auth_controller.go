@@ -7,18 +7,18 @@ import (
 
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
-	"project-symi-backend/app/usecase"
+	"project-symi-backend/app/usecase/interactor"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type UserAuthController struct {
-	Interactor usecase.UserAuthInteractor
+	Interactor interactor.UserAuthInteractor
 }
 
 func NewUserAuthController(sqlHandler database.SqlHandler) *UserAuthController {
 	return &UserAuthController{
-		Interactor: usecase.UserAuthInteractor{
+		Interactor: interactor.UserAuthInteractor{
 			UserAuthRepository: &database.UserAuthRepository{
 				SqlHandler: sqlHandler,
 			},

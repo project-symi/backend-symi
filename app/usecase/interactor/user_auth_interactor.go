@@ -1,7 +1,9 @@
-package usecase
+package interactor
+
+import "project-symi-backend/app/usecase/repository"
 
 type UserAuthInteractor struct {
-	UserAuthRepository UserAuthRepository
+	UserAuthRepository repository.UserAuthRepository
 }
 
 func (interactor *UserAuthInteractor) CheckUserPass(employeeId string, employeePass string) (tokenId string, permissionLevel string, err error) {
@@ -11,7 +13,7 @@ func (interactor *UserAuthInteractor) CheckUserPass(employeeId string, employeeP
 		return
 	}
 
-	//GENERATE TOCKEN ID IF EMPLOYEE INFO IS VALID
+	//GENERATE TOKEN ID IF EMPLOYEE INFO IS VALID
 	tokenId, err = interactor.UserAuthRepository.IssueToken(employeeId, employeePass)
 	if err != nil {
 		return

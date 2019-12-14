@@ -37,7 +37,7 @@ func init() {
 	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
 	router.GET("/logout", func(c *gin.Context) { userAuthController.LogoutUser(c) })
 
-	//SETUP MIDDLEWARE FOR AUTHENTIFICATION
+	//SETUP MIDDLEWARE FOR AUTHENTICATION
 
 	//SETUP THE OTHER ENDPOINTS
 	authorized := router.Group("/auth")

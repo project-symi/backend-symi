@@ -7,7 +7,13 @@ type NewsItem struct {
 	PhotoLink   string `json:"photo"`
 	Hidden      bool   `json:"status"`
 	CreatedAt   string `json:"postedOn"`
-	ModifiedAt  string `json:"modiefiedOn"`
+	ModifiedAt  string `json:"modifiedOn"`
+}
+
+type NewsPost struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	PhotoLink   string `json:"photo"`
 }
 
 type News []NewsItem

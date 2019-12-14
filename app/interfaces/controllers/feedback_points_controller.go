@@ -3,16 +3,16 @@ package controllers
 import (
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
-	"project-symi-backend/app/usecase"
+	"project-symi-backend/app/usecase/interactor"
 )
 
 type FeedbackPointsController struct {
-	Interactor usecase.FeedbackPointsInteractor
+	Interactor interactor.FeedbackPointsInteractor
 }
 
 func NewFeedbackPointsController(sqlHandler database.SqlHandler) *FeedbackPointsController {
 	return &FeedbackPointsController{
-		Interactor: usecase.FeedbackPointsInteractor{
+		Interactor: interactor.FeedbackPointsInteractor{
 			TransactionRepository: &database.TransactionRepository{
 				SqlHandler: sqlHandler,
 			},

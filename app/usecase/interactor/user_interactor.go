@@ -1,19 +1,19 @@
-package usecase
+package interactor
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"project-symi-backend/app/domain"
+	"project-symi-backend/app/usecase/repository"
 	"strconv"
 	"strings"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserInteractor struct {
-	UserRepository       UserRepository
-	GenderRepository     GenderRepository
-	DepartmentRepository DepartmentRepository
-	PermissionRepository PermissionRepository
+	UserRepository       repository.UserRepository
+	GenderRepository     repository.GenderRepository
+	DepartmentRepository repository.DepartmentRepository
+	PermissionRepository repository.PermissionRepository
 }
 
 func (interactor *UserInteractor) Users() (user domain.Users, err error) {
@@ -26,12 +26,12 @@ func (interactor *UserInteractor) FindTopPointsUsers(numOfRank int) (users domai
 	return
 }
 
-func (interactor *UserInteractor) User(employeeId string) (user domain.User, err error) {
+func (interactor *UserInteractor) User(employeeId string) (user domain.UserInfoWithPoints, err error) {
 	user, err = interactor.UserRepository.FindByEmployeeId(employeeId)
 	return
 }
 
-func (interactor *UserInteractor) UsersByName(name string) (users domain.Users, err error) {
+func (interactor *UserInteractor) UsersByName(name string) (users domain.UsersByName, err error) {
 	nameArray := strings.Split(name, " ")
 	query := createFilterByNameQuery(nameArray)
 	users, err = interactor.UserRepository.FilterByName(query)

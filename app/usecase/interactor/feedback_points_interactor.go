@@ -1,18 +1,19 @@
-package usecase
+package interactor
 
 import (
 	"errors"
 	"project-symi-backend/app/domain"
+	"project-symi-backend/app/usecase/repository"
 	"strconv"
 	"time"
 )
 
 type FeedbackPointsInteractor struct {
-	TransactionRepository TransactionRepository
-	FeedbackRepository    FeedbackRepository
-	FeelingRepository     FeelingRepository
-	CategoryRepository    CategoryRepository
-	UserRepository        UserRepository
+	TransactionRepository repository.TransactionRepository
+	FeedbackRepository    repository.FeedbackRepository
+	FeelingRepository     repository.FeelingRepository
+	CategoryRepository    repository.CategoryRepository
+	UserRepository        repository.UserRepository
 }
 
 const (

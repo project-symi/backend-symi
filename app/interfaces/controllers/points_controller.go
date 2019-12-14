@@ -2,16 +2,16 @@ package controllers
 
 import (
 	"project-symi-backend/app/interfaces/database"
-	"project-symi-backend/app/usecase"
+	"project-symi-backend/app/usecase/interactor"
 )
 
 type PointsController struct {
-	Interactor usecase.PointsInteractor
+	Interactor interactor.PointsInteractor
 }
 
 func NewPointsController(sqlHandler database.SqlHandler) *PointsController {
 	return &PointsController{
-		Interactor: usecase.PointsInteractor{
+		Interactor: interactor.PointsInteractor{
 			PointsRepository: &database.PointsRepository{
 				SqlHandler: sqlHandler,
 			},

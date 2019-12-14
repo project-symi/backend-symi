@@ -1,13 +1,14 @@
-package usecase
+package interactor
 
 import (
 	"project-symi-backend/app/domain"
+	"project-symi-backend/app/usecase/repository"
 	"strings"
 )
 
 type FeedbackInteractor struct {
-	FeedbackRepository FeedbackRepository
-	UserRepository     UserRepository
+	FeedbackRepository repository.FeedbackRepository
+	UserRepository     repository.UserRepository
 }
 
 func (interactor *FeedbackInteractor) FindAll() (feedback domain.Feedbacks, err error) {
@@ -20,7 +21,7 @@ func (interactor *FeedbackInteractor) FindByFeeling(feeling string) (feedback do
 	return
 }
 
-func (interactor *FeedbackInteractor) FindByEmployeeId(employeeId string) (feedback domain.Feedbacks, err error) {
+func (interactor *FeedbackInteractor) FindByEmployeeId(employeeId string) (feedback domain.FeedbackEmployees, err error) {
 	userId, err := interactor.UserRepository.FindKeyIdByEmployeeId(employeeId)
 	feedback, err = interactor.FeedbackRepository.FindByEmployeeId(userId)
 	return
