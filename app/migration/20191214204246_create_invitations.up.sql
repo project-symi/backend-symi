@@ -19,6 +19,7 @@ CREATE TABLE invitations (
     comments TEXT,
     invitation_status_category_id INT NOT NULL,
     reply VARCHAR(5000) default "",
+    seen boolean default false,
     invitation_date DATE,
     deleted boolean default false,
     deleted_at DATETIME,
