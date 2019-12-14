@@ -14,6 +14,7 @@ INSERT INTO invitations (
     comments,
     invitation_status_category_id,
     reply,
+    seen,
     invitation_date
   )
 VALUES
@@ -23,6 +24,7 @@ VALUES
     'Christmas party!!!',
     1,
     '',
+    false,
     '2019-12-25'
   ),
   (
@@ -31,6 +33,7 @@ VALUES
     'Let''s discuss about beauty',
     2,
     'Why not!',
+    true,
     '2019-12-20'
   ),
   (
@@ -39,6 +42,7 @@ VALUES
     'You have serious problems',
     3,
     'Sorry I have headache.',
+    true,
     '2019-12-12'
   );
 set

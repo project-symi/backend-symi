@@ -32,6 +32,7 @@ func init() {
 	pointsController := controllers.NewPointsController(sqlHandler)
 	feedbackController := controllers.NewFeedbackController(sqlHandler)
 	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
+	invitationController := controllers.NewInvitationController(sqlHandler)
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
@@ -78,6 +79,9 @@ func init() {
 		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })
 		authorized.POST("/news", func(c *gin.Context) { newsController.AddNewsItem(c) })
 		authorized.DELETE("/news/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
+
+		//Invitation endpoints
+		authorized.GET("/invitations", func(c *gin.Context) { invitationController.AllInvitations(c) })
 	}
 
 	Router = router

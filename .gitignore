@@ -16,4 +16,5 @@
 .DS_Store
 .env
 .gitignore
+.dockerignore
 Makefile
