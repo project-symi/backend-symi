@@ -192,3 +192,16 @@ func (repo *FeedbackRepository) StoreFeedback(feedback domain.StoredFeedback) (e
   `, feedback.UserId, feedback.FeelingId, feedback.CategoryId, feedback.RecipientId, feedback.NewsId, feedback.FeedbackNote, time.Now(), time.Now())
 	return
 }
+
+func addTxFeedback(tx Tx, feedback domain.StoredFeedback) (insertedId int, err error) {
+	result, err := tx.Execute(`
+		INSERT INTO feedbacks (user_id, feeling_id, category_id, recipient_id, news_id, feedback_note, created_at, modified_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	  `, feedback.UserId, feedback.FeelingId, feedback.CategoryId, feedback.RecipientId, feedback.NewsId, feedback.FeedbackNote, time.Now(), time.Now())
+	insertedId64, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insertedId = int(insertedId64)
+	return
+}

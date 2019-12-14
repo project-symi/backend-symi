@@ -8,11 +8,11 @@ import (
 )
 
 type FeedbackPointsInteractor struct {
-	FeedbackPointsRepository FeedbackPointsRepository
-	FeedbackRepository       FeedbackRepository
-	FeelingRepository        FeelingRepository
-	CategoryRepository       CategoryRepository
-	UserRepository           UserRepository
+	TransactionRepository TransactionRepository
+	FeedbackRepository    FeedbackRepository
+	FeelingRepository     FeelingRepository
+	CategoryRepository    CategoryRepository
+	UserRepository        UserRepository
 }
 
 const (
@@ -39,7 +39,7 @@ func (interactor *FeedbackPointsInteractor) StoreFeedback(feedback domain.Feedba
 func (interactor *FeedbackPointsInteractor) applyPointByFeeling(storedfeedback domain.StoredFeedback, expireDate string) (appliedPoint int, err error) {
 	switch storedfeedback.FeelingId {
 	case Good:
-		appliedPoint, err = interactor.FeedbackPointsRepository.StoreFeedbackAndUpdatePoints(storedfeedback, expireDate) //TODO: Validate recipientId without Category-Employee
+		appliedPoint, err = interactor.TransactionRepository.StoreFeedbackAndUpdatePoints(storedfeedback, expireDate) //TODO: Validate recipientId without Category-Employee
 	case Meh, Sad:
 		appliedPoint = 0
 		err = interactor.FeedbackRepository.StoreFeedback(storedfeedback)

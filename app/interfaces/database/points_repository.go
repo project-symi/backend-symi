@@ -2,6 +2,7 @@ package database
 
 import (
 	"project-symi-backend/app/domain"
+	"time"
 )
 
 type PointsRepository struct {
@@ -44,6 +45,17 @@ func (repo *PointsRepository) FindPointsByUserId(userId int) (points domain.Poin
 			CreatedAt:    createdAt,
 		}
 		points = append(points, pointValue)
+	}
+	return
+}
+
+func addTxPointLog(tx Tx, userId int, pointCategorId int, feedbackId int, expireDate string) (err error) {
+	_, err = tx.Execute(`
+		INSERT INTO point_logs (user_id, point_category_id, feedback_id, expire_date, created_at, modified_at)
+		VALUES (?, ?, ?, ?, ?, ?)
+	  `, userId, pointCategorId, feedbackId, expireDate, time.Now(), time.Now())
+	if err != nil {
+		return
 	}
 	return
 }

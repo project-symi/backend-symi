@@ -278,3 +278,22 @@ func (repo *UserRepository) AddUser(employee_id string, name string, mail string
 	}
 	return
 }
+
+func updateTxUserTotalPoint(tx Tx, userId int, point int, feedbackId int) (err error) {
+	_, err = tx.Execute(`
+	UPDATE users u
+	JOIN point_logs p ON p.user_id = u.id
+	JOIN point_categories pc ON p.point_category_id = pc.id
+	SET
+	  u.total_points = u.total_points + pc.point,
+	  u.modified_at = ?
+	WHERE
+	  u.id = ?
+	AND
+	  p.feedback_id = ?
+		`, time.Now(), userId, feedbackId)
+	if err != nil {
+		return
+	}
+	return
+}

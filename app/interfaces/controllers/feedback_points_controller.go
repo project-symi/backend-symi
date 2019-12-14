@@ -13,7 +13,7 @@ type FeedbackPointsController struct {
 func NewFeedbackPointsController(sqlHandler database.SqlHandler) *FeedbackPointsController {
 	return &FeedbackPointsController{
 		Interactor: usecase.FeedbackPointsInteractor{
-			FeedbackPointsRepository: &database.FeedbackPointsRepository{
+			TransactionRepository: &database.TransactionRepository{
 				SqlHandler: sqlHandler,
 			},
 			FeedbackRepository: &database.FeedbackRepository{
