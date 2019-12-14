@@ -1,0 +1,4 @@
+START TRANSACTION;
+DROP TABLE IF EXISTS invitations;
+DROP TABLE IF EXISTS invitation_status_categories;
+COMMIT;

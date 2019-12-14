@@ -10,8 +10,8 @@ CREATE TABLE permissions (
     name VARCHAR(20) UNIQUE,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 CREATE TABLE genders (
@@ -19,8 +19,8 @@ CREATE TABLE genders (
     gender VARCHAR(20) UNIQUE,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 CREATE TABLE departments (
@@ -28,8 +28,8 @@ CREATE TABLE departments (
     name VARCHAR(20) UNIQUE,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 CREATE TABLE users (
@@ -44,8 +44,8 @@ CREATE TABLE users (
     permission_id INT NOT NULL,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     current_token VARCHAR(36),
     FOREIGN KEY (department_id) REFERENCES departments(id),
     FOREIGN KEY (gender_id) REFERENCES genders(id),
