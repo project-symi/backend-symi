@@ -3,16 +3,16 @@ package controllers
 import (
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
-	"project-symi-backend/app/usecase"
+	"project-symi-backend/app/usecase/interactor"
 )
 
 type UserController struct {
-	Interactor usecase.UserInteractor
+	Interactor interactor.UserInteractor
 }
 
 func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	return &UserController{
-		Interactor: usecase.UserInteractor{
+		Interactor: interactor.UserInteractor{
 			UserRepository: &database.UserRepository{
 				SqlHandler: sqlHandler,
 			},

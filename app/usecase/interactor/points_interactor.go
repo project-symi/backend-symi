@@ -1,10 +1,13 @@
-package usecase
+package interactor
 
-import "project-symi-backend/app/domain"
+import (
+	"project-symi-backend/app/domain"
+	"project-symi-backend/app/usecase/repository"
+)
 
 type PointsInteractor struct {
-	PointsRepository PointsRepository
-	UserRepository   UserRepository
+	PointsRepository repository.PointsRepository
+	UserRepository   repository.UserRepository
 }
 
 func (interactor *PointsInteractor) FindPointsByEmployeeId(employeeId string) (points domain.Points, err error) {

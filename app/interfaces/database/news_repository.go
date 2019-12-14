@@ -76,14 +76,14 @@ func (repo *NewsRepository) DeleteByNewsId(id string) (amountOfDeleted int, err 
 	return
 }
 
-func (repo *NewsRepository) AddNewsItem(title string, description string, photoLink string) (success bool, err error) {
+func (repo *NewsRepository) AddNewsItem(news domain.NewsPost) (success bool, err error) {
 	result, err := repo.Execute(`
 	INSERT INTO
 		news
 	(title, description, photo_link, created_at, modified_at)
 	VALUES
 	(?, ?, ?, ?, ?)`,
-		title, description, photoLink, time.Now(), time.Now())
+		news.Title, news.Description, news.PhotoLink, time.Now(), time.Now())
 	if err != nil {
 		return
 	}

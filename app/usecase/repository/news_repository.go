@@ -1,4 +1,4 @@
-package usecase
+package repository
 
 import (
 	"project-symi-backend/app/domain"
@@ -7,5 +7,5 @@ import (
 type NewsRepository interface {
 	GetAll() (domain.News, error)
 	DeleteByNewsId(string) (int, error)
-	AddNewsItem(string, string, string) (bool, error)
+	AddNewsItem(domain.NewsPost) (bool, error)
 }

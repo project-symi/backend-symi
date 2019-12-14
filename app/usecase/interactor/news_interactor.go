@@ -1,11 +1,12 @@
-package usecase
+package interactor
 
 import (
 	"project-symi-backend/app/domain"
+	"project-symi-backend/app/usecase/repository"
 )
 
 type NewsInteractor struct {
-	NewsRepository NewsRepository
+	NewsRepository repository.NewsRepository
 }
 
 func (interactor *NewsInteractor) News() (news domain.News, err error) {
@@ -18,7 +19,7 @@ func (interactor *NewsInteractor) Delete(newsId string) (amountOfDeleted int, er
 	return
 }
 
-func (interactor *NewsInteractor) AddNewNews(newsItem domain.NewsItem) (success bool, err error) {
-	success, err = interactor.NewsRepository.AddNewsItem(newsItem.Title, newsItem.Description, newsItem.PhotoLink)
+func (interactor *NewsInteractor) AddNewNews(newsItem domain.NewsPost) (success bool, err error) {
+	success, err = interactor.NewsRepository.AddNewsItem(newsItem)
 	return
 }

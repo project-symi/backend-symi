@@ -118,7 +118,7 @@ func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks do
 	return
 }
 
-func (repo *FeedbackRepository) FindByEmployeeId(userId int) (feedbacks domain.Feedbacks, err error) {
+func (repo *FeedbackRepository) FindByEmployeeId(userId int) (feedbacks domain.FeedbackEmployees, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			feed.id,
@@ -158,7 +158,7 @@ func (repo *FeedbackRepository) FindByEmployeeId(userId int) (feedbacks domain.F
 			&createdAt); err != nil {
 			continue
 		}
-		feedback := domain.Feedback{
+		feedback := domain.FeedbackEmployee{
 			Id:            id,
 			Feeling:       feeling,
 			Seen:          seen,
