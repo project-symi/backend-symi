@@ -80,7 +80,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWithPoints, err error) {
 	rows, err := repo.Query(`
 		SELECT
-			u.id,
+			u.employee_id,
 			u.name,
 			u.total_points,
 			u.birthday,
@@ -100,7 +100,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 	}
 	for rows.Next() {
 		var (
-			id         int
+			employeeId string
 			name       string
 			points     int
 			birthday   string
@@ -108,7 +108,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			gender     string
 		)
 		if err := rows.Scan(
-			&id,
+			&employeeId,
 			&name,
 			&points,
 			&birthday,
@@ -117,7 +117,7 @@ func (repo *UserRepository) FindTopPointsUsers(limit int) (users domain.UsersWit
 			continue
 		}
 		user := domain.UserWithPoints{
-			Id:          id,
+			EmployeeId:  employeeId,
 			Name:        name,
 			Points:      points,
 			DateOfBirth: birthday,

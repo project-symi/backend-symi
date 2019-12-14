@@ -28,7 +28,7 @@ type UserByName struct {
 }
 
 type UserWithPoints struct {
-	Id          int    `json:"id"`
+	EmployeeId  string `json:"employeeId"`
 	Name        string `json:"name"`
 	Points      int    `json:"points"`
 	DateOfBirth string `json:"dateOfBirth"`
