@@ -20,6 +20,10 @@ Parameters:
   ContainerPort:
     Type: Number
     Default: 8080
+  AppDbInfo:
+    Type: String
+  AppSigningKey:
+    Type: String
 
 Resources:
 
@@ -166,7 +170,9 @@ Resources:
                   {
                     "ImageURI" : { "Fn::GetParam" : ["build-output-artifacts", "imageDetail.json", "ImageURI"] },
                     "Stage":  "${Stage}",
-                    "ContainerPort": "${ContainerPort}"
+                    "ContainerPort": "${ContainerPort}",
+                    "AppDbInfo": "${AppDbInfo}",
+                    "AppSigningKey": "${AppSigningKey}"
                   }
                 RoleArn: 
                   Fn::GetAtt: [ CloudformationExecutionRole, Arn ]
