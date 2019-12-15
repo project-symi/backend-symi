@@ -82,6 +82,7 @@ func init() {
 
 		//Invitation endpoints
 		authorized.GET("/invitations", func(c *gin.Context) { invitationController.AllInvitations(c) })
+		authorized.GET("/invitations/:invitationId", func(c *gin.Context) { invitationController.InvitationsById(c) })
 	}
 
 	Router = router

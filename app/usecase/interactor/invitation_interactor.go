@@ -16,3 +16,11 @@ func (interactor *InvitationInteractor) FindBySenderId(senderId string) (invitat
 	}
 	return
 }
+
+func (interactor *InvitationInteractor) FindById(invitationId int) (invitation domain.Invitation, err error) {
+	invitation, err = interactor.InvitationRepository.FindById(invitationId)
+	if err != nil {
+		return
+	}
+	return
+}

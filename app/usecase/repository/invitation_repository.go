@@ -6,4 +6,5 @@ import (
 
 type InvitationRepository interface {
 	FindBySenderId(string) (domain.Invitations, error)
+	FindById(int) (domain.Invitation, error)
 }

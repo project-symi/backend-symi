@@ -3,6 +3,7 @@ package controllers
 import (
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
+	"strconv"
 )
 
 type InvitationController struct {
@@ -21,6 +22,17 @@ func NewInvitationController(sqlHandler database.SqlHandler) *InvitationControll
 
 func (controller *InvitationController) AllInvitations(c Context) {
 	Invitations, err := controller.Interactor.FindBySenderId(c.Query("senderId"))
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, Invitations)
+}
+
+func (controller *InvitationController) InvitationsById(c Context) {
+	invitationIdString := c.Param("invitationId")
+	invitationId, _ := strconv.Atoi(invitationIdString)
+	Invitations, err := controller.Interactor.FindById(invitationId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
