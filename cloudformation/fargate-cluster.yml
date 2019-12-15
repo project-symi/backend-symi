@@ -8,6 +8,10 @@ Parameters:
     Type: Number
   ImageURI:
     Type: String
+  AppDbInfo:
+    Type: String
+  AppSigningKey:
+    Type: String
 
 Resources:
 
@@ -109,6 +113,11 @@ Resources:
       ContainerDefinitions:
         - Name: !Join ['-', [!Ref Stage, !Ref 'AWS::AccountId', 'Container']]
           Image: !Ref ImageURI
+          Environment:
+            - Name: DB_INFO
+              Value: !Ref AppDbInfo
+            - Name: SIGNING_KEY
+              Value: !Ref AppSigningKey
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               HostPort: !Ref ContainerPort
