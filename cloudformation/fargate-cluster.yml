@@ -113,6 +113,13 @@ Resources:
       ContainerDefinitions:
         - Name: !Join ['-', [!Ref Stage, !Ref 'AWS::AccountId', 'Container']]
           Image: !Ref ImageURI
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group:
+                Fn::ImportValue: SYMI-Backend
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: symilogs
           Environment:
             - Name: DB_INFO
               Value: !Ref AppDbInfo
