@@ -116,8 +116,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group:
-                Fn::ImportValue: SYMI-Backend
+              awslogs-group: SYMI-Backend
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: symilogs
           Environment:
