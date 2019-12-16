@@ -5,30 +5,30 @@ import (
 	"time"
 )
 
-func fakeTime (year int, month time.Month) {
+func fakeTime(year int, month time.Month) {
 	now = func() time.Time {
 		return time.Date(year, month, 7, 12, 0, 0, 0, time.Local)
 	}
 }
 
 func TestCalculateExpireDate(t *testing.T) {
-	var tests = []struct{
-		year int
+	var tests = []struct {
+		year  int
 		month time.Month
-		want string
+		want  string
 	}{
-		{1989, 1, "1989-03-31"},
-		{1989, 2, "1989-03-31"},
-		{1989, 3, "1989-03-31"},
-		{2019, 4, "2019-06-31"},
-		{2019, 5, "2019-06-31"},
-		{2019, 6, "2019-06-31"},
-		{2015, 7, "2015-09-30"},
+		{2008, 1, "2008-03-31"},
+		{2009, 2, "2009-03-31"},
+		{2010, 3, "2010-03-31"},
+		{2011, 4, "2011-06-31"},
+		{2012, 5, "2012-06-31"},
+		{2013, 6, "2013-06-31"},
+		{2014, 7, "2014-09-30"},
 		{2015, 8, "2015-09-30"},
-		{2015, 9, "2015-09-30"},
-		{2012, 10, "2012-12-31"},
-		{2012, 11, "2012-12-31"},
-		{2012, 12, "2012-12-31"},
+		{2016, 9, "2016-09-30"},
+		{2017, 10, "2017-12-31"},
+		{2018, 11, "2018-12-31"},
+		{2019, 12, "2019-12-31"},
 	}
 	for _, test := range tests {
 		fakeTime(test.year, test.month)
