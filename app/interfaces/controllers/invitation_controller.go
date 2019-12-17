@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
+	"strconv"
 )
 
 type InvitationController struct {
@@ -16,6 +18,9 @@ func NewInvitationController(sqlHandler database.SqlHandler) *InvitationControll
 				SqlHandler: sqlHandler,
 			},
 			UserRepository: &database.UserRepository{
+				SqlHandler: sqlHandler,
+			},
+			InvitationStatusCategoryRepository: &database.InvitationStatusCategoryRepository{
 				SqlHandler: sqlHandler,
 			},
 		},
@@ -38,4 +43,21 @@ func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
 		return
 	}
 	c.JSON(200, Invitations)
+}
+
+func (controller *InvitationController) PatchInvitationById(c Context) {
+	invitationIdString := c.Param("invitationId")
+	invitationId, _ := strconv.Atoi(invitationIdString)
+	patchInvitation := domain.PatchInvitation{}
+	c.BindJSON(&patchInvitation)
+	success, err := controller.Interactor.PatchInvitationById(invitationId, patchInvitation)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	if success == false {
+		c.Status(400)
+		return
+	}
+	c.Status(200)
 }

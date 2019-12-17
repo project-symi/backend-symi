@@ -109,7 +109,7 @@ func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitatio
 			&reply,
 			&seen,
 			&invitationDateTime); err != nil {
-			return
+			continue
 		}
 		dateTime, _ := time.Parse("2006-01-02 15:04:05", invitationDateTime)
 		invitation := domain.Invitation{
@@ -124,5 +124,19 @@ func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitatio
 		}
 		invitations = append(invitations, invitation)
 	}
+	return
+}
+
+func (repo *InvitationRepository) UpdateStatusAndReplyById(id int, statusId int, reply string) (success bool, err error) {
+	result, err := repo.Execute(`UPDATE invitations SET invitation_status_category_id = ?, reply = ? WHERE id = ?`, statusId, reply, id)
+	if err != nil {
+		return
+	}
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		success = false
+		return
+	}
+	success = true
 	return
 }

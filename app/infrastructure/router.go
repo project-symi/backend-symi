@@ -83,6 +83,7 @@ func init() {
 		//Invitation endpoints
 		authorized.PATCH("/invitations", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
 		authorized.GET("/invitations/:employeeId", func(c *gin.Context) { invitationController.InvitationsByEmployeeId(c) })
+		authorized.PATCH("/invitations/:invitationId", func(c *gin.Context) { invitationController.PatchInvitationById(c) })
 	}
 
 	Router = router

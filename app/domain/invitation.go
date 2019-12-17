@@ -21,6 +21,6 @@ type PostInvitation struct {
 }
 
 type PatchInvitation struct {
-	Seen  bool   `json:"seen"`
-	Reply string `json:"reply"`
+	Status string `json:"status"`
+	Reply  string `json:"reply"`
 }
