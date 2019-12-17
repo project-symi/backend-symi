@@ -7,5 +7,5 @@ import (
 type InvitationRepository interface {
 	UpdateSeenFromStatus(int) error
 	FindAll() (domain.Invitations, error)
-	FindById(int) (domain.Invitation, error)
+	FindByEmployeeId(int) (domain.Invitations, error)
 }

@@ -9,6 +9,7 @@ const Pending = 1
 
 type InvitationInteractor struct {
 	InvitationRepository repository.InvitationRepository
+	UserRepository       repository.UserRepository
 }
 
 func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations domain.Invitations, err error) {
@@ -23,8 +24,9 @@ func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations doma
 	return
 }
 
-func (interactor *InvitationInteractor) FindById(invitationId int) (invitation domain.Invitation, err error) {
-	invitation, err = interactor.InvitationRepository.FindById(invitationId)
+func (interactor *InvitationInteractor) FindByEmployeeId(employeeId string) (invitations domain.Invitations, err error) {
+	keyId, err := interactor.UserRepository.FindKeyIdByEmployeeId(employeeId)
+	invitations, err = interactor.InvitationRepository.FindByEmployeeId(keyId)
 	if err != nil {
 		return
 	}

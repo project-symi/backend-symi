@@ -71,7 +71,7 @@ func (repo *InvitationRepository) UpdateSeenFromStatus(pending int) (err error) 
 	return
 }
 
-func (repo *InvitationRepository) FindById(invitationId int) (invitation domain.Invitation, err error) {
+func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitations domain.Invitations, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			i.id,
@@ -84,40 +84,45 @@ func (repo *InvitationRepository) FindById(invitationId int) (invitation domain.
 		FROM invitations i
 		JOIN users u ON u.id = i.employee_id
 		JOIN invitation_status_categories ic ON ic.id = i.invitation_status_category_id
-		WHERE i.id = ?`,
-		invitationId)
+		WHERE i.deleted = false
+		AND i.employee_id = ?`,
+		employeeKeyId)
 	defer rows.Close()
 	if err != nil {
 		return
 	}
-	rows.Next()
-	var (
-		id             int
-		employeeId     string
-		comments       string
-		status         string
-		reply          string
-		seen           bool
-		invitationDate string
-	)
-	if err = rows.Scan(
-		&id,
-		&employeeId,
-		&comments,
-		&status,
-		&reply,
-		&seen,
-		&invitationDate); err != nil {
-		return
-	}
-	invitation = domain.Invitation{
-		Id:             id,
-		EmployeeId:     employeeId,
-		Comments:       comments,
-		Status:         status,
-		Reply:          reply,
-		Seen:           seen,
-		InvitationDate: invitationDate,
+	for rows.Next() {
+		var (
+			id                 int
+			employeeId         string
+			comments           string
+			status             string
+			reply              string
+			seen               bool
+			invitationDateTime string
+		)
+		if err = rows.Scan(
+			&id,
+			&employeeId,
+			&comments,
+			&status,
+			&reply,
+			&seen,
+			&invitationDateTime); err != nil {
+			return
+		}
+		dateTime, _ := time.Parse("2006-01-02 15:04:05", invitationDateTime)
+		invitation := domain.Invitation{
+			Id:             id,
+			EmployeeId:     employeeId,
+			Comments:       comments,
+			Status:         status,
+			Reply:          reply,
+			Seen:           seen,
+			InvitationDate: dateTime.Format("2006-01-02"),
+			InvitationTime: dateTime.Format("15:04"),
+		}
+		invitations = append(invitations, invitation)
 	}
 	return
 }
