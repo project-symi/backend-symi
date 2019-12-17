@@ -85,6 +85,7 @@ func init() {
 		authorized.POST("/invitations", func(c *gin.Context) { invitationController.PostInvitation(c) })
 		authorized.PATCH("/invitations", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
 		authorized.PATCH("/invitations/:invitationId", func(c *gin.Context) { invitationController.PatchInvitationById(c) })
+		authorized.DELETE("/invitations/:invitationId", func(c *gin.Context) { invitationController.DeleteById(c) })
 	}
 
 	Router = router

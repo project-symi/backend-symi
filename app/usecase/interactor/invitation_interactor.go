@@ -56,3 +56,11 @@ func (interactor *InvitationInteractor) PatchInvitationById(id int, statusAndRep
 	}
 	return
 }
+
+func (interactor *InvitationInteractor) DeleteById(id int) (success bool, err error) {
+	success, err = interactor.InvitationRepository.DeleteById(id)
+	if err != nil {
+		return
+	}
+	return
+}

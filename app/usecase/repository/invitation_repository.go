@@ -10,4 +10,5 @@ type InvitationRepository interface {
 	FindByEmployeeId(int) (domain.Invitations, error)
 	UpdateStatusAndReplyById(int, int, string) (bool, error)
 	PostInvitation(int, int, string, string) (bool, error)
+	DeleteById(int) (bool, error)
 }

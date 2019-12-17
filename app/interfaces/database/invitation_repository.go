@@ -157,3 +157,17 @@ func (repo *InvitationRepository) UpdateStatusAndReplyById(id int, statusId int,
 	success = true
 	return
 }
+
+func (repo *InvitationRepository) DeleteById(id int) (success bool, err error) {
+	result, err := repo.Execute(`UPDATE invitations SET deleted = true, deleted_at = ? WHERE id = ?`, time.Now(), id)
+	if err != nil {
+		return
+	}
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		success = false
+		return
+	}
+	success = true
+	return
+}

@@ -72,3 +72,18 @@ func (controller *InvitationController) PatchInvitationById(c Context) {
 	}
 	c.Status(200)
 }
+
+func (controller *InvitationController) DeleteById(c Context) {
+	invitationIdString := c.Param("invitationId")
+	invitationId, _ := strconv.Atoi(invitationIdString)
+	success, err := controller.Interactor.DeleteById(invitationId)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	if success == false {
+		c.Status(400)
+		return
+	}
+	c.Status(200)
+}
