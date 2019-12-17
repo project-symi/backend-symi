@@ -50,7 +50,7 @@ func (controller *FeedbackController) FeedbacksByEmployeeId(c Context) {
 }
 
 func (controller *FeedbackController) PatchSeen(c Context) {
-	var ids []string
+	var ids []int
 	c.BindJSON(&ids)
 	numberOfChanged, err := controller.Interactor.ChangeToSeen(ids)
 	if err != nil {
