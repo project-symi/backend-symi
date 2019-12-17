@@ -22,6 +22,8 @@ const (
 	Sad
 )
 
+var now = time.Now
+
 func (interactor *FeedbackPointsInteractor) StoreFeedback(feedback domain.Feedback) (employeeIdAndPoint domain.UserIdAndPoints, err error) {
 	storedfeedback := domain.StoredFeedback{}
 	storedfeedback.UserId, err = interactor.UserRepository.FindKeyIdByEmployeeId(feedback.EmployeeId)
@@ -51,16 +53,16 @@ func (interactor *FeedbackPointsInteractor) applyPointByFeeling(storedfeedback d
 }
 
 func calculateExpireDate() (endOfQuarter string) {
-	quarter := (time.Now().Month()-1)/3 + 1
+	quarter := (now().Month()-1)/3 + 1
 	switch quarter {
 	case 1:
-		endOfQuarter = strconv.Itoa(time.Now().Year()) + "-3-31"
+		endOfQuarter = strconv.Itoa(now().Year()) + "-03-31"
 	case 2:
-		endOfQuarter = strconv.Itoa(time.Now().Year()) + "-6-31"
+		endOfQuarter = strconv.Itoa(now().Year()) + "-06-31"
 	case 3:
-		endOfQuarter = strconv.Itoa(time.Now().Year()) + "-9-30"
+		endOfQuarter = strconv.Itoa(now().Year()) + "-09-30"
 	case 4:
-		endOfQuarter = strconv.Itoa(time.Now().Year()) + "-12-31"
+		endOfQuarter = strconv.Itoa(now().Year()) + "-12-31"
 	}
 	return
 }
