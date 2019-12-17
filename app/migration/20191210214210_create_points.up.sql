@@ -10,8 +10,8 @@ CREATE TABLE point_categories (
     life_time_month INT NOT NULL,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 CREATE TABLE point_logs (
@@ -21,8 +21,8 @@ CREATE TABLE point_logs (
     feedback_id INT NOT NULL,
     expired boolean default false,
     expire_date DATE,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (point_category_id) REFERENCES point_categories(id)

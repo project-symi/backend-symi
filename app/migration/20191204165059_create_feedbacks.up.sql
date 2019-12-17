@@ -18,8 +18,8 @@ CREATE TABLE categories (
     name VARCHAR(20),
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 CREATE TABLE feedbacks (
@@ -33,8 +33,8 @@ CREATE TABLE feedbacks (
     seen boolean default false,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (feeling_id) REFERENCES feelings(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),

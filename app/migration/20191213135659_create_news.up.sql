@@ -10,8 +10,8 @@ CREATE TABLE news (
     hidden boolean default false,
     deleted boolean default false,
     deleted_at DATETIME,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   );
 set
