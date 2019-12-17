@@ -72,7 +72,7 @@ func init() {
 
 		//Point endpoints
 		authorized.GET("/points", func(c *gin.Context) { userController.TopPointsUsers(c) })
-		authorized.GET("/rewards/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
+		authorized.GET("/points/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
 
 		//news endpoints
 		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })
