@@ -14,11 +14,17 @@ func (repo *PointsRepository) FindPointsByUserId(userId int) (points domain.Poin
 		SELECT
 			pc.name,
 			pc.point,
+			cat.name,
+			COALESCE(u.name, ''),
+			COALESCE(n.title, ''),
 			f.feedback_note,
 			p.created_at
 		FROM point_logs p
 		JOIN feedbacks f ON f.id = p.feedback_id
 		JOIN point_categories pc ON pc.id = p.point_category_id
+		JOIN categories cat ON cat.id = f.category_id
+		LEFT OUTER JOIN users u ON u.id = f.recipient_id
+		LEFT OUTER JOIN news n ON n.id = f.news_id
 		WHERE p.user_id = ?`, userId)
 	defer rows.Close()
 	if err != nil {
@@ -26,23 +32,32 @@ func (repo *PointsRepository) FindPointsByUserId(userId int) (points domain.Poin
 	}
 	for rows.Next() {
 		var (
-			categoryName string
-			point        int
-			feedbackNote string
-			createdAt    string
+			categoryName     string
+			point            int
+			feedbackCategory string
+			recipientName    string
+			newsTitle        string
+			feedbackNote     string
+			createdAt        string
 		)
 		if err := rows.Scan(
 			&categoryName,
 			&point,
+			&feedbackCategory,
+			&recipientName,
+			&newsTitle,
 			&feedbackNote,
 			&createdAt); err != nil {
 			continue
 		}
 		pointValue := domain.Point{
-			CategoryName: categoryName,
-			Point:        point,
-			FeedbackNote: feedbackNote,
-			CreatedAt:    createdAt,
+			CategoryName:          categoryName,
+			Point:                 point,
+			FeedbackCategory:      feedbackCategory,
+			FeedbackRecipientName: recipientName,
+			FeedbackNewsTitle:     newsTitle,
+			FeedbackNote:          feedbackNote,
+			CreatedAt:             createdAt,
 		}
 		points = append(points, pointValue)
 	}
