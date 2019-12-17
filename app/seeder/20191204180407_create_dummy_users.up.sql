@@ -1,48 +1,35 @@
 START TRANSACTION;
+set
+  foreign_key_checks = 0;
 DELETE FROM users;
-DELETE FROM permissions;
 DELETE FROM genders;
 DELETE FROM departments;
-INSERT INTO permissions (
-    id,
-    name,
-    created_at,
-    modified_at
-  )
+DELETE FROM permissions;
+INSERT INTO permissions (id, name)
 VALUES
-  (1, 'CEO', NOW(), NOW()),
-  (2, 'employee', NOW(), NOW()),
-  (3, 'admin', NOW(), NOW());
-INSERT INTO genders (
-    id,
-    gender,
-    created_at,
-    modified_at
-  )
+  (1, 'CEO'),
+  (2, 'employee'),
+  (3, 'admin');
+INSERT INTO genders (id, gender)
 VALUES
-  (1, 'male', NOW(), NOW()),
-  (2, 'female', NOW(), NOW());
-INSERT INTO departments (
-    id,
-    name,
-    created_at,
-    modified_at
-  )
+  (1, 'male'),
+  (2, 'female');
+INSERT INTO departments (id, name)
 VALUES
-  (1, 'CEO', NOW(), NOW()),
-  (2, 'Accounting', NOW(), NOW()),
-  (3, 'Administration', NOW(), NOW()),
-  (4, 'Advertising', NOW(), NOW()),
-  (5, 'Audit', NOW(), NOW()),
-  (6, 'Communications', NOW(), NOW()),
-  (7, 'Development', NOW(), NOW()),
-  (8, 'Distribution', NOW(), NOW()),
-  (9, 'Engineering', NOW(), NOW()),
-  (10, 'Marketing', NOW(), NOW()),
-  (11, 'Sales', NOW(), NOW()),
-  (12, 'Planning', NOW(), NOW()),
-  (13, 'Materials', NOW(), NOW()),
-  (14, 'Trading', NOW(), NOW());
+  (1, 'CEO'),
+  (2, 'Accounting'),
+  (3, 'Administration'),
+  (4, 'Advertising'),
+  (5, 'Audit'),
+  (6, 'Communications'),
+  (7, 'Development'),
+  (8, 'Distribution'),
+  (9, 'Engineering'),
+  (10, 'Marketing'),
+  (11, 'Sales'),
+  (12, 'Planning'),
+  (13, 'Materials'),
+  (14, 'Trading');
 INSERT INTO users (
     employee_id,
     name,
@@ -52,9 +39,7 @@ INSERT INTO users (
     gender_id,
     department_id,
     permission_id,
-    total_points,
-    created_at,
-    modified_at
+    total_points
   )
 VALUES
   (
@@ -66,9 +51,7 @@ VALUES
     2,
     1,
     1,
-    0,
-    NOW(),
-    NOW()
+    0
   ),
   (
     'B000300',
@@ -79,9 +62,7 @@ VALUES
     1,
     7,
     3,
-    50,
-    NOW(),
-    NOW()
+    50
   ),
   (
     'B000500',
@@ -92,9 +73,7 @@ VALUES
     2,
     10,
     3,
-    0,
-    NOW(),
-    NOW()
+    0
   ),
   (
     'X009999',
@@ -105,8 +84,8 @@ VALUES
     1,
     9,
     2,
-    35,
-    NOW(),
-    NOW()
+    35
   );
+set
+  foreign_key_checks = 1;
 COMMIT;
