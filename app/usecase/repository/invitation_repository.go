@@ -5,6 +5,7 @@ import (
 )
 
 type InvitationRepository interface {
-	FindBySenderId(string) (domain.Invitations, error)
+	UpdateSeenFromStatus(int) error
+	FindAll() (domain.Invitations, error)
 	FindById(int) (domain.Invitation, error)
 }

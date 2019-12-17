@@ -9,7 +9,7 @@ type InvitationRepository struct {
 	SqlHandler
 }
 
-func (repo *InvitationRepository) FindBySenderId(employeeId string) (invitations domain.Invitations, err error) {
+func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			i.id,
@@ -23,23 +23,22 @@ func (repo *InvitationRepository) FindBySenderId(employeeId string) (invitations
 		JOIN users u1 ON u1.id = i.sender_id
 		JOIN users u2 ON u2.id = i.employee_id
 		JOIN invitation_status_categories ic ON ic.id = i.invitation_status_category_id
-		WHERE u1.employee_id = ?
-		AND i.deleted = false
+		WHERE i.deleted = false
 		AND i.invitation_date >= ?`,
-		employeeId, time.Now().Format("2006-01-02"))
+		time.Now().Format("2006-01-02"))
 	defer rows.Close()
 	if err != nil {
 		return
 	}
 	for rows.Next() {
 		var (
-			id             int
-			employeeId     string
-			comments       string
-			status         string
-			reply          string
-			seen           bool
-			invitationDate string
+			id                 int
+			employeeId         string
+			comments           string
+			status             string
+			reply              string
+			seen               bool
+			invitationDateTime string
 		)
 		if err := rows.Scan(
 			&id,
@@ -48,9 +47,10 @@ func (repo *InvitationRepository) FindBySenderId(employeeId string) (invitations
 			&status,
 			&reply,
 			&seen,
-			&invitationDate); err != nil {
+			&invitationDateTime); err != nil {
 			continue
 		}
+		dateTime, _ := time.Parse("2006-01-02 15:04:05", invitationDateTime)
 		invitation := domain.Invitation{
 			Id:             id,
 			EmployeeId:     employeeId,
@@ -58,10 +58,16 @@ func (repo *InvitationRepository) FindBySenderId(employeeId string) (invitations
 			Status:         status,
 			Reply:          reply,
 			Seen:           seen,
-			InvitationDate: invitationDate,
+			InvitationDate: dateTime.Format("2006-01-02"),
+			InvitationTime: dateTime.Format("15:04"),
 		}
 		invitations = append(invitations, invitation)
 	}
+	return
+}
+
+func (repo *InvitationRepository) UpdateSeenFromStatus(pending int) (err error) {
+	_, err = repo.Execute(`UPDATE invitations SET seen = true WHERE deleted = false AND seen = false AND invitation_status_category_id != ?`, pending)
 	return
 }
 

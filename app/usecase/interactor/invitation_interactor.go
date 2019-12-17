@@ -5,12 +5,18 @@ import (
 	"project-symi-backend/app/usecase/repository"
 )
 
+const Pending = 1
+
 type InvitationInteractor struct {
 	InvitationRepository repository.InvitationRepository
 }
 
-func (interactor *InvitationInteractor) FindBySenderId(senderId string) (invitations domain.Invitations, err error) {
-	invitations, err = interactor.InvitationRepository.FindBySenderId(senderId)
+func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations domain.Invitations, err error) {
+	err = interactor.InvitationRepository.UpdateSeenFromStatus(Pending)
+	if err != nil {
+		return
+	}
+	invitations, err = interactor.InvitationRepository.FindAll()
 	if err != nil {
 		return
 	}

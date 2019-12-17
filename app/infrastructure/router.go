@@ -81,7 +81,7 @@ func init() {
 		authorized.DELETE("/news/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
 
 		//Invitation endpoints
-		authorized.GET("/invitations", func(c *gin.Context) { invitationController.AllInvitations(c) })
+		authorized.PATCH("/invitations", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
 		authorized.GET("/invitations/:invitationId", func(c *gin.Context) { invitationController.InvitationsById(c) })
 	}
 

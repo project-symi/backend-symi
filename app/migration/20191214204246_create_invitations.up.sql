@@ -20,7 +20,7 @@ CREATE TABLE invitations (
     invitation_status_category_id INT NOT NULL,
     reply VARCHAR(5000) default "",
     seen boolean default false,
-    invitation_date DATE,
+    invitation_date DATETIME,
     deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

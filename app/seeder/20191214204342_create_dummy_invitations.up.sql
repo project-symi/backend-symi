@@ -25,7 +25,7 @@ VALUES
     1,
     '',
     false,
-    '2019-12-25'
+    '2019-12-25 12:00:00'
   ),
   (
     1,
@@ -33,8 +33,8 @@ VALUES
     'Let''s discuss about beauty',
     2,
     'Why not!',
-    true,
-    '2019-12-20'
+    false,
+    '2019-12-20 13:00:00'
   ),
   (
     1,
@@ -42,8 +42,8 @@ VALUES
     'You have serious problems',
     3,
     'Sorry I have headache.',
-    true,
-    '2019-12-12'
+    false,
+    '2019-12-12  18:30:00'
   );
 set
   foreign_key_checks = 1;

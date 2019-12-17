@@ -20,8 +20,8 @@ func NewInvitationController(sqlHandler database.SqlHandler) *InvitationControll
 	}
 }
 
-func (controller *InvitationController) AllInvitations(c Context) {
-	Invitations, err := controller.Interactor.FindBySenderId(c.Query("senderId"))
+func (controller *InvitationController) MadeSeenAllInvitations(c Context) {
+	Invitations, err := controller.Interactor.ChangeSeenAndFindAll()
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

@@ -8,13 +8,19 @@ type Invitation struct {
 	Reply          string `json:"reply"`
 	Seen           bool   `json:"seen"`
 	InvitationDate string `json:"invitationDate"`
-}
-
-type InvitationPost struct {
-	SenderId       string `json:"senderId"`
-	EmployeeId     string `json:"employeeId"`
-	Comments       string `json:"comments"`
-	InvitationDate string `json:"invitationDate"`
+	InvitationTime string `json:"invitationTime"`
 }
 
 type Invitations []Invitation
+
+type PostInvitation struct {
+	EmployeeId     string `json:"employeeId"`
+	Comments       string `json:"comments"`
+	InvitationDate string `json:"invitationDate"`
+	InvitationTime string `json:"invitationTime"`
+}
+
+type PatchInvitation struct {
+	Seen  bool   `json:"seen"`
+	Reply string `json:"reply"`
+}
