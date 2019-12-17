@@ -45,6 +45,17 @@ func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
 	c.JSON(200, Invitations)
 }
 
+func (controller *InvitationController) PostInvitation(c Context) {
+	invitation := domain.PostInvitation{}
+	c.BindJSON(&invitation)
+	Invitations, err := controller.Interactor.PostInvitation(invitation)
+	if err != nil {
+		c.JSON(500, NewError(err))
+		return
+	}
+	c.JSON(200, Invitations)
+}
+
 func (controller *InvitationController) PatchInvitationById(c Context) {
 	invitationIdString := c.Param("invitationId")
 	invitationId, _ := strconv.Atoi(invitationIdString)

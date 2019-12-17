@@ -71,6 +71,23 @@ func (repo *InvitationRepository) UpdateSeenFromStatus(pending int) (err error) 
 	return
 }
 
+func (repo *InvitationRepository) PostInvitation(senderId int, employeeId int, comments string, invitationDate string) (success bool, err error) {
+	result, err := repo.Execute(`
+	INSERT INTO invitations (sender_id, employee_id, comments, invitation_date)
+	VALUES
+		(?, ?, ?, ?)`, senderId, employeeId, comments, invitationDate)
+	if err != nil {
+		return
+	}
+	inserted, err := result.LastInsertId()
+	if inserted == 0 {
+		success = false
+		return
+	}
+	success = true
+	return
+}
+
 func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitations domain.Invitations, err error) {
 	rows, err := repo.Query(`
 		SELECT

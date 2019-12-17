@@ -22,6 +22,23 @@ func (repo *UserRepository) FindKeyIdByEmployeeId(employeeId string) (id int, er
 	return
 }
 
+func (repo *UserRepository) FindCEOId() (id int, err error) {
+	row, err := repo.Query(`
+	SELECT u.id
+	FROM users u
+	JOIN permissions p ON u.permission_id = p.id
+	WHERE p.id = 1`)
+	defer row.Close()
+	if err != nil {
+		return
+	}
+	row.Next()
+	if err = row.Scan(&id); err != nil {
+		return
+	}
+	return
+}
+
 func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	rows, err := repo.Query(`
 		SELECT

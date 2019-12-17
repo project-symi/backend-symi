@@ -17,7 +17,7 @@ CREATE TABLE invitations (
     sender_id INT NOT NULL,
     employee_id INT NOT NULL,
     comments TEXT,
-    invitation_status_category_id INT NOT NULL,
+    invitation_status_category_id INT NOT NULL default 1,
     reply VARCHAR(5000) default "",
     seen boolean default false,
     invitation_date DATETIME,
