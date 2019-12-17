@@ -24,7 +24,7 @@ const (
 
 var now = time.Now
 
-func (interactor *FeedbackPointsInteractor) StoreFeedback(feedback domain.Feedback) (employeeIdAndPoint domain.UserIdAndPoints, err error) {
+func (interactor *FeedbackPointsInteractor) StoreFeedback(feedback domain.FeedbackStore) (employeeIdAndPoint domain.UserIdAndPoints, err error) {
 	storedfeedback := domain.StoredFeedback{}
 	storedfeedback.UserId, err = interactor.UserRepository.FindKeyIdByEmployeeId(feedback.EmployeeId)
 	storedfeedback.FeelingId, err = interactor.FeelingRepository.FindIdByName(feedback.Feeling)

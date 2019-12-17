@@ -12,13 +12,15 @@ type FeedbackRepository struct {
 func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error) {
 	rows, err := repo.Query(`
 		SELECT
+			feed.id,
 			u1.employee_id,
 			feel.name,
 			feed.seen,
 			c.name,
 			COALESCE(u2.employee_id, ''),
 			COALESCE(feed.news_id, 0),
-			feed.feedback_note
+			feed.feedback_note,
+			feed.created_at
   		FROM feedbacks feed
   		JOIN categories c on c.id = feed.category_id
 	  	JOIN feelings feel on feel.id = feed.feeling_id
@@ -31,6 +33,7 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 	}
 	for rows.Next() {
 		var (
+			feedbackId   int
 			employeeId   string
 			feeling      string
 			seen         bool
@@ -38,18 +41,22 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 			recipientId  string
 			newsId       int
 			feedbackNote string
+			created      string
 		)
 		if err := rows.Scan(
+			&feedbackId,
 			&employeeId,
 			&feeling,
 			&seen,
 			&category,
 			&recipientId,
 			&newsId,
-			&feedbackNote); err != nil {
+			&feedbackNote,
+			&created); err != nil {
 			continue
 		}
 		feedback := domain.Feedback{
+			FeedbackId:          feedbackId,
 			EmployeeId:          employeeId,
 			Feeling:             feeling,
 			Seen:                seen,
@@ -57,6 +64,7 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 			RecipientEmployeeId: recipientId,
 			NewsId:              newsId,
 			FeedbackNote:        feedbackNote,
+			CreatedAt:           created,
 		}
 		feedbacks = append(feedbacks, feedback)
 	}
@@ -66,13 +74,15 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks domain.Feedbacks, err error) {
 	rows, err := repo.Query(`
 		SELECT
+			feed.id,
 			u1.employee_id,
 			feel.name,
 			feed.seen,
 			c.name,
 			COALESCE(u2.employee_id, ''),
 			COALESCE(feed.news_id, 0),
-			feed.feedback_note
+			feed.feedback_note,
+			feed.created_at
   		FROM feedbacks feed
   		JOIN categories c on c.id = feed.category_id
   		JOIN feelings feel on feel.id = feed.feeling_id
@@ -86,6 +96,7 @@ func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks do
 	}
 	for rows.Next() {
 		var (
+			feedbackId   int
 			employeeId   string
 			feeling      string
 			seen         bool
@@ -93,18 +104,22 @@ func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks do
 			recipientId  string
 			newsId       int
 			feedbackNote string
+			created      string
 		)
 		if err := rows.Scan(
+			&feedbackId,
 			&employeeId,
 			&feeling,
 			&seen,
 			&category,
 			&recipientId,
 			&newsId,
-			&feedbackNote); err != nil {
+			&feedbackNote,
+			&created); err != nil {
 			continue
 		}
 		feedback := domain.Feedback{
+			FeedbackId:          feedbackId,
 			EmployeeId:          employeeId,
 			Feeling:             feeling,
 			Seen:                seen,
@@ -112,6 +127,7 @@ func (repo *FeedbackRepository) FindByFeeling(feelingQuery string) (feedbacks do
 			RecipientEmployeeId: recipientId,
 			NewsId:              newsId,
 			FeedbackNote:        feedbackNote,
+			CreatedAt:           created,
 		}
 		feedbacks = append(feedbacks, feedback)
 	}

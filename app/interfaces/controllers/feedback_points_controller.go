@@ -33,7 +33,7 @@ func NewFeedbackPointsController(sqlHandler database.SqlHandler) *FeedbackPoints
 }
 
 func (controller *FeedbackPointsController) PostFeedback(c Context) {
-	feedback := domain.Feedback{}
+	feedback := domain.FeedbackStore{}
 	c.BindJSON(&feedback)
 	pointAndEmployeeId, err := controller.Interactor.StoreFeedback(feedback)
 	if err != nil {
