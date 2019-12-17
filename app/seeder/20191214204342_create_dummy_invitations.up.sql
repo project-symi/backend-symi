@@ -7,7 +7,7 @@ INSERT INTO invitation_status_categories (id, status)
 VALUES
   (1, "pending"),
   (2, "accepted"),
-  (3, "refused");
+  (3, "declined");
 INSERT INTO invitations (
     sender_id,
     employee_id,
