@@ -33,6 +33,7 @@ func init() {
 	feedbackController := controllers.NewFeedbackController(sqlHandler)
 	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
 	invitationController := controllers.NewInvitationController(sqlHandler)
+	rewardController := controllers.NewRewardController(sqlHandler)
 
 	//SETUP LOGIN-LOGOUT POINT
 	router.POST("/login", func(c *gin.Context) { userAuthController.LoginUser(c) })
@@ -86,6 +87,10 @@ func init() {
 		authorized.PATCH("/invitations", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
 		authorized.PATCH("/invitations/:invitationId", func(c *gin.Context) { invitationController.PatchInvitationById(c) })
 		authorized.DELETE("/invitations/:invitationId", func(c *gin.Context) { invitationController.DeleteById(c) })
+
+		// Rewards endpoints
+		authorized.GET("/rewards", func(c *gin.Context) { rewardController.AllRewards(c) })
+		authorized.PATCH("/rewards", func(c *gin.Context) { rewardController.PatchRewardById(c) })
 	}
 
 	Router = router
