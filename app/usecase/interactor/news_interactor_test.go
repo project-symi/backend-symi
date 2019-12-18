@@ -9,10 +9,15 @@ import (
 	"testing"
 )
 
-func TestNews(t *testing.T) {
+func SetupNewsTest(t *testing.T) (mockObj *mock_repository.MockNewsRepository) {
 	mockCtrl := gomock.NewController(t)
-	mockObj := mock_repository.NewMockNewsRepository(mockCtrl)
+	mockObj = mock_repository.NewMockNewsRepository(mockCtrl)
 	defer mockCtrl.Finish()
+	return
+}
+
+func TestNews(t *testing.T) {
+	mockObj := SetupNewsTest(t)
 
 	func() {
 		newsItem := domain.NewsItem{
@@ -42,5 +47,41 @@ func TestNews(t *testing.T) {
 			t.Errorf("Cannot get error from GetAll news")
 		}
 
+	}()
+}
+
+func TestDeleteNewsId(t *testing.T) {
+	mockObj := SetupNewsTest(t)
+
+	func() {
+		newsId := "1"
+		amountOfDeleted := 1
+		mockObj.EXPECT().DeleteByNewsId(newsId).Return(amountOfDeleted, nil)
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.Delete(newsId)
+		if result != amountOfDeleted || errResult != nil {
+			t.Errorf("Cannot delete the news id=%q", newsId)
+		}
+	}()
+
+	func() {
+		newsId := "2"
+		amountOfDeleted := 0
+		mockObj.EXPECT().DeleteByNewsId(newsId).Return(amountOfDeleted, nil)
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.Delete(newsId)
+		if result != amountOfDeleted || errResult != nil {
+			t.Errorf("Cannot delete the news id=%q", newsId)
+		}
+	}()
+
+	func() {
+		newsId := "3"
+		mockObj.EXPECT().DeleteByNewsId(newsId).Return(0, fmt.Errorf("%s", "getAllQueryError"))
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.Delete(newsId)
+		if result != 0 || errResult == nil {
+			t.Errorf("Cannot get error from Delete news")
+		}
 	}()
 }
