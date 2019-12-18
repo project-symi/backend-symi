@@ -10,10 +10,9 @@ INSERT INTO point_categories (
     life_time_month
   )
 VALUES
-  (1, 'Poll', 10, 3),
-  (2, 'Submitted Feedback', 25, 3),
+  (1, 'Submitted Feedback', 25, 3),
   (
-    3,
+    2,
     'Recieved positive feedback',
     50,
     3
@@ -25,12 +24,11 @@ INSERT INTO point_logs(
     expire_date
   )
 VALUES
-  (4, 2, 6, "2019-12-31"),
-  (4, 1, 7, "2019-12-31"),
-  (2, 3, 6, "2019-12-31");
+  (4, 1, 6, "2019-12-31"),
+  (2, 2, 6, "2019-12-31");
 UPDATE users
 SET
-  total_points = 35
+  total_points = 25
 WHERE
   id = 4;
 UPDATE users
