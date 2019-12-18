@@ -85,3 +85,42 @@ func TestDeleteNewsId(t *testing.T) {
 		}
 	}()
 }
+
+func TestAddNewNews(t *testing.T) {
+	mockObj := SetupNewsTest(t)
+	newsItem := domain.NewsPost{
+		Title:       "test",
+		Description: "This is test news",
+		PhotoLink:   "test@test.com",
+	}
+
+	func() {
+		success := true
+		mockObj.EXPECT().AddNewsItem(newsItem).Return(success, nil)
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.AddNewNews(newsItem)
+		if result != success || errResult != nil {
+			t.Errorf("Cannot add news successfully")
+		}
+	}()
+
+	func() {
+		success := false
+		mockObj.EXPECT().AddNewsItem(newsItem).Return(success, nil)
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.AddNewNews(newsItem)
+		if result != success || errResult != nil {
+			t.Errorf("Cannot fail add news")
+		}
+	}()
+
+	func() {
+		success := false
+		mockObj.EXPECT().AddNewsItem(newsItem).Return(success, fmt.Errorf("%s", "addNewsItemQueryError"))
+		newsInteractorMock := interactor.NewsInteractor{mockObj}
+		result, errResult := newsInteractorMock.AddNewNews(newsItem)
+		if result != success || errResult == nil {
+			t.Errorf("Cannot get error from addNewNews")
+		}
+	}()
+}
