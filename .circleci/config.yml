@@ -4,6 +4,8 @@
 version: 2
 jobs:
   build:
+    working_directory: /go/src/github.com/project-symi/backend-symi
+    
     docker:
       # specify the version
       - image: circleci/golang:1.12
@@ -17,16 +19,18 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/project-symi/backend-symi
+    
     environment: # environment variables for the build itself
       TEST_RESULTS: /tmp/test-results # path to where test results will be saved
+    
     steps:
       - checkout
+
       - run: mkdir -p $TEST_RESULTS
 
       - restore_cache:
-        keys:
-          - v1-pkg-cache
+          keys:
+            - v1-pkg-cache
       
       - run: go get github.com/dgrijalva/jwt-go v3.2.0+incompatible
       - run: go get github.com/gin-contrib/cors v1.3.0
@@ -40,16 +44,14 @@ jobs:
       - run: go get github.com/mattes/migrate
       - run: go get github.com/jstemmer/go-junit-report 
 
-       - run:
-        name: Run unit tests
-        environment:
-          TEST_DB_INFO: "symidb:symi-database@tcp(symi-db.chzk1jthuvd3.ap-northeast-1.rds.amazonaws.com:3306)/symi_test"
-          SIGNING_KEY: "SYMI_IS_DA_BEST"
-          CONTACTS_DB_MIGRATIONS: /go/src/github.com/project-symi/backend-symi
-        command: |
-          trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-          make test | tee ${TEST_RESULTS}/go-test.out
+      - run:
+          name: Run unit tests
+          environment:
+            TEST_DB_INFO: "symidb:symi-database@tcp(symi-db.chzk1jthuvd3.ap-northeast-1.rds.amazonaws.com:3306)/symi_test"
+            SIGNING_KEY: "SYMI_IS_DA_BEST"
+          command: |
+            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+            make test | tee ${TEST_RESULTS}/go-test.out
 
-      - run: go test -v ./...
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: /tmp/test-results
