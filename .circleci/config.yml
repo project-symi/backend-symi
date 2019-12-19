@@ -4,7 +4,8 @@
 version: 2
 jobs:
   build:
-    working_directory: /project-symi-backend
+    #working_directory: /project-symi-backend
+    working_directory: /go/src/github.com/project-symi/backend-symi
 
     docker:
       # specify the version
@@ -35,11 +36,11 @@ jobs:
       - run: go get github.com/dgrijalva/jwt-go
       - run: go get github.com/gin-contrib/cors
       - run: go get github.com/gin-gonic/gin
-      - run: go get github.com/go-sql-driver/mysql v1.4.1
-      - run: go get github.com/golang/mock v1.3.1
-      - run: go get github.com/google/uuid v1.1.1
-      - run: go get github.com/joho/godotenv v1.3.0
-      - run: go get golang.org/x/crypto v0.0.0-20191206172530-e9b2fee4641
+      - run: go get github.com/go-sql-driver/mysql
+      - run: go get github.com/golang/mock
+      - run: go get github.com/google/uuid
+      - run: go get github.com/joho/godotenv
+      - run: go get golang.org/x/crypto
       # Additional info
       - run: go get github.com/mattes/migrate
       - run: go get github.com/jstemmer/go-junit-report 
