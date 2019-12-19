@@ -49,6 +49,9 @@ jobs:
 
       - run:
           name: Run unit tests
+          environment:
+            TEST_DB_INFO: ${TEST_DB_INFO}
+            SIGNING_KEY: ${SIGNING_KEY}
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             make test | tee ${TEST_RESULTS}/go-test.out
