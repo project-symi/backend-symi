@@ -50,8 +50,8 @@ jobs:
       - run:
           name: Run unit tests
           environment:
-            TEST_DB_INFO: "symidb:symi-database@tcp(symi-db.chzk1jthuvd3.ap-northeast-1.rds.amazonaws.com:3306)/symi_test"
-            SIGNING_KEY: "SYMI_IS_DA_BEST"
+            TEST_DB_INFO: ${TEST_DB_INFO}
+            SIGNING_KEY: ${SIGNING_KEY}
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             make test | tee ${TEST_RESULTS}/go-test.out
