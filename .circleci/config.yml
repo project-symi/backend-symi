@@ -4,7 +4,7 @@
 version: 2
 jobs:
   build:
-    working_directory: /go/src/github.com/project-symi/backend-symi
+    working_directory: /project-symi-backend
 
     docker:
       # specify the version
@@ -32,9 +32,9 @@ jobs:
           keys:
             - v1-pkg-cache
       
-      - run: go get github.com/dgrijalva/jwt-go v3.2.0
-      - run: go get github.com/gin-contrib/cors v1.3.0
-      - run: go get github.com/gin-gonic/gin v1.5.0
+      - run: go get github.com/dgrijalva/jwt-go
+      - run: go get github.com/gin-contrib/cors
+      - run: go get github.com/gin-gonic/gin
       - run: go get github.com/go-sql-driver/mysql v1.4.1
       - run: go get github.com/golang/mock v1.3.1
       - run: go get github.com/google/uuid v1.1.1
@@ -52,6 +52,11 @@ jobs:
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             make test | tee ${TEST_RESULTS}/go-test.out
+      
+      - save_cache: # Store cache in the /go/pkg directory
+          key: v1-pkg-cache
+          paths:
+            - "/project-symi-backend/pkg"
 
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: /tmp/test-results
