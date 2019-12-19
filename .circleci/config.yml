@@ -4,9 +4,14 @@
 version: 2
 jobs:
   build:
+    #working_directory: /project-symi-backend
+    working_directory: /go/src/github.com/project-symi/backend-symi
+
     docker:
       # specify the version
       - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "on"
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -17,39 +22,44 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/project-symi/backend-symi
+    
     environment: # environment variables for the build itself
       TEST_RESULTS: /tmp/test-results # path to where test results will be saved
+    
     steps:
       - checkout
+
       - run: mkdir -p $TEST_RESULTS
 
       - restore_cache:
-        keys:
-          - v1-pkg-cache
+          keys:
+            - v1-pkg-cache
       
-      - run: go get github.com/dgrijalva/jwt-go v3.2.0+incompatible
-      - run: go get github.com/gin-contrib/cors v1.3.0
-      - run: go get github.com/gin-gonic/gin v1.5.0
-      - run: go get github.com/go-sql-driver/mysql v1.4.1
-      - run: go get github.com/golang/mock v1.3.1
-      - run: go get github.com/google/uuid v1.1.1
-      - run: go get github.com/joho/godotenv v1.3.0
-      - run: go get golang.org/x/crypto v0.0.0-20191206172530-e9b2fee4641
+      #- run: go get github.com/dgrijalva/jwt-go
+      #- run: go get github.com/gin-contrib/cors
+      #- run: go get github.com/gin-gonic/gin
+      #- run: go get github.com/go-sql-driver/mysql
+      #- run: go get github.com/golang/mock
+      #- run: go get github.com/google/uuid
+      #- run: go get github.com/joho/godotenv
+      #- run: go get golang.org/x/crypto
       # Additional info
       - run: go get github.com/mattes/migrate
       - run: go get github.com/jstemmer/go-junit-report 
 
-       - run:
-        name: Run unit tests
-        environment:
-          TEST_DB_INFO: "symidb:symi-database@tcp(symi-db.chzk1jthuvd3.ap-northeast-1.rds.amazonaws.com:3306)/symi_test"
-          SIGNING_KEY: "SYMI_IS_DA_BEST"
-          CONTACTS_DB_MIGRATIONS: /go/src/github.com/project-symi/backend-symi
-        command: |
-          trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-          make test | tee ${TEST_RESULTS}/go-test.out
+      - run:
+          name: Run unit tests
+          environment:
+            TEST_DB_INFO: "symidb:symi-database@tcp(symi-db.chzk1jthuvd3.ap-northeast-1.rds.amazonaws.com:3306)/symi_test"
+            SIGNING_KEY: "SYMI_IS_DA_BEST"
+          command: |
+            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+            make test | tee ${TEST_RESULTS}/go-test.out
+      
+      - save_cache: # Store cache in the /go/pkg directory
+          key: v1-pkg-cache
+          paths:
+            - "/project-symi-backend/pkg"
 
-      - run: go test -v ./...
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: /tmp/test-results
