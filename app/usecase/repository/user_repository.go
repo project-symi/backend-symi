@@ -6,6 +6,7 @@ import (
 
 type UserRepository interface {
 	FindKeyIdByEmployeeId(string) (int, error)
+	FindKeyIdAndSlackIdByEmployeeId(string) (int, string, error)
 	FindCEOId() (int, error)
 	FindAll() (domain.Users, error)
 	FindTopPointsUsers(int) (domain.UsersWithPoints, error)
