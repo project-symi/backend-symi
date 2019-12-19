@@ -10,7 +10,7 @@ jobs:
     docker:
       # specify the version
       - image: circleci/golang:1.12
-      environment:
+        environment:
           GO111MODULE: "on"
 
       # Specify service dependencies here if necessary
