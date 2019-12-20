@@ -13,7 +13,7 @@ const (
 	ReceivedPositiveFeedback
 )
 
-func (repo *TransactionRepository) StoreFeedbackAndUpdatePoints(storedFeedback domain.StoredFeedback, expireDate string) (points int, err error) {
+func (repo *TransactionRepository) StoreFeedbackAndUpdatePoints(storedFeedback domain.StoredFeedback, expireDate string) (points int, recipientPoints int, err error) {
 	pointCategory := SubmittedFeedback
 	tx, err := repo.Begin()
 	if err != nil {
@@ -42,7 +42,7 @@ func (repo *TransactionRepository) StoreFeedbackAndUpdatePoints(storedFeedback d
 			tx.Rollback()
 			return
 		}
-		recipientPoints := 0
+		recipientPoints = 0
 		recipientPoints, err = findTxPointsById(tx, pointCategory)
 		if err != nil {
 			tx.Rollback()

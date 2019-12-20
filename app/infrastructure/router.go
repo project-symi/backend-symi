@@ -26,12 +26,13 @@ func init() {
 	//TODO ADD PROPER CONDITIONS FOR CORS LATER: router.Use(cors.Default())
 
 	sqlHandler := NewSqlHandler()
+	httpHandler := NewHttpHandler()
 	userController := controllers.NewUserController(sqlHandler)
 	userAuthController := controllers.NewUserAuthController(sqlHandler)
-	newsController := controllers.NewNewsController(sqlHandler)
+	newsController := controllers.NewNewsController(sqlHandler, httpHandler)
 	pointsController := controllers.NewPointsController(sqlHandler)
 	feedbackController := controllers.NewFeedbackController(sqlHandler)
-	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler)
+	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler, httpHandler)
 	invitationController := controllers.NewInvitationController(sqlHandler)
 	rewardController := controllers.NewRewardController(sqlHandler)
 

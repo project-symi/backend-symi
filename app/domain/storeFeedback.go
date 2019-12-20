@@ -1,12 +1,13 @@
 package domain
 
 type StoredFeedback struct {
-	UserId       int
-	FeelingId    int
-	CategoryId   int
-	RecipientId  int
-	NewsId       int
-	FeedbackNote string
+	UserId           int
+	FeelingId        int
+	CategoryId       int
+	RecipientId      int
+	RecipientSlackId string
+	NewsId           int
+	FeedbackNote     string
 }
 
 type UserIdAndCategoryId struct {
@@ -14,9 +15,11 @@ type UserIdAndCategoryId struct {
 	PointCategoryId int
 }
 
-type UserIdAndPoints struct {
-	EmployeeId string `json:"employeeId"`
-	Points     int    `json:"points"`
+type StoredInfo struct {
+	EmployeeId       string `json:"employeeId"`
+	Points           int    `json:"points"`
+	RecipientPoints  int    `json:"-"`
+	RecipientSlackId string `json:"-"`
 }
 
 type UserIdAndCategoryIds []UserIdAndCategoryId

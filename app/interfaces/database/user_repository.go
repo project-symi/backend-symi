@@ -22,6 +22,19 @@ func (repo *UserRepository) FindKeyIdByEmployeeId(employeeId string) (id int, er
 	return
 }
 
+func (repo *UserRepository) FindKeyIdAndSlackIdByEmployeeId(employeeId string) (id int, slackId string, err error) {
+	row, err := repo.Query(`SELECT id, slack_member_id FROM users WHERE employee_id = ?`, employeeId)
+	defer row.Close()
+	if err != nil {
+		return
+	}
+	row.Next()
+	if err = row.Scan(&id, &slackId); err != nil {
+		return
+	}
+	return
+}
+
 func (repo *UserRepository) FindCEOId() (id int, err error) {
 	row, err := repo.Query(`
 	SELECT u.id
