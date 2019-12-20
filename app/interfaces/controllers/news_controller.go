@@ -1,27 +1,39 @@
 package controllers
 
 import (
+	"encoding/json"
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
+	"project-symi-backend/app/interfaces/http_interface"
 	"project-symi-backend/app/usecase/interactor"
 )
 
 type NewsController struct {
-	Interactor interactor.NewsInteractor
+	NewsInteractor  interactor.NewsInteractor
+	SlackInteractor interactor.SlackInteractor
+	HttpHandler     http_interface.HttpHandler
 }
 
-func NewNewsController(sqlHandler database.SqlHandler) *NewsController {
+const SlackNameNews = "news updated"
+
+func NewNewsController(sqlHandler database.SqlHandler, httpHandler http_interface.HttpHandler) *NewsController {
 	return &NewsController{
-		Interactor: interactor.NewsInteractor{
+		NewsInteractor: interactor.NewsInteractor{
 			NewsRepository: &database.NewsRepository{
 				SqlHandler: sqlHandler,
 			},
 		},
+		SlackInteractor: interactor.SlackInteractor{
+			SlackRepository: &database.SlackRepository{
+				SqlHandler: sqlHandler,
+			},
+		},
+		HttpHandler: httpHandler,
 	}
 }
 
 func (controller *NewsController) AllNews(c Context) {
-	news, err := controller.Interactor.News()
+	news, err := controller.NewsInteractor.News()
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -30,7 +42,7 @@ func (controller *NewsController) AllNews(c Context) {
 }
 
 func (controller *NewsController) DeleteByNewsId(c Context) {
-	amountOfDeleted, err := controller.Interactor.Delete(c.Param("newsId"))
+	amountOfDeleted, err := controller.NewsInteractor.Delete(c.Param("newsId"))
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -45,7 +57,7 @@ func (controller *NewsController) DeleteByNewsId(c Context) {
 func (controller *NewsController) AddNewsItem(c Context) {
 	newsItem := domain.NewsPost{}
 	c.BindJSON(&newsItem)
-	success, err := controller.Interactor.AddNewNews(newsItem)
+	success, err := controller.NewsInteractor.AddNewNews(newsItem)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -55,4 +67,28 @@ func (controller *NewsController) AddNewsItem(c Context) {
 		return
 	}
 	c.Status(201)
+
+	// Send slack message
+	slack, err := controller.SlackInteractor.FindSlackInfo(SlackNameNews)
+	if err != nil {
+		return
+	}
+	slackBody := domain.SlackBody{}
+	slackBody.Text = slack.Text
+	bodyJson, _ := json.Marshal(slackBody)
+
+	controller.HttpHandler.NewHttpRequest(
+		"POST",
+		slack.Url,
+		bodyJson,
+	)
+	if err != nil {
+		return
+	}
+	controller.HttpHandler.SetHeader("Content-Type", "application/json")
+	controller.HttpHandler.SetHeader("Authorization", "Bearer "+slack.Token)
+	err = controller.HttpHandler.DoRequest()
+	if err != nil {
+		return
+	}
 }

@@ -29,7 +29,7 @@ func init() {
 	httpHandler := NewHttpHandler()
 	userController := controllers.NewUserController(sqlHandler)
 	userAuthController := controllers.NewUserAuthController(sqlHandler)
-	newsController := controllers.NewNewsController(sqlHandler)
+	newsController := controllers.NewNewsController(sqlHandler, httpHandler)
 	pointsController := controllers.NewPointsController(sqlHandler)
 	feedbackController := controllers.NewFeedbackController(sqlHandler)
 	feedbackPointsController := controllers.NewFeedbackPointsController(sqlHandler, httpHandler)
