@@ -3,12 +3,12 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
 	"strconv"
+	"strings"
 )
 
 type FeedbackPointsController struct {
@@ -53,14 +53,17 @@ func (controller *FeedbackPointsController) PostFeedback(c Context) {
 		c.JSON(500, NewError(err))
 		return
 	}
+	c.JSON(201, storedInfo)
+
+	// Send slack message
 	slack, err := controller.SlackInteractor.FindSlackInfo(SlackName)
+	if err != nil {
+		return
+	}
 	slackBody := domain.SlackBody{}
 	slackBody.Channel = storedInfo.RecipientSlackId
-	slackBody.Text = strconv.Itoa(storedInfo.RecipientPoints) + "points Get" + slack.Text
+	slackBody.Text = strings.Replace(slack.Text, "<points>", strconv.Itoa(storedInfo.RecipientPoints), 1)
 	bodyJson, _ := json.Marshal(slackBody)
-	if err != nil {
-		c.JSON(500, NewError(err))
-	}
 	if storedInfo.RecipientPoints > 0 && storedInfo.RecipientSlackId != "" {
 		req, err := http.NewRequest(
 			"POST",
@@ -72,10 +75,8 @@ func (controller *FeedbackPointsController) PostFeedback(c Context) {
 		client := http.Client{}
 		resp, err := client.Do(req)
 		if err != nil {
-			c.JSON(500, NewError(err))
+			return
 		}
-		fmt.Println(resp)
 		defer resp.Body.Close()
 	}
-	c.JSON(201, storedInfo)
 }

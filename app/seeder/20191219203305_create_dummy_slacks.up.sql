@@ -4,7 +4,7 @@ VALUES
     "good feedback",
     "dummy",
     "https://slack.com/api/chat.postMessage",
-    "⭐️! Woohoo! You recieved positive feedback!\n Login to view the feedback."
+    "You just received positive feedback! +<points>points! Woohoo! Check it out here: <url>"
   ),
   (
     "news updated",
