@@ -9,8 +9,7 @@ type TransactionRepository struct {
 }
 
 const (
-	Poll = iota + 1
-	SubmittedFeedback
+	SubmittedFeedback = iota + 1
 	ReceivedPositiveFeedback
 )
 
