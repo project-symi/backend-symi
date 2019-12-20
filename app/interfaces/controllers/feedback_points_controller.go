@@ -1,11 +1,10 @@
 package controllers
 
 import (
-	"bytes"
 	"encoding/json"
-	"net/http"
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
+	"project-symi-backend/app/interfaces/http_interface"
 	"project-symi-backend/app/usecase/interactor"
 	"strconv"
 	"strings"
@@ -14,11 +13,12 @@ import (
 type FeedbackPointsController struct {
 	FeedbackPointsInteractor interactor.FeedbackPointsInteractor
 	SlackInteractor          interactor.SlackInteractor
+	Httphandler              http_interface.HttpHandler
 }
 
 const SlackName = "good feedback"
 
-func NewFeedbackPointsController(sqlHandler database.SqlHandler) *FeedbackPointsController {
+func NewFeedbackPointsController(sqlHandler database.SqlHandler, httpHandler http_interface.HttpHandler) *FeedbackPointsController {
 	return &FeedbackPointsController{
 		FeedbackPointsInteractor: interactor.FeedbackPointsInteractor{
 			TransactionRepository: &database.TransactionRepository{
@@ -42,6 +42,7 @@ func NewFeedbackPointsController(sqlHandler database.SqlHandler) *FeedbackPoints
 				SqlHandler: sqlHandler,
 			},
 		},
+		Httphandler: httpHandler,
 	}
 }
 
@@ -65,18 +66,19 @@ func (controller *FeedbackPointsController) PostFeedback(c Context) {
 	slackBody.Text = strings.Replace(slack.Text, "<points>", strconv.Itoa(storedInfo.RecipientPoints), 1)
 	bodyJson, _ := json.Marshal(slackBody)
 	if storedInfo.RecipientPoints > 0 && storedInfo.RecipientSlackId != "" {
-		req, err := http.NewRequest(
+		err = controller.Httphandler.NewHttpRequest(
 			"POST",
 			slack.Url,
-			bytes.NewBuffer([]byte(bodyJson)),
+			bodyJson,
 		)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer "+slack.Token)
-		client := http.Client{}
-		resp, err := client.Do(req)
 		if err != nil {
 			return
 		}
-		defer resp.Body.Close()
+		controller.Httphandler.SetHeader("Content-Type", "application/json")
+		controller.Httphandler.SetHeader("Authorization", "Bearer "+slack.Token)
+		err = controller.Httphandler.DoRequest()
+		if err != nil {
+			return
+		}
 	}
 }
