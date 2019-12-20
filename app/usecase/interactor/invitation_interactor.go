@@ -13,7 +13,7 @@ type InvitationInteractor struct {
 	InvitationStatusCategoryRepository repository.InvitationStatusCategoryRepository
 }
 
-func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations domain.Invitations, err error) {
+func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations domain.LeaderInvitations, err error) {
 	err = interactor.InvitationRepository.UpdateSeenFromStatus(Pending)
 	if err != nil {
 		return
@@ -25,7 +25,7 @@ func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations doma
 	return
 }
 
-func (interactor *InvitationInteractor) FindByEmployeeId(employeeId string) (invitations domain.Invitations, err error) {
+func (interactor *InvitationInteractor) FindByEmployeeId(employeeId string) (invitations domain.EmployeeInvitations, err error) {
 	keyId, err := interactor.UserRepository.FindKeyIdByEmployeeId(employeeId)
 	invitations, err = interactor.InvitationRepository.FindByEmployeeId(keyId)
 	if err != nil {
@@ -34,7 +34,7 @@ func (interactor *InvitationInteractor) FindByEmployeeId(employeeId string) (inv
 	return
 }
 
-func (interactor *InvitationInteractor) PostInvitation(invitation domain.PostInvitation) (invitations domain.Invitations, err error) {
+func (interactor *InvitationInteractor) PostInvitation(invitation domain.PostInvitation) (invitations domain.LeaderInvitations, err error) {
 	employeeId, err := interactor.UserRepository.FindKeyIdByEmployeeId(invitation.EmployeeId)
 	ceoId, err := interactor.UserRepository.FindCEOId()
 	invitationDate := invitation.InvitationDate + " " + invitation.InvitationTime
