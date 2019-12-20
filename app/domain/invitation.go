@@ -3,6 +3,7 @@ package domain
 type Invitation struct {
 	Id             int    `json:"invitationId"`
 	EmployeeId     string `json:"employeeId"`
+	EmployeeName   string `json:"employeeName"`
 	Comments       string `json:"comments"`
 	Status         string `json:"status"`
 	Reply          string `json:"reply"`

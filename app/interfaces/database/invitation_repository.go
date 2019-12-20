@@ -14,6 +14,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		SELECT
 			i.id,
 			u2.employee_id,
+			u2.name,
 			i.comments,
 			ic.status,
 			i.reply,
@@ -34,6 +35,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		var (
 			id                 int
 			employeeId         string
+			employeeName       string
 			comments           string
 			status             string
 			reply              string
@@ -43,6 +45,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		if err := rows.Scan(
 			&id,
 			&employeeId,
+			&employeeName,
 			&comments,
 			&status,
 			&reply,
@@ -54,6 +57,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		invitation := domain.Invitation{
 			Id:             id,
 			EmployeeId:     employeeId,
+			EmployeeName:   employeeName,
 			Comments:       comments,
 			Status:         status,
 			Reply:          reply,
