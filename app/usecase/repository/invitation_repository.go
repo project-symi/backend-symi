@@ -6,8 +6,8 @@ import (
 
 type InvitationRepository interface {
 	UpdateSeenFromStatus(int) error
-	FindAll() (domain.Invitations, error)
-	FindByEmployeeId(int) (domain.Invitations, error)
+	FindAll() (domain.LeaderInvitations, error)
+	FindByEmployeeId(int) (domain.EmployeeInvitations, error)
 	UpdateStatusAndReplyById(int, int, string) (bool, error)
 	PostInvitation(int, int, string, string) (bool, error)
 	DeleteById(int) (bool, error)

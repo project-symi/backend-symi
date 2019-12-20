@@ -9,11 +9,12 @@ type InvitationRepository struct {
 	SqlHandler
 }
 
-func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err error) {
+func (repo *InvitationRepository) FindAll() (invitations domain.LeaderInvitations, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			i.id,
 			u2.employee_id,
+			u2.name,
 			i.comments,
 			ic.status,
 			i.reply,
@@ -34,6 +35,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		var (
 			id                 int
 			employeeId         string
+			employeeName       string
 			comments           string
 			status             string
 			reply              string
@@ -43,6 +45,7 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 		if err := rows.Scan(
 			&id,
 			&employeeId,
+			&employeeName,
 			&comments,
 			&status,
 			&reply,
@@ -51,9 +54,10 @@ func (repo *InvitationRepository) FindAll() (invitations domain.Invitations, err
 			continue
 		}
 		dateTime, _ := time.Parse("2006-01-02 15:04:05", invitationDateTime)
-		invitation := domain.Invitation{
+		invitation := domain.LeaderInvitation{
 			Id:             id,
 			EmployeeId:     employeeId,
+			EmployeeName:   employeeName,
 			Comments:       comments,
 			Status:         status,
 			Reply:          reply,
@@ -88,18 +92,16 @@ func (repo *InvitationRepository) PostInvitation(senderId int, employeeId int, c
 	return
 }
 
-func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitations domain.Invitations, err error) {
+func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitations domain.EmployeeInvitations, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			i.id,
-			u.employee_id,
 			i.comments,
 			ic.status,
 			i.reply,
 			i.seen,
 			i.invitation_date
 		FROM invitations i
-		JOIN users u ON u.id = i.employee_id
 		JOIN invitation_status_categories ic ON ic.id = i.invitation_status_category_id
 		WHERE i.deleted = false
 		AND i.employee_id = ?`,
@@ -111,7 +113,6 @@ func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitatio
 	for rows.Next() {
 		var (
 			id                 int
-			employeeId         string
 			comments           string
 			status             string
 			reply              string
@@ -120,7 +121,6 @@ func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitatio
 		)
 		if err = rows.Scan(
 			&id,
-			&employeeId,
 			&comments,
 			&status,
 			&reply,
@@ -129,9 +129,8 @@ func (repo *InvitationRepository) FindByEmployeeId(employeeKeyId int) (invitatio
 			continue
 		}
 		dateTime, _ := time.Parse("2006-01-02 15:04:05", invitationDateTime)
-		invitation := domain.Invitation{
+		invitation := domain.EmployeeInvitation{
 			Id:             id,
-			EmployeeId:     employeeId,
 			Comments:       comments,
 			Status:         status,
 			Reply:          reply,
