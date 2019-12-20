@@ -9,12 +9,13 @@ type FeedbackRepository struct {
 	SqlHandler
 }
 
-func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error) {
+func (repo *FeedbackRepository) FindAll() (feedbacks domain.FeedbacksForCEO, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			feed.id,
 			u1.employee_id,
 			feel.name,
+			d.name,
 			feed.seen,
 			c.name,
 			COALESCE(u2.employee_id, ''),
@@ -25,6 +26,7 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
   		JOIN categories c on c.id = feed.category_id
 	  	JOIN feelings feel on feel.id = feed.feeling_id
 	  	JOIN users u1 on u1.id = feed.user_id
+	  	JOIN departments d on u1.department_id = d.id
   		LEFT JOIN users u2 on u2.id = feed.recipient_id
 	  `)
 	defer rows.Close()
@@ -36,6 +38,7 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 			feedbackId   int
 			employeeId   string
 			feeling      string
+			department   string
 			seen         bool
 			category     string
 			recipientId  string
@@ -47,6 +50,7 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 			&feedbackId,
 			&employeeId,
 			&feeling,
+			&department,
 			&seen,
 			&category,
 			&recipientId,
@@ -55,10 +59,11 @@ func (repo *FeedbackRepository) FindAll() (feedbacks domain.Feedbacks, err error
 			&created); err != nil {
 			continue
 		}
-		feedback := domain.Feedback{
+		feedback := domain.FeedbackForCEO{
 			FeedbackId:          feedbackId,
 			EmployeeId:          employeeId,
 			Feeling:             feeling,
+			Department:          department,
 			Seen:                seen,
 			Category:            category,
 			RecipientEmployeeId: recipientId,
