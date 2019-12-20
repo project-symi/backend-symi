@@ -8,7 +8,7 @@ CREATE TABLE slacks (
     token VARCHAR(500) NOT NULL,
     url VARCHAR(500) NOT NULL default "https://slack.com/api/chat.postMessage",
     text text NOT NULL,
-    deleted boolean,
+    deleted boolean default false,
     deleted_at DATETIME,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE slacks (
   );
 ALTER TABLE users
 ADD
-  slack_member_id VARCHAR(50);
+  slack_member_id VARCHAR(50) default "";
 set
   foreign_key_checks = 1;
 COMMIT;
