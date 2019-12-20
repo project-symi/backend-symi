@@ -2,8 +2,8 @@ package domain
 
 type Slack struct {
 	Token string
-	Url   string `json:"url"`
-	Text  string `json:"text"`
+	Url   string
+	Text  string
 }
 
 type SlackBody struct {
