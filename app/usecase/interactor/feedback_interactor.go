@@ -12,7 +12,7 @@ type FeedbackInteractor struct {
 	UserRepository     repository.UserRepository
 }
 
-func (interactor *FeedbackInteractor) FindAll() (feedback domain.Feedbacks, err error) {
+func (interactor *FeedbackInteractor) FindAll() (feedback domain.FeedbacksForCEO, err error) {
 	feedback, err = interactor.FeedbackRepository.FindAll()
 	return
 }
