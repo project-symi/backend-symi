@@ -14,11 +14,11 @@ type InvitationInteractor struct {
 }
 
 func (interactor *InvitationInteractor) ChangeSeenAndFindAll() (invitations domain.LeaderInvitations, err error) {
-	err = interactor.InvitationRepository.UpdateSeenFromStatus(Pending)
+	invitations, err = interactor.InvitationRepository.FindAll()
 	if err != nil {
 		return
 	}
-	invitations, err = interactor.InvitationRepository.FindAll()
+	err = interactor.InvitationRepository.UpdateSeenFromStatus(Pending)
 	if err != nil {
 		return
 	}
