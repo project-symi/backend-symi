@@ -8,7 +8,7 @@ type UserRepository interface {
 	FindKeyIdByEmployeeId(string) (int, error)
 	FindKeyIdAndSlackIdByEmployeeId(string) (int, string, error)
 	FindCEOId() (int, error)
-	FindAll() (domain.Users, error)
+	FindAll() (domain.UsersRoot, error)
 	FindTopPointsUsers(int) (domain.UsersWithPoints, error)
 	FindByEmployeeId(string) (domain.UserInfoWithPoints, error)
 	FilterByName(string) (domain.UsersByName, error)

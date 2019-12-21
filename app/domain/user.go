@@ -1,24 +1,30 @@
 package domain
 
 type User struct {
-	EmployeeId  string `json:"employeeId"`
-	Name        string `json:"name"`
-	Mail        string `json:"email"`
-	Department  string `json:"department"`
-	DateOfBirth string `json:"dateOfBirth"`
-	Gender      string `json:"gender"`
-	Permission  string `json:"permission"`
+	EmployeeId  string `json:"employeeId" binding:"required,max=20,alphanum,excludesall=!()#@{}?"`
+	Name        string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
+	Mail        string `json:"email" binding:"required,email"`
+	Department  string `json:"department" binding:"required,excludesall=!()#@{}?"`
+	DateOfBirth string `json:"dateOfBirth" binding:"required,len=10"`
+	Gender      string `json:"gender" binding:"required,oneof=male female"`
+	Permission  string `json:"permission" binding:"required,oneof=CEO employee admin"`
+}
+
+type Users []User
+
+type UsersRoot struct {
+	Users `json:"users" binding:"required,dive"`
 }
 
 type UserInfoWithPoints struct {
-	EmployeeId  string `json:"employeeId"`
-	Name        string `json:"name"`
-	Mail        string `json:"email"`
-	Department  string `json:"department"`
-	DateOfBirth string `json:"dateOfBirth"`
-	TotalPoints int    `json:"totalPoints"`
-	Gender      string `json:"gender"`
-	Permission  string `json:"permission"`
+	EmployeeId  string `json:"employeeId" binding:"required,max=20,alphanum"`
+	Name        string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
+	Mail        string `json:"email" binding:"required,email"`
+	Department  string `json:"department" binding:"required,excludesall=!()#@{}?"`
+	DateOfBirth string `json:"dateOfBirth" binding:"required,len=10"`
+	TotalPoints int    `json:"totalPoints" binding:"required,numeric"`
+	Gender      string `json:"gender" binding:"required,oneof=male female"`
+	Permission  string `json:"permission" binding:"required,oneof=CEO employee admin"`
 }
 
 type UserByName struct {
@@ -36,6 +42,5 @@ type UserWithPoints struct {
 	Gender      string `json:"gender"`
 }
 
-type Users []User
 type UsersWithPoints []UserWithPoints
 type UsersByName []UserByName

@@ -30,9 +30,15 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) AllUsers(c Context) {
-	users, err := controller.Interactor.Users()
+	userRoot, err := controller.Interactor.Users()
+	users := userRoot.Users
 	if err != nil {
 		c.JSON(500, NewError(err))
+		return
+	}
+	if err = c.ShouldBind(&userRoot); err != nil {
+		info := "AllUsers method: "
+		c.JSON(400, ValidationError(info, err))
 		return
 	}
 	c.JSON(200, users)
@@ -81,7 +87,10 @@ func (controller *UserController) DeleteByEmployeeId(c Context) {
 
 func (controller *UserController) StoreUser(c Context) {
 	user := domain.User{}
-	c.BindJSON(&user)
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, ValidationError("StoreUser method", err))
+		return
+	}
 	success, err := controller.Interactor.StoreUser(user)
 	if err != nil {
 		c.JSON(500, NewError(err))
@@ -95,9 +104,13 @@ func (controller *UserController) StoreUser(c Context) {
 }
 
 func (controller *UserController) StoreUsers(c Context) {
-	users := domain.Users{}
-	c.BindJSON(&users)
-	amountOfStored, err := controller.Interactor.StoreUsers(users)
+	root := domain.UsersRoot{}
+	if err := c.ShouldBindJSON(&root); err != nil {
+		info := "StoreUsers: "
+		c.JSON(400, ValidationError(info, err))
+		return
+	}
+	amountOfStored, err := controller.Interactor.StoreUsers(root)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
