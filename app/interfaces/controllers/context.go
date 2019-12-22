@@ -7,6 +7,7 @@ type Context interface {
 	ShouldBind(interface{}) error
 	ShouldBindUri(interface{}) error
 	ShouldBindJSON(interface{}) error
+	ShouldBindHeader(interface{}) error
 	Bind(interface{}) error
 	GetHeader(key string) string
 	Status(int)
