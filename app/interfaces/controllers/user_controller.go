@@ -64,7 +64,13 @@ func (controller *UserController) UserByEmployeeId(c Context) {
 }
 
 func (controller *UserController) UsersByEmployeeName(c Context) {
-	users, err := controller.Interactor.UsersByName(c.Query("name"))
+	name := domain.NameQuery{}
+	name.Name = c.Query("name")
+	if err := c.ShouldBind(&name); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeName method's query string is invalid", err))
+		return
+	}
+	users, err := controller.Interactor.UsersByName(name.Name)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

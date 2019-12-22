@@ -44,3 +44,6 @@ type UserWithPoints struct {
 
 type UsersWithPoints []UserWithPoints
 type UsersByName []UserByName
+type NameQuery struct {
+	Name string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
+}
