@@ -1,12 +1,10 @@
 package infrastructure
 
 import (
-	"project-symi-backend/app/interfaces/controllers"
-
-	"time"
-
 	"github.com/gin-contrib/cors"
 	gin "github.com/gin-gonic/gin"
+	"project-symi-backend/app/interfaces/controllers"
+	"time"
 )
 
 var Router *gin.Engine

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
 )
@@ -23,7 +24,13 @@ func NewPointsController(sqlHandler database.SqlHandler) *PointsController {
 }
 
 func (controller *PointsController) PointsByEmployeeId(c Context) {
-	points, err := controller.Interactor.FindPointsByEmployeeId(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	employeeId.EmployeeId = c.Param("employeeId")
+	if err := c.ShouldBind(&employeeId); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeId method's parameter is invalid", err))
+		return
+	}
+	points, err := controller.Interactor.FindPointsByEmployeeId(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
