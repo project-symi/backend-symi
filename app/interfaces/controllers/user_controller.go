@@ -56,8 +56,7 @@ func (controller *UserController) TopPointsUsers(c Context) {
 
 func (controller *UserController) UserByEmployeeId(c Context) {
 	employeeId := domain.EmployeeIdParam{}
-	employeeId.EmployeeId = c.Param("employeeId")
-	if err := c.ShouldBind(&employeeId); err != nil {
+	if err := c.ShouldBindUri(&employeeId); err != nil {
 		c.JSON(400, ValidationError("UsersByEmployeeId method's parameter is invalid", err))
 		return
 	}
@@ -71,7 +70,6 @@ func (controller *UserController) UserByEmployeeId(c Context) {
 
 func (controller *UserController) UsersByEmployeeName(c Context) {
 	name := domain.NameQuery{}
-	name.Name = c.Query("name")
 	if err := c.ShouldBind(&name); err != nil {
 		c.JSON(400, ValidationError("UsersByEmployeeName method's query string is invalid", err))
 		return
@@ -85,7 +83,12 @@ func (controller *UserController) UsersByEmployeeName(c Context) {
 }
 
 func (controller *UserController) DeleteByEmployeeId(c Context) {
-	amountOfDeleted, err := controller.Interactor.Delete(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	if err := c.ShouldBindUri(&employeeId); err != nil {
+		c.JSON(400, ValidationError("DeleteByEmployeeId method's parameter is invalid", err))
+		return
+	}
+	amountOfDeleted, err := controller.Interactor.Delete(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

@@ -45,8 +45,8 @@ type UserWithPoints struct {
 type UsersWithPoints []UserWithPoints
 type UsersByName []UserByName
 type NameQuery struct {
-	Name string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
+	Name string `form:"name" binding:"required,max=20,excludesall=!()#@{}?"`
 }
 type EmployeeIdParam struct {
-	EmployeeId string `json:"employeeId" binding:"required,max=20,alphanum"`
+	EmployeeId string `uri:"employeeId" binding:"required,max=20,alphanum"`
 }
