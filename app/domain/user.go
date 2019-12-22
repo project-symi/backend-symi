@@ -47,3 +47,6 @@ type UsersByName []UserByName
 type NameQuery struct {
 	Name string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
 }
+type EmployeeIdParam struct {
+	EmployeeId string `json:"employeeId" binding:"required,max=20,alphanum"`
+}

@@ -55,7 +55,13 @@ func (controller *UserController) TopPointsUsers(c Context) {
 }
 
 func (controller *UserController) UserByEmployeeId(c Context) {
-	user, err := controller.Interactor.User(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	employeeId.EmployeeId = c.Param("employeeId")
+	if err := c.ShouldBind(&employeeId); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeId method's parameter is invalid", err))
+		return
+	}
+	user, err := controller.Interactor.User(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
