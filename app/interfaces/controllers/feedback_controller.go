@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
 )
@@ -32,7 +33,12 @@ func (controller *FeedbackController) AllFeedbacks(c Context) {
 }
 
 func (controller *FeedbackController) FeedbacksByFeeling(c Context) {
-	feedbacks, err := controller.Interactor.FindByFeeling(c.Query("feeling"))
+	feeling := domain.FeelingQuery{}
+	if err := c.ShouldBind(&feeling); err != nil {
+		c.JSON(400, ValidationError("FeedbacksByFeeling method's query string is invalid ", err))
+		return
+	}
+	feedbacks, err := controller.Interactor.FindByFeeling(feeling.Feeling)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -41,7 +47,12 @@ func (controller *FeedbackController) FeedbacksByFeeling(c Context) {
 }
 
 func (controller *FeedbackController) FeedbacksByEmployeeId(c Context) {
-	feedbacks, err := controller.Interactor.FindByEmployeeId(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	if err := c.ShouldBindUri(&employeeId); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeId method's parameter is invalid ", err))
+		return
+	}
+	feedbacks, err := controller.Interactor.FindByEmployeeId(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -51,7 +62,10 @@ func (controller *FeedbackController) FeedbacksByEmployeeId(c Context) {
 
 func (controller *FeedbackController) PatchSeen(c Context) {
 	var ids []int
-	c.BindJSON(&ids)
+	if err := c.BindJSON(&ids); err != nil {
+		c.JSON(400, ValidationError("PatchSeen method's json parameter is invalid ", err))
+		return
+	}
 	numberOfChanged, err := controller.Interactor.ChangeToSeen(ids)
 	if err != nil {
 		c.JSON(500, NewError(err))

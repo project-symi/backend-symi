@@ -1,7 +1,7 @@
 package domain
 
 type User struct {
-	EmployeeId  string `json:"employeeId" binding:"required,max=20,alphanum,excludesall=!()#@{}?"`
+	EmployeeId  string `json:"employeeId" binding:"required,max=20,alphanum"`
 	Name        string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
 	Mail        string `json:"email" binding:"required,email"`
 	Department  string `json:"department" binding:"required,excludesall=!()#@{}?"`

@@ -26,7 +26,7 @@ func NewPointsController(sqlHandler database.SqlHandler) *PointsController {
 func (controller *PointsController) PointsByEmployeeId(c Context) {
 	employeeId := domain.EmployeeIdParam{}
 	if err := c.ShouldBindUri(&employeeId); err != nil {
-		c.JSON(400, ValidationError("PointsByEmployeeId method's parameter is invalid", err))
+		c.JSON(400, ValidationError("PointsByEmployeeId method's parameter is invalid ", err))
 		return
 	}
 	points, err := controller.Interactor.FindPointsByEmployeeId(employeeId.EmployeeId)

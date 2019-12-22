@@ -38,7 +38,7 @@ func (controller *InvitationController) MadeSeenAllInvitations(c Context) {
 func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
 	employeeId := domain.EmployeeIdParam{}
 	if err := c.ShouldBindUri(&employeeId); err != nil {
-		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid", err))
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid ", err))
 		return
 	}
 	Invitations, err := controller.Interactor.FindByEmployeeId(employeeId.EmployeeId)
@@ -52,7 +52,7 @@ func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
 func (controller *InvitationController) PostInvitation(c Context) {
 	invitation := domain.PostInvitation{}
 	if err := c.BindJSON(&invitation); err != nil {
-		c.JSON(400, ValidationError("PostInvitation method's json parameter is invalid", err))
+		c.JSON(400, ValidationError("PostInvitation method's json parameter is invalid ", err))
 		return
 	}
 	Invitations, err := controller.Interactor.PostInvitation(invitation)
@@ -66,12 +66,12 @@ func (controller *InvitationController) PostInvitation(c Context) {
 func (controller *InvitationController) PatchInvitationById(c Context) {
 	invitationId := domain.InvitationIdParam{}
 	if err := c.ShouldBindUri(&invitationId); err != nil {
-		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid", err))
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid ", err))
 		return
 	}
 	patchInvitation := domain.PatchInvitation{}
 	if err := c.BindJSON(&patchInvitation); err != nil {
-		c.JSON(400, ValidationError("InvitationsByEmployeeId method's json parameter is invalid", err))
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's json parameter is invalid ", err))
 		return
 	}
 	success, err := controller.Interactor.PatchInvitationById(invitationId.InvitationId, patchInvitation)
@@ -89,7 +89,7 @@ func (controller *InvitationController) PatchInvitationById(c Context) {
 func (controller *InvitationController) DeleteById(c Context) {
 	invitationId := domain.InvitationIdParam{}
 	if err := c.ShouldBindUri(&invitationId); err != nil {
-		c.JSON(400, ValidationError("DeleteById method's parameter is invalid", err))
+		c.JSON(400, ValidationError("DeleteById method's parameter is invalid ", err))
 		return
 	}
 	success, err := controller.Interactor.DeleteById(invitationId.InvitationId)

@@ -29,12 +29,12 @@ type Feedbacks []Feedback
 type FeedbacksForCEO []FeedbackForCEO
 
 type FeedbackStore struct {
-	EmployeeId          string `json:"employeeId"`
-	Feeling             string `json:"feeling"`
-	Category            string `json:"category"`
-	RecipientEmployeeId string `json:"recipientId"`
-	NewsId              int    `json:"newsId"`
-	FeedbackNote        string `json:"note"`
+	EmployeeId          string `json:"employeeId" binding:"required,max=20,alphanum"`
+	Feeling             string `json:"feeling" binding:"required,oneof=good meh sad"`
+	Category            string `json:"category" binding:"required,max=20,excludesall=!()#@{}?"`
+	RecipientEmployeeId string `json:"recipientId" binding:"max=20,alphanum"`
+	NewsId              int    `json:"newsId" binding:"numeric"`
+	FeedbackNote        string `json:"note" binding:"required"`
 }
 
 type FeedbackEmployee struct {

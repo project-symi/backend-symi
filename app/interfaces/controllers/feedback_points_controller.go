@@ -48,7 +48,10 @@ func NewFeedbackPointsController(sqlHandler database.SqlHandler, httpHandler htt
 
 func (controller *FeedbackPointsController) PostFeedback(c Context) {
 	feedback := domain.FeedbackStore{}
-	c.BindJSON(&feedback)
+	if err := c.BindJSON(&feedback); err != nil {
+		c.JSON(400, ValidationError("PostFeedback method's json parameter is invalid ", err))
+		return
+	}
 	storedInfo, err := controller.FeedbackPointsInteractor.StoreFeedback(feedback)
 	if err != nil {
 		c.JSON(500, NewError(err))
