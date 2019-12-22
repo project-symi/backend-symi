@@ -21,7 +21,7 @@ type UserInfoWithPoints struct {
 	Name        string `json:"name" binding:"required,max=20,excludesall=!()#@{}?"`
 	Mail        string `json:"email" binding:"required,email"`
 	Department  string `json:"department" binding:"required,excludesall=!()#@{}?"`
-	DateOfBirth string `json:"dateOfBirth" binding:"required,len=10"`
+	DateOfBirth string `json:"dateOfBirth" binding:"required,len=10,excludesall=!()#@{}?"` //TODO: Custom validation
 	TotalPoints int    `json:"totalPoints" binding:"required,numeric"`
 	Gender      string `json:"gender" binding:"required,oneof=male female"`
 	Permission  string `json:"permission" binding:"required,oneof=CEO employee admin"`

@@ -4,7 +4,6 @@ import (
 	"project-symi-backend/app/domain"
 	"project-symi-backend/app/interfaces/database"
 	"project-symi-backend/app/usecase/interactor"
-	"strconv"
 )
 
 type InvitationController struct {
@@ -37,7 +36,12 @@ func (controller *InvitationController) MadeSeenAllInvitations(c Context) {
 }
 
 func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
-	Invitations, err := controller.Interactor.FindByEmployeeId(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	if err := c.ShouldBindUri(&employeeId); err != nil {
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid", err))
+		return
+	}
+	Invitations, err := controller.Interactor.FindByEmployeeId(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -47,7 +51,10 @@ func (controller *InvitationController) InvitationsByEmployeeId(c Context) {
 
 func (controller *InvitationController) PostInvitation(c Context) {
 	invitation := domain.PostInvitation{}
-	c.BindJSON(&invitation)
+	if err := c.BindJSON(&invitation); err != nil {
+		c.JSON(400, ValidationError("PostInvitation method's json parameter is invalid", err))
+		return
+	}
 	Invitations, err := controller.Interactor.PostInvitation(invitation)
 	if err != nil {
 		c.JSON(500, NewError(err))
@@ -57,11 +64,17 @@ func (controller *InvitationController) PostInvitation(c Context) {
 }
 
 func (controller *InvitationController) PatchInvitationById(c Context) {
-	invitationIdString := c.Param("invitationId")
-	invitationId, _ := strconv.Atoi(invitationIdString)
+	invitationId := domain.InvitationIdParam{}
+	if err := c.ShouldBindUri(&invitationId); err != nil {
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's parameter is invalid", err))
+		return
+	}
 	patchInvitation := domain.PatchInvitation{}
-	c.BindJSON(&patchInvitation)
-	success, err := controller.Interactor.PatchInvitationById(invitationId, patchInvitation)
+	if err := c.BindJSON(&patchInvitation); err != nil {
+		c.JSON(400, ValidationError("InvitationsByEmployeeId method's json parameter is invalid", err))
+		return
+	}
+	success, err := controller.Interactor.PatchInvitationById(invitationId.InvitationId, patchInvitation)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -74,9 +87,12 @@ func (controller *InvitationController) PatchInvitationById(c Context) {
 }
 
 func (controller *InvitationController) DeleteById(c Context) {
-	invitationIdString := c.Param("invitationId")
-	invitationId, _ := strconv.Atoi(invitationIdString)
-	success, err := controller.Interactor.DeleteById(invitationId)
+	invitationId := domain.InvitationIdParam{}
+	if err := c.ShouldBindUri(&invitationId); err != nil {
+		c.JSON(400, ValidationError("DeleteById method's parameter is invalid", err))
+		return
+	}
+	success, err := controller.Interactor.DeleteById(invitationId.InvitationId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
