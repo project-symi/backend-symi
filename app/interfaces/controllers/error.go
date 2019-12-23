@@ -12,6 +12,6 @@ func NewError(err error) *Error {
 
 func ValidationError(info string, err error) *Error {
 	return &Error{
-		Message: "ValidationError about " + info + ":" + err.Error(),
+		Message: "Validation error for " + info + ": " + err.Error(),
 	}
 }
