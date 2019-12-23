@@ -16,7 +16,7 @@ func init() {
 	//allow all origin for CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*", "https://www.symi.dev/*", "http://localhost*"},
-		AllowMethods:     []string{"*", "GET", "PUT", "PATCH", "DELETE", "POST"},
+		AllowMethods:     []string{"*", "GET", "PUT", "PATCH", "DELETE", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "token", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length", "token", "Content-Type"},
 		AllowCredentials: true,
