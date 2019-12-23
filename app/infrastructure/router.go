@@ -1,10 +1,11 @@
 package infrastructure
 
 import (
-	"github.com/gin-contrib/cors"
-	gin "github.com/gin-gonic/gin"
 	"project-symi-backend/app/interfaces/controllers"
 	"time"
+
+	"github.com/gin-contrib/cors"
+	gin "github.com/gin-gonic/gin"
 )
 
 var Router *gin.Engine
@@ -14,7 +15,7 @@ func init() {
 
 	//allow all origin for CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     []string{"*", "https://www.symi.dev/*", "http://localhost*"},
 		AllowMethods:     []string{"*", "GET", "PUT", "PATCH", "DELETE", "POST"},
 		AllowHeaders:     []string{"Origin", "token", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length", "token", "Content-Type"},
