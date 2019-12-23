@@ -15,8 +15,8 @@ func init() {
 
 	//allow all origin for CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*", "https://www.symi.dev/*", "http://localhost*"},
-		AllowMethods:     []string{"*", "GET", "PUT", "PATCH", "DELETE", "POST", "OPTIONS"},
+		AllowOrigins:     []string{"https://www.symi.dev/*", "http://localhost*"},
+		AllowMethods:     []string{"GET", "PUT", "PATCH", "DELETE", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "token", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length", "token", "Content-Type"},
 		AllowCredentials: true,
@@ -45,46 +45,64 @@ func init() {
 	authorized := router.Group("/auth")
 	authorized.Use(func(c *gin.Context) { userAuthController.Authenticate(c) })
 	{
-		authorized.GET("/feedbacks", func(c *gin.Context) {
-			feeling := c.Query("feeling")
-			if feeling != "" {
-				feedbackController.FeedbacksByFeeling(c)
-			} else {
-				feedbackController.AllFeedbacks(c)
-			}
-		})
-		authorized.GET("/feedbacks/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
-		authorized.POST("/feedbacks", func(c *gin.Context) { feedbackPointsController.PostFeedback(c) })
-		authorized.PATCH("/feedbacks/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
+		feedbacks := authorized.Group("/feedbacks")
+		{
+			feedbacks.GET("", func(c *gin.Context) {
+				feeling := c.Query("feeling")
+				if feeling != "" {
+					feedbackController.FeedbacksByFeeling(c)
+				} else {
+					feedbackController.AllFeedbacks(c)
+				}
+			})
+			feedbacks.GET("/:employeeId", func(c *gin.Context) { feedbackController.FeedbacksByEmployeeId(c) })
+			feedbacks.POST("", func(c *gin.Context) { feedbackPointsController.PostFeedback(c) })
+			feedbacks.PATCH("/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
+		}
 
-		authorized.GET("/users", func(c *gin.Context) {
-			name := c.Query("name")
-			if name != "" {
-				userController.UsersByEmployeeName(c)
-			} else {
-				userController.AllUsers(c)
-			}
-		})
-		authorized.GET("/users/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
-		authorized.DELETE("/users/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
-		authorized.POST("/users", func(c *gin.Context) { userController.StoreUser(c) })
-		authorized.POST("/users/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+		users := authorized.Group("/users")
+		{
+			users.GET("", func(c *gin.Context) {
+				name := c.Query("name")
+				if name != "" {
+					userController.UsersByEmployeeName(c)
+				} else {
+					userController.AllUsers(c)
+				}
+			})
+			users.GET("/:employeeId", func(c *gin.Context) { userController.UserByEmployeeId(c) })
+			users.DELETE("/:employeeId", func(c *gin.Context) { userController.DeleteByEmployeeId(c) })
+			users.POST("", func(c *gin.Context) { userController.StoreUser(c) })
+			users.POST("/csv", func(c *gin.Context) { userController.StoreUsers(c) })
+		}
 
-		authorized.GET("/points", func(c *gin.Context) { userController.TopPointsUsers(c) })
-		authorized.GET("/points/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
+		points := authorized.Group("/points")
+		{
+			points.GET("", func(c *gin.Context) { userController.TopPointsUsers(c) })
+			points.GET("/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
+		}
 
-		authorized.GET("/news", func(c *gin.Context) { newsController.AllNews(c) })
-		authorized.POST("/news", func(c *gin.Context) { newsController.AddNewsItem(c) })
-		authorized.DELETE("/news/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
+		news := authorized.Group("/news")
+		{
+			news.GET("", func(c *gin.Context) { newsController.AllNews(c) })
+			news.POST("", func(c *gin.Context) { newsController.AddNewsItem(c) })
+			news.DELETE("/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
+		}
 
-		authorized.GET("/invitations/:employeeId", func(c *gin.Context) { invitationController.InvitationsByEmployeeId(c) })
-		authorized.POST("/invitations", func(c *gin.Context) { invitationController.PostInvitation(c) })
-		authorized.PATCH("/invitations", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
-		authorized.PATCH("/invitations/:invitationId", func(c *gin.Context) { invitationController.PatchInvitationById(c) })
-		authorized.DELETE("/invitations/:invitationId", func(c *gin.Context) { invitationController.DeleteById(c) })
+		invitations := authorized.Group("/invitations")
+		{
+			invitations.GET("/:employeeId", func(c *gin.Context) { invitationController.InvitationsByEmployeeId(c) })
+			invitations.POST("", func(c *gin.Context) { invitationController.PostInvitation(c) })
+			invitations.PATCH("", func(c *gin.Context) { invitationController.MadeSeenAllInvitations(c) })
+			invitations.PATCH("/:invitationId", func(c *gin.Context) { invitationController.PatchInvitationById(c) })
+			invitations.DELETE("/:invitationId", func(c *gin.Context) { invitationController.DeleteById(c) })
+		}
 
-		authorized.GET("/rewards", func(c *gin.Context) { rewardController.AllRewards(c) })
-		authorized.PATCH("/rewards", func(c *gin.Context) { rewardController.PatchRewardById(c) })
+		rewards := authorized.Group("/rewards")
+		{
+			rewards.GET("", func(c *gin.Context) { rewardController.AllRewards(c) })
+			rewards.PATCH("", func(c *gin.Context) { rewardController.PatchRewardById(c) })
+		}
 	}
 
 	Router = router
