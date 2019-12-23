@@ -54,13 +54,10 @@ func (controller *UserAuthController) LoginUser(c Context) {
 }
 
 func (controller *UserAuthController) LogoutUser(c Context) {
-	token := domain.TokenRequest{}
-	if err := c.ShouldBindHeader(&token); err != nil {
-		c.JSON(400, ValidationError("LogoutUser method's token is invalid ", err))
-		return
-	}
+	token := c.GetHeader("token")
+
 	//PARSE JWT TOKEN
-	tokenId, err := getTokenId(token.Token)
+	tokenId, err := getTokenId(token)
 	if err != nil && tokenId != "" {
 		c.JSON(500, NewError(err))
 		return
@@ -73,7 +70,7 @@ func (controller *UserAuthController) LogoutUser(c Context) {
 		return
 	}
 	if amountOfDeleted == 0 {
-		err = errors.New("Invalid token : " + token.Token)
+		err = errors.New("Invalid token : " + token)
 		c.JSON(400, NewError(err)) //TODO: create another error
 		return
 	}
@@ -83,14 +80,10 @@ func (controller *UserAuthController) LogoutUser(c Context) {
 }
 
 func (controller *UserAuthController) Authenticate(c Context) {
-	token := domain.TokenRequest{}
-	if err := c.ShouldBindHeader(&token); err != nil {
-		c.JSON(400, ValidationError("LogoutUser method's token is invalid", err))
-		return
-	}
+	token := c.GetHeader("token")
 
 	//PARSE JWT TOKEN
-	tokenId, err := getTokenId(token.Token)
+	tokenId, err := getTokenId(token)
 	if err != nil && tokenId != "" {
 		c.JSON(500, NewError(err))
 		return

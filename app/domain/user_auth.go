@@ -9,7 +9,3 @@ type TokenResponse struct {
 	Token           string `json:"token"`
 	PermissionLevel string `json:"permission"`
 }
-
-type TokenRequest struct {
-	Token string `header:"token" binding:"required"`
-}
