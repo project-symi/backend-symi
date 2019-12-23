@@ -44,7 +44,7 @@ func init() {
 	authorized := router.Group("/auth")
 	authorized.Use(func(c *gin.Context) { userAuthController.Authenticate(c) })
 	{
-		feedbacks := authorized.Group("feedbacks")
+		feedbacks := authorized.Group("/feedbacks")
 		{
 			feedbacks.GET("/", func(c *gin.Context) {
 				feeling := c.Query("feeling")
@@ -59,7 +59,7 @@ func init() {
 			feedbacks.PATCH("/status", func(c *gin.Context) { feedbackController.PatchSeen(c) })
 		}
 
-		users := authorized.Group("users")
+		users := authorized.Group("/users")
 		{
 			users.GET("/", func(c *gin.Context) {
 				name := c.Query("name")
@@ -75,20 +75,20 @@ func init() {
 			users.POST("/csv", func(c *gin.Context) { userController.StoreUsers(c) })
 		}
 
-		points := authorized.Group("points")
+		points := authorized.Group("/points")
 		{
 			points.GET("/", func(c *gin.Context) { userController.TopPointsUsers(c) })
 			points.GET("/:employeeId", func(c *gin.Context) { pointsController.PointsByEmployeeId(c) })
 		}
 
-		news := authorized.Group("news")
+		news := authorized.Group("/news")
 		{
 			news.GET("/", func(c *gin.Context) { newsController.AllNews(c) })
 			news.POST("/", func(c *gin.Context) { newsController.AddNewsItem(c) })
 			news.DELETE("/:newsId", func(c *gin.Context) { newsController.DeleteByNewsId(c) })
 		}
 
-		invitations := authorized.Group("invitations")
+		invitations := authorized.Group("/invitations")
 		{
 			invitations.GET("/:employeeId", func(c *gin.Context) { invitationController.InvitationsByEmployeeId(c) })
 			invitations.POST("/", func(c *gin.Context) { invitationController.PostInvitation(c) })
@@ -97,7 +97,7 @@ func init() {
 			invitations.DELETE("/:invitationId", func(c *gin.Context) { invitationController.DeleteById(c) })
 		}
 
-		rewards := authorized.Group("rewards")
+		rewards := authorized.Group("/rewards")
 		{
 			rewards.GET("/", func(c *gin.Context) { rewardController.AllRewards(c) })
 			rewards.PATCH("/", func(c *gin.Context) { rewardController.PatchRewardById(c) })
