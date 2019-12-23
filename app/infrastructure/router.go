@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"project-symi-backend/app/interfaces/controllers"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	gin "github.com/gin-gonic/gin"
@@ -14,14 +13,12 @@ func init() {
 	router := gin.Default()
 
 	//allow all origin for CORS
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://www.symi.dev/*", "http://localhost*"},
-		AllowMethods:     []string{"GET", "PUT", "PATCH", "DELETE", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "token", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length", "token", "Content-Type"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"https://www.symi.dev", "http://localhost:3000", "https://symi.herokuapp.com"}
+	config.AllowMethods = []string{"GET", "PUT", "PATCH", "DELETE", "POST", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "token", "Content-Type"}
+	config.ExposeHeaders = []string{"Content-Length", "token", "Content-Type"}
+	router.Use(cors.New(config))
 	//TODO ADD PROPER CONDITIONS FOR CORS LATER: router.Use(cors.Default())
 
 	sqlHandler := NewSqlHandler()
