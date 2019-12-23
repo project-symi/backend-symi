@@ -9,3 +9,9 @@ func NewError(err error) *Error {
 		Message: err.Error(),
 	}
 }
+
+func ValidationError(info string, err error) *Error {
+	return &Error{
+		Message: "Validation error for " + info + ": " + err.Error(),
+	}
+}

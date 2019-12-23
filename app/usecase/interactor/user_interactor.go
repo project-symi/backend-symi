@@ -16,8 +16,8 @@ type UserInteractor struct {
 	PermissionRepository repository.PermissionRepository
 }
 
-func (interactor *UserInteractor) Users() (user domain.Users, err error) {
-	user, err = interactor.UserRepository.FindAll()
+func (interactor *UserInteractor) Users() (root domain.UsersRoot, err error) {
+	root, err = interactor.UserRepository.FindAll()
 	return
 }
 
@@ -71,7 +71,8 @@ func (interactor *UserInteractor) StoreUser(user domain.User) (success bool, err
 	return
 }
 
-func (interactor *UserInteractor) StoreUsers(users domain.Users) (amountOfChanged int, err error) {
+func (interactor *UserInteractor) StoreUsers(root domain.UsersRoot) (amountOfChanged int, err error) {
+	users := root.Users
 	var (
 		amountOfInserted int = 0
 		amountOfUpdated  int = 0

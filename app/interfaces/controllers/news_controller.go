@@ -56,7 +56,10 @@ func (controller *NewsController) DeleteByNewsId(c Context) {
 
 func (controller *NewsController) AddNewsItem(c Context) {
 	newsItem := domain.NewsPost{}
-	c.BindJSON(&newsItem)
+	if err := c.ShouldBindJSON(&newsItem); err != nil {
+		c.JSON(400, ValidationError("AddNewsItem method", err))
+		return
+	}
 	success, err := controller.NewsInteractor.AddNewNews(newsItem)
 	if err != nil {
 		c.JSON(500, NewError(err))

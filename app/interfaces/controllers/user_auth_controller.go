@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -30,7 +31,8 @@ func (controller *UserAuthController) LoginUser(c Context) {
 	//READ HEADER INTO A CREDENTIALS STRUCT
 	var user domain.UserCredentials
 	if err := c.BindJSON(&user); err != nil {
-		panic(err)
+		c.JSON(400, ValidationError("LoginUser method's json parameter is invalid ", err))
+		return
 	}
 	//CHECK IF PASSED CREDENTIALS MATCH
 	tokenId, permissionLevel, err := controller.Interactor.CheckUserPass(user.EmployeeId, user.Pass)
@@ -52,9 +54,13 @@ func (controller *UserAuthController) LoginUser(c Context) {
 }
 
 func (controller *UserAuthController) LogoutUser(c Context) {
-	token := c.GetHeader("token")
+	token := domain.TokenRequest{}
+	if err := c.ShouldBindHeader(&token); err != nil {
+		c.JSON(400, ValidationError("LogoutUser method's token is invalid ", err))
+		return
+	}
 	//PARSE JWT TOKEN
-	tokenId, err := getTokenId(token)
+	tokenId, err := getTokenId(token.Token)
 	if err != nil && tokenId != "" {
 		c.JSON(500, NewError(err))
 		return
@@ -67,19 +73,24 @@ func (controller *UserAuthController) LogoutUser(c Context) {
 		return
 	}
 	if amountOfDeleted == 0 {
+		err = errors.New("Invalid token : " + token.Token)
 		c.JSON(400, NewError(err)) //TODO: create another error
 		return
 	}
 
 	//RETURN SUCCESS IF NO ERRORS
-	c.JSON(200, amountOfDeleted)
+	c.Status(200)
 }
 
 func (controller *UserAuthController) Authenticate(c Context) {
-	token := c.GetHeader("token")
+	token := domain.TokenRequest{}
+	if err := c.ShouldBindHeader(&token); err != nil {
+		c.JSON(400, ValidationError("LogoutUser method's token is invalid", err))
+		return
+	}
 
 	//PARSE JWT TOKEN
-	tokenId, err := getTokenId(token)
+	tokenId, err := getTokenId(token.Token)
 	if err != nil && tokenId != "" {
 		c.JSON(500, NewError(err))
 		return

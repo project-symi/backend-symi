@@ -31,11 +31,18 @@ func (controller *RewardController) AllRewards(c Context) {
 
 func (controller *RewardController) PatchRewardById(c Context) {
 	reward := domain.Reward{}
-	c.BindJSON(&reward)
+	if err := c.ShouldBindJSON(&reward); err != nil {
+		c.JSON(400, ValidationError("PatchRewardById method's json parameter is invalid ", err))
+		return
+	}
 	rewards, err := controller.Interactor.PatchById(reward)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
 	}
-	c.JSON(200, rewards)
+	if rewards == false {
+		c.Status(400)
+		return
+	}
+	c.Status(200)
 }

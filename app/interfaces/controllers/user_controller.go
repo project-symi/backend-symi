@@ -30,9 +30,15 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) AllUsers(c Context) {
-	users, err := controller.Interactor.Users()
+	userRoot, err := controller.Interactor.Users()
+	users := userRoot.Users
 	if err != nil {
 		c.JSON(500, NewError(err))
+		return
+	}
+	if err = c.ShouldBind(&userRoot); err != nil {
+		info := "AllUsers method: "
+		c.JSON(400, ValidationError(info, err))
 		return
 	}
 	c.JSON(200, users)
@@ -49,7 +55,12 @@ func (controller *UserController) TopPointsUsers(c Context) {
 }
 
 func (controller *UserController) UserByEmployeeId(c Context) {
-	user, err := controller.Interactor.User(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	if err := c.ShouldBindUri(&employeeId); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeId method's parameter is invalid ", err))
+		return
+	}
+	user, err := controller.Interactor.User(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -58,7 +69,12 @@ func (controller *UserController) UserByEmployeeId(c Context) {
 }
 
 func (controller *UserController) UsersByEmployeeName(c Context) {
-	users, err := controller.Interactor.UsersByName(c.Query("name"))
+	name := domain.NameQuery{}
+	if err := c.ShouldBind(&name); err != nil {
+		c.JSON(400, ValidationError("UsersByEmployeeName method's query string is invalid ", err))
+		return
+	}
+	users, err := controller.Interactor.UsersByName(name.Name)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -67,7 +83,12 @@ func (controller *UserController) UsersByEmployeeName(c Context) {
 }
 
 func (controller *UserController) DeleteByEmployeeId(c Context) {
-	amountOfDeleted, err := controller.Interactor.Delete(c.Param("employeeId"))
+	employeeId := domain.EmployeeIdParam{}
+	if err := c.ShouldBindUri(&employeeId); err != nil {
+		c.JSON(400, ValidationError("DeleteByEmployeeId method's parameter is invalid ", err))
+		return
+	}
+	amountOfDeleted, err := controller.Interactor.Delete(employeeId.EmployeeId)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return
@@ -81,7 +102,10 @@ func (controller *UserController) DeleteByEmployeeId(c Context) {
 
 func (controller *UserController) StoreUser(c Context) {
 	user := domain.User{}
-	c.BindJSON(&user)
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, ValidationError("StoreUser method", err))
+		return
+	}
 	success, err := controller.Interactor.StoreUser(user)
 	if err != nil {
 		c.JSON(500, NewError(err))
@@ -95,9 +119,13 @@ func (controller *UserController) StoreUser(c Context) {
 }
 
 func (controller *UserController) StoreUsers(c Context) {
-	users := domain.Users{}
-	c.BindJSON(&users)
-	amountOfStored, err := controller.Interactor.StoreUsers(users)
+	root := domain.UsersRoot{}
+	if err := c.ShouldBindJSON(&root); err != nil {
+		info := "StoreUsers: "
+		c.JSON(400, ValidationError(info, err))
+		return
+	}
+	amountOfStored, err := controller.Interactor.StoreUsers(root)
 	if err != nil {
 		c.JSON(500, NewError(err))
 		return

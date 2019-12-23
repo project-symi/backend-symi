@@ -11,9 +11,9 @@ type NewsItem struct {
 }
 
 type NewsPost struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	PhotoLink   string `json:"photo"`
+	Title       string `json:"title" binding:"required,max=150"`
+	Description string `json:"description" binding:"required"`
+	PhotoLink   string `json:"photo" binding:"required,url"`
 }
 
 type News []NewsItem

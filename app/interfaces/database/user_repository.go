@@ -52,7 +52,7 @@ func (repo *UserRepository) FindCEOId() (id int, err error) {
 	return
 }
 
-func (repo *UserRepository) FindAll() (users domain.Users, err error) {
+func (repo *UserRepository) FindAll() (root domain.UsersRoot, err error) {
 	rows, err := repo.Query(`
 		SELECT
 			u.employee_id,
@@ -102,7 +102,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 			Gender:      gender,
 			Permission:  permission,
 		}
-		users = append(users, user)
+		root.Users = append(root.Users, user)
 	}
 	return
 }

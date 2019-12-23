@@ -1,6 +1,6 @@
 package database
 
-//TODO: Add custom errors in way that wouldnt require importing "errors" module here (used on lines: 30, 34, 107, 113 )
+//TODO: Add custom errors in way that wouldn't require importing "errors" module here (used on lines: 30, 34, 107, 113 )
 import (
 	"errors"
 
@@ -9,7 +9,7 @@ import (
 )
 
 //*****************************************************//
-//*****IMPLEMENTING THE AUTHENTIFICATION FEATURES!*****//
+//*****IMPLEMENTING THE AUTHENTICATION FEATURES!*****//
 //*****************************************************//
 
 type UserAuthRepository struct {
