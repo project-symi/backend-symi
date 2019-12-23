@@ -11,5 +11,5 @@ type TokenResponse struct {
 }
 
 type TokenRequest struct {
-	Token string `header:"token" binding:"required,len=204"`
+	Token string `header:"token" binding:"required"`
 }
