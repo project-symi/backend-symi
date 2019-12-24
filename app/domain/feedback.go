@@ -32,7 +32,7 @@ type FeedbackStore struct {
 	EmployeeId          string `json:"employeeId" binding:"required,max=20,alphanum"`
 	Feeling             string `json:"feeling" binding:"required,oneof=good meh sad"`
 	Category            string `json:"category" binding:"required,max=20,excludesall=!()#@{}?"`
-	RecipientEmployeeId string `json:"recipientId" binding:"max=20,alphanum"`
+	RecipientEmployeeId string `json:"recipientId" binding:"max=20,excludesall=!()#@{}?"`
 	NewsId              int    `json:"newsId" binding:"numeric"`
 	FeedbackNote        string `json:"note" binding:"required"`
 }
