@@ -113,7 +113,9 @@ Simplified structure can be seen below:
 
 For more details details and information, please check out the following article: [AWS Cloudformation Managed (Medium.com)](https://medium.com/swlh/aws-cloudformation-managed-complete-ecs-infrastructure-including-ci-cd-pipeline-from-github-to-ecs-b833bb44e01c)
 
+## Infrastructure
 
+For this project we implemented a clean architecture ([Onion Architecture](https://www.thinktocode.com/2018/08/21/onion-architecture-skeleton-example/)).
 
 ## Database Structure
 
