@@ -19,6 +19,10 @@ To test out the working version or learn more about the front end, please check 
 
 <img alt="Technology logo list" src="./assets/technologies.png">
 
+## Backend Infrastructure
+
+For this project we implemented a clean architecture ([Onion Architecture](https://www.thinktocode.com/2018/08/21/onion-architecture-skeleton-example/)).
+
 ## Running the backend server
 
 ### *Docker*
@@ -53,6 +57,13 @@ Directly running the go application is also possible with
 go run ./application.go
 ```
 
+## Available Enpoints
+
+We kept track of all available endpoints, their required parameters (request body, query, etc) and the response (status and body(if any)).
+Details can be found in the [SYMI endpoints](https://docs.google.com/document/d/1r4xC_vunE_PZ8TNUZheU8o0w9oYWTAdbAZbb2Ht4fPE/edit?usp=sharing)
+
+<img alt="example of enpoints that are available for symi backend" src="./assets/symi_enpoints.png" width="800px">
+
 ## Deploying
 
 Symi-backend contains 2 setups that can be utilized - AWS and Heroku
@@ -86,18 +97,20 @@ Template: `/cloudformation/codepipeline.yml`
 * Please make sure to add a Personal Access Token to your account allowing AWS CFN access to the repository.
 * Change the current template info GithubUserName/GithubRepo/GithubBranch to match your fork.
 
-Once the template is created, With every push to the branch that was specified in GithubBranch, the AWS Codepipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
+Once the template is created, with every push to the branch that was specified in GithubBranch, the AWS Codepipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
 
 Once again, by default Fargate will create 2 tasks running in 2 different Subnets and create a loadbalancer that connects them both.
 To get access to the server, plese find the DNS adress in the ECS Instances -> ElasticLoadBalancers.
 
 ### AWS Workflow
 
-<img alt="AWS CloudFormation" src="./assets/aws/AWS_CloudFormation.png" width="100px">
-<img alt="AWS CodePipeline logo" src="./assets/aws/AWS_CodePipeline.png" width="100px">
-<img alt="AWS CodePipeline logo" src="./assets/aws/AWS_CodeBuild.png" width="100px">
-<img alt="AWS ECS Fargate logo" src="./assets/aws/AWS_ECS_Fargate.png" width="100px">
-<img alt="AWS RDS logo" src="./assets/aws/AWS_RDS.png" width="100px">
+<p>
+  <img alt="AWS CloudFormation" src="./assets/aws/AWS_CloudFormation.png" width="100px">
+  <img alt="AWS CodePipeline logo" src="./assets/aws/AWS_CodePipeline.png" width="100px">
+  <img alt="AWS CodePipeline logo" src="./assets/aws/AWS_CodeBuild.png" width="100px">
+  <img alt="AWS ECS Fargate logo" src="./assets/aws/AWS_ECS_Fargate.png" width="100px">
+  <img alt="AWS RDS logo" src="./assets/aws/AWS_RDS.png" width="100px">
+</p>
 
 The main steps of the deployment process are as follows:
 
@@ -113,11 +126,11 @@ Simplified structure can be seen below:
 
 For more details details and information, please check out the following article: [AWS Cloudformation Managed (Medium.com)](https://medium.com/swlh/aws-cloudformation-managed-complete-ecs-infrastructure-including-ci-cd-pipeline-from-github-to-ecs-b833bb44e01c)
 
-## Infrastructure
+## Enpoints
 
-For this project we implemented a clean architecture ([Onion Architecture](https://www.thinktocode.com/2018/08/21/onion-architecture-skeleton-example/)).
+//TODO: Add link to enpoint file
 
-## Database Structure
+## Database Structure (ERD)
 
 To match the complex data flow of SYMI information, the below structure was created.
 
