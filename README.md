@@ -126,10 +126,6 @@ Simplified structure can be seen below:
 
 For more details details and information, please check out the following article: [AWS Cloudformation Managed (Medium.com)](https://medium.com/swlh/aws-cloudformation-managed-complete-ecs-infrastructure-including-ci-cd-pipeline-from-github-to-ecs-b833bb44e01c)
 
-## Enpoints
-
-//TODO: Add link to enpoint file
-
 ## Database Structure (ERD)
 
 To match the complex data flow of SYMI information, the below structure was created.
