@@ -1,18 +1,21 @@
-## About the app 
-#
-<h1 align="center"> <img width="300px" src="assets/symilogo.png" /></h1> 
+## About the app
 
-[![CircleCI](https://circleci.com/gh/project-symi/backend-symi/tree/master.svg?style=shield)](https://circleci.com/gh/project-symi/backend-symi/tree/master) 
+#
+
+<h1 align="center"> <img width="300px" src="assets/symilogo.png" /></h1>
+
+[![CircleCI](https://circleci.com/gh/project-symi/backend-symi/tree/master.svg?style=shield)](https://circleci.com/gh/project-symi/backend-symi/tree/master)
 
 <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
 
-Symi is a gamified platform for promoting positive feedback and company morale. Employees get points for sending anonymous feedback directly to their CEO. CEO's can have a top-level overview of company sentiment in the form of data visualization personalized to company changes to employees.
-
+SYMI is a gamified platform for promoting positive feedback and company morale. Employees get points for sending anonymous feedback directly to their CEO. CEO's can have a top-level overview of company sentiment in the form of data visualization personalized to company changes to employees.
 
 ## Additional Info
+
 This is the backend server implementation for SYMI.
 
-To test out the working version or learn more about the front end, please check out the demo link above or see the frontend [Readme](https://github.com/project-symi/frontend-symi). 
+To test out the working version or learn more about the front end, please check out the demo link above or see the frontend [Readme](https://github.com/project-symi/frontend-symi).
+
 ### ✨ [Demo](https://www.symi.dev)
 
 ## Technology
@@ -25,7 +28,8 @@ For this project we implemented a clean architecture ([Onion Architecture](https
 
 ## Running the backend server
 
-### *Docker*
+### _Docker_
+
 <img alt="Docker logo" src="https://res.cloudinary.com/teepublic/image/private/s--bLlrDo5F--/c_crop,x_10,y_10/c_fit,w_1109/c_crop,g_north_west,h_1260,w_1260,x_-76,y_-165/co_rgb:ffffff,e_colorize,u_Misc:One%20Pixel%20Gray/c_scale,g_north_west,h_1260,w_1260/fl_layer_apply,g_north_west,x_-76,y_-165/bo_157px_solid_white/e_overlay,fl_layer_apply,h_1260,l_Misc:Art%20Print%20Bumpmap,w_1260/e_shadow,x_6,y_6/c_limit,h_1134,w_1134/c_lpad,g_center,h_1260,w_1260/b_rgb:eeeeee/c_limit,f_jpg,h_630,q_90,w_630/v1521449955/production/designs/2490921_0.jpg" width="100" />
 
 SYMI backend makes use of Docker to create and image of the app and be able to deploy a docker container quickly and with easy
@@ -38,21 +42,26 @@ docker build -t symi-backend
 ```sh
 docker run --rm -it -p 5000:8080 -e PORT=8080 symiback-end
 ```
+
 `-p 5000` -> determines which port your container will be accessible on<br>
 `:8080` -> which port the app is listening on (inside the container).<br>
 By default the app listening port is 8080, however it can be changed by passing in a PORT environment variable (-e PORT=####).
 
-### *Makefile*
+### _Makefile_
+
 If needed, it is possible to utilize Makefile, instead of Docker.
-If you have Make installed, you can run the app with  
+If you have Make installed, you can run the app with
+
 ```sh
 make run
 ```
 
-### *Go*
+### _Go_
+
 <img alt="Golang logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Go_Logo_Blue.svg/512px-Go_Logo_Blue.svg.png" width="100px">
 
-Directly running the go application is also possible with  
+Directly running the go application is also possible with
+
 ```sh
 go run ./application.go
 ```
@@ -62,7 +71,7 @@ go run ./application.go
 We kept track of all available endpoints, their required parameters (request body, query, etc) and the response (status and body(if any)).
 Details can be found in the [SYMI endpoints](https://docs.google.com/document/d/1r4xC_vunE_PZ8TNUZheU8o0w9oYWTAdbAZbb2Ht4fPE/edit?usp=sharing)
 
-<img alt="example of enpoints that are available for symi backend" src="./assets/symi_enpoints.png" width="800px">
+<img alt="example of endpoints that are available for symi backend" src="./assets/symi_endpoints.png" width="800px">
 
 ## Deploying
 
@@ -74,7 +83,8 @@ In both cases, please make sure to add the following Environment variables:
 
 Make sure to run migrations (and seed some data) from `/app/migrations` and `/app/seeder`.
 
-### *Heroku*
+### _Heroku_
+
 <img alt="Heroku logo" src="https://redislabs.com/wp-content/uploads/2016/11/logo-square-heroku.png" width="100px">
 
 To deploy the backend server Heroku, create an app via the CLI or on [Heroku](https://heroku.com).
@@ -84,20 +94,21 @@ Click "Deploy" in settings!
 
 Based on Heroku.yml, a docker image will be created. Heroku will then start up a container in your app.
 
-### *AWS*
+### _AWS_
+
 <img alt="AWS logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/1024px-Amazon_Web_Services_Logo.svg.png" width="100px">
 
 AWS Deployment will require some prior setup.
 The first step will be to create the initial CI/CD Pipeline that will be building the Docker image and deploying the rest of the infrastructure.
 This step has to be performed manually.
 
-Either via the AWS CLI tool, or using the [AWS Cloudformation website](https://aws.amazon.com/cloudformation/), create a new stack using the ready template.
+Either via the AWS CLI tool, or using the [AWS CloudFormation website](https://aws.amazon.com/cloudformation/), create a new stack using the ready template.
 Template: `/cloudformation/codepipeline.yml`
 
-* Please make sure to add a Personal Access Token to your account allowing AWS CFN access to the repository.
-* Change the current template info `GithubUserName`/`GithubRepo`/`GithubBranch` to match your fork.
+- Please make sure to add a Personal Access Token to your account allowing AWS CFN access to the repository.
+- Change the current template info `GithubUserName`/`GithubRepo`/`GithubBranch` to match your fork.
 
-Once the template is created, with every push to the branch that was specified in GithubBranch, the AWS CodePipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
+Once the template is created, with every push to the branch that was specified in GitHubBranch, the AWS CodePipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
 
 Once again, by default Fargate will create 2 tasks running in 2 different Subnets and create a load balancer that connects them both.
 To get access to the server, please find the DNS address in the `ECS Instances -> Elastic Load Balancers`.
@@ -123,7 +134,6 @@ The main steps of the deployment process are as follows:
 Simplified structure can be seen below:
 <img alt="SYMI CI/CD Pipeline flow" src="./assets/aws/AWS_Schema.png">
 
-
 For more details details and information, please check out the following article: [AWS Cloudformation Managed (Medium.com)](https://medium.com/swlh/aws-cloudformation-managed-complete-ecs-infrastructure-including-ci-cd-pipeline-from-github-to-ecs-b833bb44e01c)
 
 ## Database Structure (ERD)
@@ -136,19 +146,19 @@ Furthermore, due to the potentially large amount of user actions, instead of usi
 
 ## Future Features
 
-* Utilize Go routines and/or channels to further speed up data handling.
+- Utilize Go routines and/or channels to further speed up data handling.
 
-* Breakdown the monolith code into microservices (employee actions would be loaded more than CEO, so scaling only that part would be easier).
+- Breakdown the monolith code into micro services (employee actions would be loaded more than CEO, so scaling only that part would be easier).
 
-* Create functionality to support the future features mentioned on the frontend Readme:
-  * Custom Assignments
-  * Employee Slack Notifications
-  * Ivite Calendar Integration
-  * Points Animations
-  * Badges & Rewards
-
+- Create functionality to support the future features mentioned on the frontend Readme:
+  - Custom Assignments
+  - Employee Slack Notifications
+  - Invite Calendar Integration
+  - Points Animations
+  - Badges & Rewards
 
 ## Contributors
+
 <table>
  <tr>
     <td align="center">
@@ -158,7 +168,7 @@ Furthermore, due to the potentially large amount of user actions, instead of usi
       </a><br />Tech Lead
     </td>
     <td align="center"><a href="https://github.com/FuyuByakko"><img src="./assets/headshots/igor.png" width="200px;"/><br /><sub><b>Igor</b></sub></a><br />Fullstack</td>
-    <td align="center"><a href="https://github.com/steffieharner"><img src="./assets/headshots/steffie.png" width="200px;"/><br /><sub><b>Steffie Harner</b></sub></a><br />Design/Frontend</td> 
+    <td align="center"><a href="https://github.com/steffieharner"><img src="./assets/headshots/steffie.png" width="200px;"/><br /><sub><b>Steffie Harner</b></sub></a><br />Design/Frontend</td>
     <td align="center">
       <a href="https://github.com/Yukio0315"><img src="./assets/headshots/yukio.png" width="200px;"/><br />
         <sub>
