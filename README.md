@@ -57,7 +57,7 @@ Directly running the go application is also possible with
 go run ./application.go
 ```
 
-## Available Enpoints
+## Available Endpoints
 
 We kept track of all available endpoints, their required parameters (request body, query, etc) and the response (status and body(if any)).
 Details can be found in the [SYMI endpoints](https://docs.google.com/document/d/1r4xC_vunE_PZ8TNUZheU8o0w9oYWTAdbAZbb2Ht4fPE/edit?usp=sharing)
@@ -79,7 +79,7 @@ Make sure to run migrations (and seed some data) from `/app/migrations` and `/ap
 
 To deploy the backend server Heroku, create an app via the CLI or on [Heroku](https://heroku.com).
 Fork your version of the backend-SYMI repository.
-Link your created app with the forked github repository.
+Link your created app with the forked GitHub repository.
 Click "Deploy" in settings!
 
 Based on Heroku.yml, a docker image will be created. Heroku will then start up a container in your app.
@@ -95,12 +95,12 @@ Either via the AWS CLI tool, or using the [AWS Cloudformation website](https://a
 Template: `/cloudformation/codepipeline.yml`
 
 * Please make sure to add a Personal Access Token to your account allowing AWS CFN access to the repository.
-* Change the current template info GithubUserName/GithubRepo/GithubBranch to match your fork.
+* Change the current template info `GithubUserName`/`GithubRepo`/`GithubBranch` to match your fork.
 
-Once the template is created, with every push to the branch that was specified in GithubBranch, the AWS Codepipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
+Once the template is created, with every push to the branch that was specified in GithubBranch, the AWS CodePipeline will build the Docker image, store it into an S3 bucket, and finally trigger the infrastructure build using ECS Fargate.
 
-Once again, by default Fargate will create 2 tasks running in 2 different Subnets and create a loadbalancer that connects them both.
-To get access to the server, plese find the DNS adress in the ECS Instances -> ElasticLoadBalancers.
+Once again, by default Fargate will create 2 tasks running in 2 different Subnets and create a load balancer that connects them both.
+To get access to the server, please find the DNS address in the `ECS Instances -> Elastic Load Balancers`.
 
 ### AWS Workflow
 
@@ -116,7 +116,7 @@ The main steps of the deployment process are as follows:
 
 1. User manually deploys the initial Cloudformation template containing the CodePipeline infrastructure (`CodePipeline.yml`).
 2. Cloudformation starts the deployment of the AWS CodePipeline infrastructure.
-3. After the Cloudformation deployment, CodePipeline pulls the source code from Github in the source stage.
+3. After the Cloudformation deployment, CodePipeline pulls the source code from GitHub in the source stage.
 4. CodePipeline builds the docker image and pushes to the ECR in the build stage using AWS CodeBuild service.
 5. CodePipeline starts the deployment of the Cloudformation template (`Fargate-Cluster.yml`) containing Fargate ECS Cluster in the deploy stage.
 
