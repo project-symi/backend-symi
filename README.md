@@ -79,7 +79,7 @@ Symi-backend contains 2 setups that can be utilized - AWS and Heroku
 In both cases, please make sure to add the following Environment variables:
 
 `DB_INFO: the full link to the Database you plan to use for the app <user>:<password>@tcp(<link_to_db>)/<db_name>`<br>
-`SIGNING_KEY: <string> - will be used as SALT to hash and check your passwords for storage.`
+`SIGNING_KEY: <string> - will be used to sign the JWT (JSON Web Token) used for subsequent authorization.`
 
 Make sure to run migrations (and seed some data) from `/app/migrations` and `/app/seeder`.
 
